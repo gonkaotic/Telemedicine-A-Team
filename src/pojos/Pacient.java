@@ -5,19 +5,28 @@ import java.sql.Date;
 public class Pacient {
 
 	private Integer id;
-	
 	private String name;
-	
 	private Date birthDate;
-	
 	private Sex sex;
-	
 	private Boolean riskFactor;
-	
 	public enum Sex { MALE, FEMALE}
 	
 	
+	
+	public Pacient() {
+		super();
+	}
 
+	public Pacient(Integer id, String name, Date birthDate, Sex sex, Boolean riskFactor) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.birthDate = birthDate;
+		this.sex = sex;
+		this.riskFactor = riskFactor;
+	}
+
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -42,7 +51,15 @@ public class Pacient {
 			return false;
 		return true;
 	}
+	
 
+	@Override
+	public String toString() {
+		return "Pacient [id=" + id + ", name=" + name + ", birthDate=" + birthDate + ", sex=" + sex + ", riskFactor="
+				+ riskFactor + "]";
+	}
+
+	
 	public Integer getId() {
 		return id;
 	}
@@ -82,8 +99,4 @@ public class Pacient {
 	public void setRiskFactor(Boolean riskFactor) {
 		this.riskFactor = riskFactor;
 	}
-
-	
-	
-	
 }
