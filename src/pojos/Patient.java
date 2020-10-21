@@ -2,22 +2,22 @@ package pojos;
 
 import java.sql.Date;
 
-public class Pacient {
+public class Patient {
 
 	private Integer id;
 	private String name;
 	private Date birthDate;
 	private Sex sex;
 	private Boolean riskFactor;
-	public enum Sex { MALE, FEMALE}
+	public enum Sex {MALE, FEMALE}
 	
 	
 	
-	public Pacient() {
+	public Patient() {
 		super();
 	}
 
-	public Pacient(Integer id, String name, Date birthDate, Sex sex, Boolean riskFactor) {
+	public Patient(Integer id, String name, Date birthDate, Sex sex, Boolean riskFactor) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -43,7 +43,7 @@ public class Pacient {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Pacient other = (Pacient) obj;
+		Patient other = (Patient) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
