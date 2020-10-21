@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class Measurements {
 
 	private Integer id;
-	private Integer pacientId;
+	private Integer patientId;
 	private Date date;
 	private String ECG;
 	private Float SpO2;
@@ -24,7 +24,7 @@ public class Measurements {
 			Float temperature, Symptoms[] symptomChecklist) {
 		super();
 		this.id = id;
-		this.pacientId = pacientId;
+		this.patientId = pacientId;
 		this.date = date;
 		ECG = eCG;
 		SpO2 = spO2;
@@ -62,7 +62,7 @@ public class Measurements {
 	
 	@Override
 	public String toString() {
-		return "Measurements [id=" + id + ", pacientId=" + pacientId + ", date=" + date + ", ECG=" + ECG + ", SpO2="
+		return "Measurements [id=" + id + ", pacientId=" + patientId + ", date=" + date + ", ECG=" + ECG + ", SpO2="
 				+ SpO2 + ", BPM=" + BPM + ", Temperature=" + Temperature + ", symptomChecklist="
 				+ Arrays.toString(symptomChecklist) + "]";
 	}
@@ -76,11 +76,11 @@ public class Measurements {
 	}
 
 	public Integer getPacientId() {
-		return pacientId;
+		return patientId;
 	}
 
 	public void setPacientId(Integer pacientId) {
-		this.pacientId = pacientId;
+		this.patientId = pacientId;
 	}
 
 	public Date getDate() {
