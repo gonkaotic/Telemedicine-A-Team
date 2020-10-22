@@ -22,6 +22,7 @@ public class SQLManager {
 	
 	
 	private static void generateDataBase() throws SQLException {
+		createTablePatients();
 		createTableMeasures();
 	}
 
