@@ -50,6 +50,14 @@ public class SQLManager {
 	
 	
 	public static void createTablePatients() throws SQLException {
+		Statement stmt=c.createStatement();
+		String table = "CREATE TABLE patient(\r\n"+
+						"patient_id INTEGER PRIMARY KEY AUTOINCREMENT,\r\n"+
+						"name TEXT NOT NULL,\r\n"+
+						"date_birth DATE NOT NULL,\r\n"+
+						"risk_factors TEXT)";
+		stmt.executeUpdate(table);
+		stmt.close();
 		
 	}
 	
