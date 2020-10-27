@@ -55,7 +55,7 @@ public class Patient {
 
 	@Override
 	public String toString() {
-		return "Pacient [id=" + id + ", name=" + name + ", birthDate=" + birthDate + ", sex=" + sex + ", riskFactor="
+		return "Patient [id=" + id + ", name=" + name + ", birthDate=" + birthDate + ", sex=" + sex + ", riskFactor="
 				+ riskFactor + "]";
 	}
 

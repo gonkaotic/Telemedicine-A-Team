@@ -20,11 +20,11 @@ public class Measurements {
 		super();
 	}
 
-	public Measurements(Integer id, Integer pacientId, Date date, String eCG, Float spO2, Integer bPM,
+	public Measurements(Integer id, Integer patientId, Date date, String eCG, Float spO2, Integer bPM,
 			Float temperature, Symptoms[] symptomChecklist) {
 		super();
 		this.id = id;
-		this.patientId = pacientId;
+		this.patientId = patientId;
 		this.date = date;
 		ECG = eCG;
 		SpO2 = spO2;
@@ -62,12 +62,12 @@ public class Measurements {
 	
 	@Override
 	public String toString() {
-		return "Measurements [id=" + id + ", pacientId=" + patientId + ", date=" + date + ", ECG=" + ECG + ", SpO2="
+		return "Measurements [id=" + id + ", patientId=" + patientId + ", date=" + date + ", ECG=" + ECG + ", SpO2="
 				+ SpO2 + ", BPM=" + BPM + ", Temperature=" + Temperature + ", symptomChecklist="
 				+ Arrays.toString(symptomChecklist) + "]";
 	}
 
-	public Integer getid() {
+	public Integer getId() {
 		return id;
 	}
 	
@@ -75,12 +75,12 @@ public class Measurements {
 		this.id = id; 
 	}
 
-	public Integer getPacientId() {
+	public Integer getPatientId() {
 		return patientId;
 	}
 
-	public void setPacientId(Integer pacientId) {
-		this.patientId = pacientId;
+	public void setPatientId(Integer patientId) {
+		this.patientId = patientId;
 	}
 
 	public Date getDate() {
