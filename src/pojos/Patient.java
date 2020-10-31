@@ -24,6 +24,7 @@ public class Patient {
 		this.birthDate = birthDate;
 		this.sex = sex;
 		this.riskFactor = riskFactor;
+		
 	}
 
 	
