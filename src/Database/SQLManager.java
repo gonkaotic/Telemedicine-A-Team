@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import pojos.Patient;
+import pojos.*;
 import pojos.Patient.Sex;
 
 public class SQLManager {
@@ -127,6 +127,23 @@ public class SQLManager {
     	return patientList;
     }
 	
+    
+    public static List<Measurements> getAllMeasurements() throws SQLException{
+    	
+    	String sql="SELECT * FROM measures ;";
+    	PreparedStatement prep=c.prepareStatement(sql);
+    	ResultSet rs1=prep.executeQuery();
+    	List <Measurements> measuresList=new ArrayList <Measurements> ();
+    	while(rs1.next()) {
+    		measuresList.add(getMeasurement(rs1));
+    	}
+    	rs1.close();
+    	prep.close();
+    	return measuresList;
+    	
+    	
+    	
+    }
 	
 /*
  * Private Get Methods
@@ -138,17 +155,30 @@ private static Patient getPatient (ResultSet rs1) throws SQLException {
     	Patient patient = new Patient();
 		patient.setId(rs1.getInt("id"));
 		patient.setName(rs1.getString("name"));
-		patient.setBirthDate(rs1.getDate("birthday"));
+		patient.setBirthDate(rs1.getDate("date_birth"));
 		if(rs1.getString("sex").equals("MALE")) {
 			patient.setSex(Sex.MALE);
 		}else if(rs1.getString("sex").equals("FEMALE")) {
 			patient.setSex(Sex.FEMALE);
 		}
-		//patient.setSex(rs1.getSex("sex"));
-		patient.setRiskFactor(rs1.getBoolean("riskFactor"));    		   		
+		patient.setRiskFactor(rs1.getBoolean("risk_factors"));    		   		
 		return patient;
     	
     }
+
+private static Measurements getMeasurement(ResultSet rs1)throws SQLException{
+	
+	Measurements measurement=new Measurements();
+	measurement.setId(rs1.getInt("measure_id"));
+	measurement.setDate(rs1.getDate("measure_date"));
+	measurement.setECG(rs1.getString("ecg"));
+	measurement.setSpO2(rs1.getFloat("o2_saturation"));
+	measurement.setBPM(rs1.getInt("bpm"));
+	measurement.setTemperature(rs1.getFloat("temperature"));
+	//FALTA SYMPTOMS!!!!!!!!!!!!!!!!!!!
+	return measurement;
+	
+}
 	
 	
 	
