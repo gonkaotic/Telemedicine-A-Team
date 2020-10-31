@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pojos.Patient;
+import pojos.Patient.Sex;
 
 public class SQLManager {
 
@@ -138,6 +139,11 @@ private static Patient getPatient (ResultSet rs1) throws SQLException {
 		patient.setId(rs1.getInt("id"));
 		patient.setName(rs1.getString("name"));
 		patient.setBirthDate(rs1.getDate("birthday"));
+		if(rs1.getString("sex").equals("MALE")) {
+			patient.setSex(Sex.MALE);
+		}else if(rs1.getString("sex").equals("FEMALE")) {
+			patient.setSex(Sex.FEMALE);
+		}
 		//patient.setSex(rs1.getSex("sex"));
 		patient.setRiskFactor(rs1.getBoolean("riskFactor"));    		   		
 		return patient;
