@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import pojos.Patient;
 
 public class SQLManager {
 
@@ -72,4 +78,75 @@ public class SQLManager {
 		stmt1.close();
 	}
 	
+	
+/*
+* 
+* Reads
+* 
+*/
+	
+	public static Patient searchPatientByID(Integer id) throws SQLException {
+		String sql="SELECT * FROM patient WHERE patient_id = ? ;";
+		PreparedStatement prep = c.prepareStatement(sql);
+		
+		prep.setInt(1, id);
+		
+		ResultSet rs1 = prep.executeQuery();
+		if(!rs1.isBeforeFirst()) {
+			prep.close();
+			return null;
+		}
+		
+		Patient patient = getPatient(rs1);
+		
+		if	(id == patient.getId()) {
+			prep.close();
+			rs1.close();
+			return patient;
+		}else {
+				
+			prep.close();
+			rs1.close();
+			return null;
+		}	
+		
+	}
+	
+    public static List<Patient> getAllPatients() throws SQLException {
+    	
+    	String sql="SELECT * FROM patient ;";
+    	PreparedStatement prep=c.prepareStatement(sql);
+    	ResultSet rs1=prep.executeQuery();
+    	List <Patient> patientList=new ArrayList <Patient> ();
+    	while(rs1.next()) {
+    		patientList.add(getPatient(rs1));
+    	}
+    	rs1.close();
+    	prep.close();
+    	return patientList;
+    }
+	
+	
+/*
+ * Private Get Methods
+ * 
+ */
+	
+private static Patient getPatient (ResultSet rs1) throws SQLException {
+    	
+    	Patient patient = new Patient();
+		patient.setId(rs1.getInt("id"));
+		patient.setName(rs1.getString("name"));
+		patient.setBirthDate(rs1.getDate("birthday"));
+		//patient.setSex(rs1.getSex("sex"));
+		patient.setRiskFactor(rs1.getBoolean("riskFactor"));    		   		
+		return patient;
+    	
+    }
+	
+	
+	
 }
+
+
+
