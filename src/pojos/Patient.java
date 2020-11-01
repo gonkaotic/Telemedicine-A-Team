@@ -1,23 +1,32 @@
 package pojos;
 
+import java.io.Serializable;
 import java.sql.Date;
+import java.util.List;
 
-public class Patient {
+public class Patient implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1130150939909222240L;
+	
+	
 	private Integer id;
 	private String name;
 	private Date birthDate;
 	private Sex sex;
-	private Boolean riskFactor;
+	private List<RiskFactor> riskFactor;
+	
 	public enum Sex {MALE, FEMALE}
-	
-	
+	public enum RiskFactor {ASTHMA, EPOC}//to expand
+
 	
 	public Patient() {
 		super();
 	}
 
-	public Patient(Integer id, String name, Date birthDate, Sex sex, Boolean riskFactor) {
+	public Patient(Integer id, String name, Date birthDate, Sex sex, List<RiskFactor> riskFactor) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -93,11 +102,11 @@ public class Patient {
 		this.sex = sex;
 	}
 
-	public Boolean getRiskFactor() {
+	public List<RiskFactor> getRiskFactor() {
 		return riskFactor;
 	}
 
-	public void setRiskFactor(Boolean riskFactor) {
+	public void setRiskFactor(List<RiskFactor> riskFactor) {
 		this.riskFactor = riskFactor;
 	}
 }
