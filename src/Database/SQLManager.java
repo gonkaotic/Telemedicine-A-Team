@@ -130,7 +130,7 @@ public class SQLManager {
     
     public static List<Measurements> getAllMeasurements() throws SQLException{
     	
-    	String sql="SELECT * FROM measures ;";
+    	String sql="SELECT * FROM measures ;"; 
     	PreparedStatement prep=c.prepareStatement(sql);
     	ResultSet rs1=prep.executeQuery();
     	List <Measurements> measuresList=new ArrayList <Measurements> ();
@@ -140,9 +140,7 @@ public class SQLManager {
     	rs1.close();
     	prep.close();
     	return measuresList;
-    	
-    	
-    	
+    	    	
     }
 	
 /*

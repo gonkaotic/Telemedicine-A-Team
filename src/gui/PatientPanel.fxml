@@ -9,40 +9,51 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="459.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ImageView fitHeight="134.0" fitWidth="156.0" focusTraversable="true" layoutX="14.0" layoutY="45.0" opacity="0.22" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../Telemedicina/descarga.png" />
-         </image></ImageView>
-      <MenuBar layoutY="2.0" prefHeight="24.0" prefWidth="634.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <Pane layoutX="156.0" layoutY="68.0" prefHeight="368.0" prefWidth="468.0">
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.PatientWindow">
+   <center>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="459.0" prefWidth="634.0">
          <children>
-            <DatePicker layoutX="78.0" layoutY="11.0" prefHeight="14.0" prefWidth="134.0" promptText="FROM" />
-            <DatePicker layoutX="234.0" layoutY="11.0" prefHeight="1.0" prefWidth="134.0" promptText="TO" />
-            <ListView editable="true" layoutY="51.0" prefHeight="311.0" prefWidth="468.0" />
-            <Button layoutX="384.0" layoutY="12.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="63.0" text="Search" />
+            <ImageView fitHeight="134.0" fitWidth="156.0" focusTraversable="true" layoutX="14.0" layoutY="45.0" opacity="0.22" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../Telemedicina/descarga.png" />
+               </image>
+            </ImageView>
+            <Pane layoutX="156.0" layoutY="68.0" prefHeight="368.0" prefWidth="468.0">
+               <children>
+                  <DatePicker layoutX="78.0" layoutY="11.0" prefHeight="14.0" prefWidth="134.0" promptText="FROM" />
+                  <DatePicker layoutX="234.0" layoutY="11.0" prefHeight="1.0" prefWidth="134.0" promptText="TO" />
+                  <ListView editable="true" layoutY="51.0" prefHeight="311.0" prefWidth="468.0" />
+                  <Button layoutX="384.0" layoutY="12.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="63.0" text="Search" />
+               </children>
+            </Pane>
+            <BorderPane prefHeight="200.0" prefWidth="200.0">
+               <top>
+                  <MenuBar prefHeight="24.0" prefWidth="634.0" BorderPane.alignment="CENTER">
+                    <menus>
+                      <Menu mnemonicParsing="false" text="File">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="Close" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Edit">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="Delete" />
+                        </items>
+                      </Menu>
+                      <Menu mnemonicParsing="false" text="Help">
+                        <items>
+                          <MenuItem mnemonicParsing="false" text="About" />
+                        </items>
+                      </Menu>
+                    </menus>
+                  </MenuBar>
+               </top>
+            </BorderPane>
          </children>
-      </Pane>
-   </children>
-</AnchorPane>
+      </AnchorPane>
+   </center>
+</BorderPane>
