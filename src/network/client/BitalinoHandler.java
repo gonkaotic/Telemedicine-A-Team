@@ -23,9 +23,13 @@ public class BitalinoHandler {
 		bitalino = new BITalino();
 
 	}
-
-// @description: connection with the BITalino 
-// @return: true if connection was possible and false if not
+	
+	
+	/**
+	 * Connection with the BITalino
+	 * 
+	 * @return true if connection was possible and false if not
+	 */
 	public boolean connect() {
 		try {
 			bitalino.open(macAddress, samplingRate);
@@ -35,8 +39,14 @@ public class BitalinoHandler {
 			return false;
 		}
 	}
-// @description: record x ms of ECG
-// @return: the recorded ECG
+	
+	
+	/**
+	 * Records x s of ECG and parses the read value to its true voltage
+	 * 
+	 * @return the true ECG signal
+	 * @throws Throwable
+	 */
 	public ECG recordECG() throws Throwable {
 		int[] ecgChannel = {acquisitionChannels[0]};
 		bitalino.start(ecgChannel);
@@ -48,12 +58,26 @@ public class BitalinoHandler {
 		
 		for (int i=0; i<samples.length; i++) {
 			 // The BITalino reads ints, we should look up how it converts V into int
-			ecgSamples.add((float) samples[i].analog[0]);
+			ecgSamples.add(convertECG(samples[i].analog[0]));
 		}
 		
 		bitalino.stop();
 		
 		ECG ecg = new ECG(ecgSamples);
 		return ecg;
+	}
+	
+	 /**
+     * Conversion of the value sent by the BITalino to its true voltage
+     *
+     * @param rawValue
+     *          the value read by the BITalino.
+     * @return a value ranging between -1.5 and 1.5mV
+     */
+	private float convertECG (int rawValue) {
+		float VCC = 3.3F;
+		float trueValue= (rawValue*VCC/ (float)(Math.pow(2, 10)) - (VCC/2F)) /1100F; //Volts conversion
+		trueValue=trueValue*1000; //mV conversion
+		return trueValue;
 	}
 }
