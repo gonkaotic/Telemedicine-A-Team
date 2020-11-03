@@ -13,7 +13,7 @@ public class ConnectionServer implements Network {
 		ServerSocket server = null;
 		
 		try {
-			server = new ServerSocket(PORT);
+			server = new ServerSocket(SERVERPORT);
 			acceptConnection ( server.accept() );
 			
 		} catch (IOException e) {

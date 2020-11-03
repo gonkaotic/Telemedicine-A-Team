@@ -6,7 +6,11 @@ import java.util.List;
 import BITalino.*;
 import pojos.ECG;
 
-// This class will deal with the connection to the BITalino
+/**
+ * Class to handle all operations with BITalino
+ * @author LolaA
+ *
+ */
 public class BitalinoHandler {
 	
 	//acquisitionChannel[0] is ECG channel whereas acquisitionChannel[1] is the pulseoxymeter
