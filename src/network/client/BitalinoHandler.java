@@ -1,10 +1,7 @@
 package network.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import BITalino.*;
-import pojos.ECG;
+import BITalino.BITalino;
+import BITalino.BITalinoException;
 
 /**
  * Class to handle all operations with BITalino
@@ -21,7 +18,7 @@ public class BitalinoHandler {
 
 	// Missing: we should define the optimal sampling frequency among the available
 	// ones (10, 100, 1000 hz)
-	// Look which channel is the one that corresponds to the ECG and ¿pulseoxymeter?
+	// Look which channel is the one that corresponds to the ECG and ï¿½pulseoxymeter?
 	public BitalinoHandler(String macAddress) {
 		this.macAddress = macAddress;
 		bitalino = new BITalino();
@@ -51,7 +48,7 @@ public class BitalinoHandler {
 	 * @return the true ECG signal
 	 * @throws Throwable
 	 */
-	public ECG recordECG() throws Throwable {
+/*	public ECG recordECG() throws Throwable {
 		int[] ecgChannel = {acquisitionChannels[0]};
 		bitalino.start(ecgChannel);
 		
@@ -69,7 +66,7 @@ public class BitalinoHandler {
 		
 		ECG ecg = new ECG(ecgSamples);
 		return ecg;
-	}
+	} */
 	
 	 /**
      * Conversion of the value sent by the BITalino to its true voltage

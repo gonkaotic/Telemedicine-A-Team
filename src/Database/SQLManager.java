@@ -1,16 +1,12 @@
 package Database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import pojos.Measurement;
+import pojos.Patient;
+import pojos.Patient.Sex;
+
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import pojos.*;
-import pojos.Patient.Sex;
 
 public class SQLManager {
 
@@ -74,7 +70,7 @@ public class SQLManager {
 		String sql1 = "CREATE TABLE measures " + "(measure_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ " measure_date DATETIME DEFAULT CURRENT_DATETIME," + " ecg TEXT," + " bpm INT NOT NULL," 
 				+ " o2_saturation FLOAT,"+ " temperature FLOAT NOT NULL," 
-				+ " patient_id REFERENCES patients (patient_id) ON UPDATE CASCADE ON DELETE CASCADE );";
+				+ " patient_id REFERENCES patient (patient_id) ON UPDATE CASCADE ON DELETE CASCADE );";
 		stmt1.executeUpdate(sql1);
 		stmt1.close();
 	}
@@ -112,6 +108,35 @@ public class SQLManager {
 		}	
 		
 	}
+
+	public static Measurement searchMeasurementByID(Integer id) throws SQLException {
+
+		String sql="SELECT * FROM measures WHERE measure_id = ? ;";
+
+		PreparedStatement prep = c.prepareStatement(sql);
+
+		prep.setInt(1, id);
+
+		ResultSet rs1 = prep.executeQuery();
+		if(!rs1.isBeforeFirst()) {
+			prep.close();
+			return null;
+		}
+
+		Measurement measurement = getMeasurement(rs1);
+
+		if	(id == measurement.getId()) {
+			prep.close();
+			rs1.close();
+			return measurement;
+		}else {
+
+			prep.close();
+			rs1.close();
+			return null;
+		}
+
+	}
 	
     public static List<Patient> getAllPatients() throws SQLException {
     	
@@ -126,14 +151,13 @@ public class SQLManager {
     	prep.close();
     	return patientList;
     }
-	
-    
-    public static List<Measurements> getAllMeasurements() throws SQLException{
+
+    public static List<Measurement> getAllMeasurements() throws SQLException{
     	
     	String sql="SELECT * FROM measures ;"; 
     	PreparedStatement prep=c.prepareStatement(sql);
     	ResultSet rs1=prep.executeQuery();
-    	List <Measurements> measuresList=new ArrayList <Measurements> ();
+    	List <Measurement> measuresList=new ArrayList <Measurement> ();
     	while(rs1.next()) {
     		measuresList.add(getMeasurement(rs1));
     	}
@@ -159,17 +183,19 @@ private static Patient getPatient (ResultSet rs1) throws SQLException {
 		}else if(rs1.getString("sex").equals("FEMALE")) {
 			patient.setSex(Sex.FEMALE);
 		}
-		patient.setRiskFactor(rs1.getBoolean("risk_factors"));    		   		
+
+		//Falta risk factor
+
 		return patient;
     	
     }
 
-private static Measurements getMeasurement(ResultSet rs1)throws SQLException{
+private static Measurement getMeasurement(ResultSet rs1)throws SQLException{
 	
-	Measurements measurement=new Measurements();
+	Measurement measurement=new Measurement();
 	measurement.setId(rs1.getInt("measure_id"));
 	measurement.setDate(rs1.getDate("measure_date"));
-	measurement.setECG(rs1.getString("ecg"));
+	measurement.setECG((List<Float>) rs1.getArray("ecg"));
 	measurement.setSpO2(rs1.getFloat("o2_saturation"));
 	measurement.setBPM(rs1.getInt("bpm"));
 	measurement.setTemperature(rs1.getFloat("temperature"));
@@ -177,8 +203,7 @@ private static Measurements getMeasurement(ResultSet rs1)throws SQLException{
 	return measurement;
 	
 }
-	
-	
+
 	
 }
 
