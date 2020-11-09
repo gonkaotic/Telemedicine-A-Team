@@ -27,6 +27,12 @@ public class Patient implements Serializable {
 
     public Patient() {
         super();
+        this.name = "Joaquin";
+        this.birthDate = Date.valueOf("1998-10-15");
+        this.sex = Sex.MALE;
+        this.riskFactor = null;
+        this.dni = String.valueOf((Math.random()*1000));
+        this.password = "Craneos";
     }
 
     public Patient(Integer id, String name, Date birthDate, Sex sex, List<RiskFactor> riskFactor) {
