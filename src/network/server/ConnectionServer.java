@@ -2,6 +2,7 @@ package network.server;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -25,9 +26,9 @@ public class ConnectionServer implements Network {
 	
 	private static void acceptConnection(Socket s) {
 		if ( s != null ) {
-			InputStream inputStream = null;
+			ObjectInputStream inputStream = null;
 			try {
-				inputStream = s.getInputStream();
+				inputStream = new ObjectInputStream( s.getInputStream() );
 				
 //				int byteRead;
 //		        while (true) {
