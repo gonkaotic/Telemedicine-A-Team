@@ -2,6 +2,7 @@ package pojos;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +26,17 @@ public class Measurement implements Serializable{
 	public enum Symptom {FEVER, DRY_COUGH, TIREDNESS, ANOSMIA, AUGEUSIA, DIFF_BREATH, CHEST_PAIN};
 	
 	public Measurement() {
+
 		super();
+		this.bpm = 75;
+		this.spO2 = Float.valueOf((float) 9.87);
+		this.ecg = new ArrayList<>();
+		this.ecg.add(Float.valueOf((float) 36));
+		this.ecg.add(Float.valueOf((float) 36.7));
+		this.temperature = Float.valueOf((float) 37.5);
+		this.patient = new Patient();
+		this.patient.setId(1);
+
 	}
 
 	public Measurement(Integer id, Patient patient, Date date, List<Float> ecg, Float spO2, Integer bpm,
