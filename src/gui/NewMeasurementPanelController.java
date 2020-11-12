@@ -6,8 +6,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import network.client.BitalinoHandler;
 
 public class NewMeasurementPanelController {
+
+    private BitalinoHandler bitalino;
 
     @FXML
     private Label TemperatureLabel;
@@ -42,10 +45,22 @@ public class NewMeasurementPanelController {
     @FXML
     private Button recordOxygenButton;
 
+    public void initComponents (){
+        bitalino = new BitalinoHandler("20:17:09:18:49:21");
+    }
+
     @FXML
     void recordOxygenClicked(ActionEvent event) {
-
+        try {
+            float[] pulseoximeter = bitalino.recordPulseOximeter();
+            this.heartRateTextField.setText(""+pulseoximeter[0]);
+            this.oxygenTextField.setText(""+pulseoximeter[1]);
+        } catch (Throwable throwable) {
+            //This should be a pop up or somthing similar
+            System.out.println("Problems when connecting with BITalino");
+        }
     }
+
 
 }
 

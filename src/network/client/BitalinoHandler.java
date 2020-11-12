@@ -19,6 +19,7 @@ public class BitalinoHandler {
 	private int samplingRate;
 	private BITalino bitalino;
 	private int[] acquisitionChannels;
+	boolean connected;
 
 	// Missing: we should define the optimal sampling frequency among the available
 	// ones (10, 100, 1000 hz)
@@ -31,7 +32,7 @@ public class BitalinoHandler {
 		acquisitionChannels[1]=2; //HR Channel: A3
 		acquisitionChannels[2]=3; //SpO2 Channel: A4
 		samplingRate = 1000;
-
+		connected=false;
 	}
 	
 	
@@ -43,6 +44,7 @@ public class BitalinoHandler {
 	public boolean connect() {
 		try {
 			bitalino.open(macAddress, samplingRate);
+			connected=true;
 			return true;
 		} catch (BITalinoException ex) {
 			ex.printStackTrace();
@@ -61,20 +63,25 @@ public class BitalinoHandler {
 	public ECG recordECG() throws Throwable {
 		int[] ecgChannel = {acquisitionChannels[0]};
 		int secondsToRecord = 60;
+		if (!connected){
+			boolean verification = this.connect();
+			if (!verification) throw new Exception("Unable to connect");
+
+		}
 		bitalino.start(ecgChannel);
-		
+
 		int nSamples = samplingRate * secondsToRecord;
 		Frame[] samples = bitalino.read(nSamples);
-		
+
 		ArrayList<Float> ecgSamples = new ArrayList<Float>();
-		
+
 		for (int i=0; i<samples.length; i++) {
 			 // The BITalino reads ints therefore we have to convert the measurement to mV
 			ecgSamples.add(convertECG(samples[i].analog[0]));
 		}
-		
+
 		bitalino.stop();
-		
+
 		ECG ecg = new ECG(ecgSamples);
 		return ecg;
 	}
@@ -90,6 +97,11 @@ public class BitalinoHandler {
 		float[] pulseoximeter;
 		int[] pulseOximeterChannels = {acquisitionChannels[1],acquisitionChannels[2]};
 
+		if (!connected){
+			boolean verification = this.connect();
+			if (!verification) throw new Exception("Unable to connect");
+
+		}
 		bitalino.start(pulseOximeterChannels);
 
 		//We will record the first minute and discard this and then record a few
