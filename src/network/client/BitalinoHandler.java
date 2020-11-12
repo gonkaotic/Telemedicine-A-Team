@@ -1,7 +1,11 @@
 package network.client;
 
+import java.util.ArrayList;
+
 import BITalino.BITalino;
 import BITalino.BITalinoException;
+import BITalino.Frame;
+import pojos.ECG;
 
 /**
  * Class to handle all operations with BITalino
@@ -43,22 +47,24 @@ public class BitalinoHandler {
 	
 	
 	/**
-	 * Records x s of ECG and parses the read value to its true voltage
+	 * Records 60 s of ECG and parses the read value to its true voltage
 	 * 
 	 * @return the true ECG signal
 	 * @throws Throwable
+	 * @see {@link #convertECG(int)}
 	 */
-/*	public ECG recordECG() throws Throwable {
+	public ECG recordECG() throws Throwable {
 		int[] ecgChannel = {acquisitionChannels[0]};
+		int secondsToRecord = 60;
 		bitalino.start(ecgChannel);
 		
-//		int nSamples = samplingRate * secondsToRecord;
+		int nSamples = samplingRate * secondsToRecord;
 		Frame[] samples = bitalino.read(nSamples);
 		
-		ArrayList<Float> ecgSamples;
+		ArrayList<Float> ecgSamples = new ArrayList<Float>();
 		
 		for (int i=0; i<samples.length; i++) {
-			 // The BITalino reads ints, we should look up how it converts V into int
+			 // The BITalino reads ints therefore we have to convert the measurement to mV
 			ecgSamples.add(convertECG(samples[i].analog[0]));
 		}
 		
@@ -66,7 +72,7 @@ public class BitalinoHandler {
 		
 		ECG ecg = new ECG(ecgSamples);
 		return ecg;
-	} */
+	} 
 	
 	 /**
      * Conversion of the value sent by the BITalino to its true voltage

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="551.0" style="-fx-background-color: WHITE;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="143.0" minWidth="10.0" prefWidth="108.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="209.0" minWidth="10.0" prefWidth="120.0" />
+      <ColumnConstraints hgrow="NEVER" maxWidth="18.0" minWidth="10.0" prefWidth="18.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="228.0" minWidth="10.0" prefWidth="91.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="232.0" minWidth="10.0" prefWidth="232.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="41.0" minHeight="10.0" prefHeight="41.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="160.0" minHeight="9.0" prefHeight="36.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="162.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="169.0" minHeight="9.0" prefHeight="31.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="166.0" minHeight="0.0" prefHeight="28.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="166.0" minHeight="0.0" prefHeight="14.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="231.0" minHeight="10.0" prefHeight="27.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="166.0" minHeight="0.0" prefHeight="29.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="109.0" minHeight="10.0" prefHeight="45.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="109.0" minHeight="10.0" prefHeight="54.0" vgrow="SOMETIMES" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <Label fx:id="TemperatureLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="20.0" prefWidth="111.0" stylesheets="@guiStyleSheet.css" text="Temperature (ºC)" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </Label>
+      <Label id="underlinedLabel" fx:id="PulseOxymeterLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="20.0" prefWidth="123.0" stylesheets="@guiStyleSheet.css" text="Pulseoxymeter data" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </Label>
+      <Label fx:id="hearRateLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="20.0" prefWidth="123.0" stylesheets="@guiStyleSheet.css" text="Heart rate (BPM)" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3">
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </Label>
+      <Label fx:id="oxygenLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="20.0" prefWidth="123.0" stylesheets="@guiStyleSheet.css" text="O2 Sat (%)" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </Label>
+      <JFXTextField id="mytextfield" fx:id="heartRateTextField" disable="true" focusColor="WHITE" mouseTransparent="true" prefHeight="17.0" prefWidth="82.0" stylesheets="@guiStyleSheet.css" GridPane.columnIndex="3" GridPane.rowIndex="3">
+         <GridPane.margin>
+            <Insets bottom="2.0" top="2.0" />
+         </GridPane.margin>
+      </JFXTextField>
+      <JFXTextField id="mytextfield" fx:id="oxygenTextField" disable="true" mouseTransparent="true" prefHeight="27.0" prefWidth="152.0" stylesheets="@guiStyleSheet.css" GridPane.columnIndex="3" GridPane.rowIndex="4">
+         <GridPane.margin>
+            <Insets bottom="2.0" top="2.0" />
+         </GridPane.margin>
+      </JFXTextField>
+      <Label fx:id="coughLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="20.0" prefWidth="123.0" stylesheets="@guiStyleSheet.css" text="Dry cough" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </Label>
+      <CheckBox id="checkBoxNoLabel" fx:id="coughCheckBox" mnemonicParsing="false" prefHeight="7.0" prefWidth="0.0" stylesheets="@guiStyleSheet.css" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+      <TextField id="textfield" stylesheets="@guiStyleSheet.css" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+      <Label fx:id="breathLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="20.0" prefWidth="123.0" stylesheets="@guiStyleSheet.css" text="Shortness of breath" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="7">
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </Label>
+      <CheckBox id="checkBoxNoLabel" fx:id="breathCheckBox" mnemonicParsing="false" prefHeight="7.0" prefWidth="0.0" stylesheets="@guiStyleSheet.css" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+      <Button contentDisplay="CENTER" maxWidth="68.0" minHeight="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="66.0" stylesheets="@guiStyleSheet.css" text="Record" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.rowIndex="2">
+         <GridPane.margin>
+            <Insets bottom="20.0" top="20.0" />
+         </GridPane.margin>
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+   </children>
+</GridPane>

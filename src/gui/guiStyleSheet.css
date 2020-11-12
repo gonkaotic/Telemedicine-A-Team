@@ -1,0 +1,75 @@
+.background{
+	-fx-background-color: #ffffff;	
+	}
+	
+
+.button{
+	-fx-font-family: 'American Typewriter', serif;
+	-fx-border-color: black;
+	-fx-font-size: 11px;
+	-fx-background-color: #ffffff;
+	-fx-border-radius: 1;
+}
+
+.button:hover{
+	-fx-text-fill:green;
+}
+
+.button:pressed{
+	-fx-background-color:linear-gradient(#F0FFEB,#ffffff);
+}
+
+#checkBoxNoLabel, #checkBoxNoLabel:focused, #checkBoxNoLabel:selected{
+	-fx-label-padding: 0;
+	-fx-focus-color: transparent;
+	-fx-background-color: white;
+	
+}
+
+#checkBoxNoLabel .box{
+	-fx-shadow-highlight-color: transparent;
+	-fx-focus-color: transparent;
+	-fx-border-color:black;
+	-fx-background-color:white;
+}
+
+#checkBoxNoLabel:selected .mark{
+	-fx-background-color: green ;
+}
+	
+.label{
+	-fx-font-family: 'American Typewriter', serif;
+	-fx-font-size: 12 px;
+	-fx-text-alignment: center;
+}
+
+#mytextfield{
+	-fx-border-color: black;	
+}
+
+#mytextfield .input-line, #mytextfield .focused-line{
+	-fx-pref-height: 0;
+}
+
+.text-field{
+	-fx-border-color: black;	
+	-fx-border-radius: 1;
+	-fx-font-family: 'American Typewriter', serif;
+	-fx-font-size: 12 px;
+	-fx-focus-color:transparent;
+	-fx-background-color:white
+}
+
+.text-field:focused{
+	-fx-border-color: black;
+}
+
+#underlinedLabel{
+	-fx-underline: true;
+	-fx-font-family: 'American Typewriter', serif;
+	-fx-font-size: 12 px;
+	-fx-text-alignment: center;
+}
+
+
+
