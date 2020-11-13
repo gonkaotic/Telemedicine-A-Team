@@ -3,10 +3,15 @@ package network.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import network.Network;
+import network.NetworkMessage;
+import pojos.Measurement;
+import pojos.Patient;
 
 public class ConnectionServer implements Network {	
 	
@@ -14,6 +19,7 @@ public class ConnectionServer implements Network {
 		ServerSocket server = null;
 		
 		try {
+			
 			server = new ServerSocket(SERVERPORT);
 			acceptConnection ( server.accept() );
 			
@@ -28,20 +34,48 @@ public class ConnectionServer implements Network {
 		if ( s != null ) {
 			ObjectInputStream inputStream = null;
 			try {
+				
 				inputStream = new ObjectInputStream( s.getInputStream() );
 				
-//				int byteRead;
-//		        while (true) {
-//		            byteRead = inputStream.read();        
-//		            if (byteRead == -1 || byteRead == 'x') {
-//		                System.out.println("Character reception finished");
-//		                System.exit(0);
-//		            }
-//		            char caracter = (char) byteRead;
-//		            System.out.print(caracter);
-//		            System.out.print(" ");
-//		        }
-			} catch (IOException e) {
+				while (true) {
+					NetworkMessage msg = (NetworkMessage) inputStream.readObject();
+					
+					if ( msg.getProtocol() == NetworkMessage.Protocol.GET_PATIENT ) {
+						Patient patient2Log = msg.getPatient();
+						//TODO: check if patient is in the database with the right connection.
+						NetworkMessage answer = null;
+						if(patient2Log != null) {
+							answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT, patient2Log);
+						} else {
+							answer = new NetworkMessage(NetworkMessage.Protocol.DENY_PATIENT);
+						}
+						ObjectOutputStream out = null;
+						try {
+							out = new ObjectOutputStream ( s.getOutputStream() );
+							out.writeObject( answer );
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} finally {
+							try {
+								out.close();
+							} catch ( IOException e) {
+								e.printStackTrace();
+								System.out.println("All is good");
+							}
+						}
+						
+						
+					} else if ( msg.getProtocol() == NetworkMessage.Protocol.PUSH_MEASUREMENT ) {
+						ArrayList<Measurement> measures = msg.getMeasurements();
+						//TODO: write the measurements in the database
+						
+					} else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
+						break;
+					}
+				} 
+				
+			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			} finally {
 				if(inputStream != null) {
@@ -49,6 +83,7 @@ public class ConnectionServer implements Network {
 						inputStream.close();
 					} catch ( IOException e) {
 						e.printStackTrace();
+						System.out.println("All is good");
 					}
 				}
 				
@@ -56,6 +91,7 @@ public class ConnectionServer implements Network {
 					s.close();
 				} catch ( IOException e) {
 					e.printStackTrace();
+					System.out.println("All is good");
 				}
 			}
 	        
