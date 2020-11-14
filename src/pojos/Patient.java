@@ -145,4 +145,5 @@ public class Patient implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+    
 }

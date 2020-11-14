@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainWindow">
    <top>
     <MenuBar BorderPane.alignment="CENTER">
@@ -46,7 +45,7 @@
       <children>
             <AnchorPane layoutX="328.0" layoutY="42.0" prefHeight="297.0" prefWidth="279.0" style="-fx-background-color: 20120F;">
                <children>
-                  <TextField fx:id="userField" layoutX="34.0" layoutY="109.0" prefHeight="27.0" prefWidth="212.0" promptText="Username" />
+                  <TextField fx:id="userField" layoutX="34.0" layoutY="109.0" prefHeight="27.0" prefWidth="212.0" promptText="DNI" />
                   <PasswordField fx:id="passField" layoutX="34.0" layoutY="162.0" prefHeight="27.0" prefWidth="212.0" promptText="Password" />
                   <Button fx:id="signInButton" layoutX="66.0" layoutY="224.0" mnemonicParsing="false" onAction="#signInClicked" onMouseClicked="#signInClicked" prefHeight="39.0" prefWidth="148.0" text="Login" />
                   <Label alignment="TOP_CENTER" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="95.0" layoutY="43.0" prefHeight="22.0" prefWidth="81.0" text="Sign In" textAlignment="JUSTIFY" textOverrun="CLIP" />

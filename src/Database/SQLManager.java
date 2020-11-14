@@ -186,6 +186,29 @@ public class SQLManager {
         }
 
     }
+public static Patient searchPatientByDni(String dni) throws SQLException {
+		
+		String sql="SELECT * FROM patient WHERE dni = ? ;";
+		PreparedStatement prep = c.prepareStatement(sql);
+		
+		prep.setString(1, dni);
+		
+		
+		ResultSet rs1 = prep.executeQuery();	
+		Patient patient = getPatient(rs1);
+				
+		if	(dni.equals(patient.getDni())) {
+			prep.close();
+			rs1.close();
+			return patient;
+		}else {
+			System.out.println("Wrong dni\nDni: "+dni+"\nclient: "+patient.getDni());
+			prep.close();
+			rs1.close();
+			return null;
+		}
+
+	}
 
     public static List<Patient> getAllPatients() throws SQLException {
 

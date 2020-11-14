@@ -3,7 +3,7 @@ package gui;
 import java.io.IOException;
 import java.sql.SQLException;
 
-
+import Database.SQLManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,9 +23,9 @@ public class MainWindow {
 
 	private Main main;
 	private Stage stage;
-	private String username;
+	private String dni;
+	private Patient extractedPatient;
 	private String password;
-	
     @FXML
     private TextField userField;
 
@@ -37,19 +37,36 @@ public class MainWindow {
 
     @FXML
     void signInClicked(ActionEvent event) {
-    	username = userField.getText();
+    	dni = userField.getText();
     	password = passField.getText();
     	this.stage=new Stage();
-    	FXMLLoader loaderPatient=new FXMLLoader(getClass().getResource("/gui/PatientPanel.fxml"));
+    	
 		try {
-			BorderPane panel= loaderPatient.load();
-			PatientWindow controller=loaderPatient.<PatientWindow>getController();
-			main.updateScene(new Scene(panel));
-			//controller.setMainWindow(this);
+			if(checkExistance()){
+				if(checkPassword()) {
+	    	FXMLLoader loaderPatient=new FXMLLoader(getClass().getResource("/gui/PatientPanel.fxml"));
+	    	try {
+	    		BorderPane panel= loaderPatient.load();
+				PatientWindow controller=loaderPatient.<PatientWindow>getController();
+				main.updateScene(new Scene(panel));
+				//controller.setMainWindow(this);
+			
 		} catch (IOException e) {
 			Alert alert=new Alert(AlertType.ERROR, "Error loading the patient view");
 			alert.showAndWait();
 		}
+			}else {
+				Alert alert=new Alert(AlertType.ERROR, "Wrong username or password");
+				alert.showAndWait();
+				
+			}else {
+				Alert alert=new Alert(AlertType.ERROR, "Wrong username or password");
+				alert.showAndWait();
+			}
+			}catch (SQLException e) {
+				Alert alert=new Alert(AlertType.ERROR, "Error in the database");
+				alert.showAndWait();
+			}
 
     }
 	public Stage getStage() {
@@ -71,6 +88,30 @@ public class MainWindow {
 		main.loadLogin();
 		
 	}
+	private boolean checkPassword () {
+		if(extractedPatient != null) {
+			if(extractedPatient.getPassword().equals(password)) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+		return false; 
+	}
+	
+	private boolean checkExistance() throws SQLException{
+	
+			extractedPatient = SQLManager.searchPatientByDni(dni);
+			
+			if(extractedPatient == null) {
+				return false;
+			}else {
+				return true;
+			}
+
+		
+	}
+	
     
 	
 

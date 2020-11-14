@@ -43,6 +43,7 @@ public class Main extends Application {
 	
 	public void loadLogin() {
 		
+		
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));	
 			rootLayout =  loader.load();
