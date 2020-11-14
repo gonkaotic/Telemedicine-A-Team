@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import network.client.BitalinoHandler;
 
 public class NewMeasurementPanelController {
@@ -23,6 +24,9 @@ public class NewMeasurementPanelController {
 
     @FXML
     private Label oxygenLabel;
+
+    @FXML
+    private TextField temperatureTextField;
 
     @FXML
     private JFXTextField heartRateTextField;
@@ -51,6 +55,7 @@ public class NewMeasurementPanelController {
 
     @FXML
     void recordOxygenClicked(ActionEvent event) {
+        //Maybe we should block the rest of the fields
         try {
             float[] pulseoximeter = bitalino.recordPulseOximeter();
             this.heartRateTextField.setText(""+pulseoximeter[0]);

@@ -47,7 +47,7 @@ public class BitalinoHandler {
 			connected=true;
 			return true;
 		} catch (BITalinoException ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 			return false;
 		}
 	}
@@ -117,8 +117,8 @@ public class BitalinoHandler {
 		int meanSat =0;
 
 		for (int i=0; i<nSamples;i++){
-			meanRate=meanRate+samples[i].analog[1];
-			meanSat=meanSat+samples[i].analog[2];
+			meanRate=meanRate+samples[i].analog[0];
+			meanSat=meanSat+samples[i].analog[1];
 		}
 		meanRate= meanRate/nSamples;
 		meanSat= meanSat/nSamples;
