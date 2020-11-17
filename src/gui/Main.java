@@ -39,16 +39,17 @@ public class Main extends Application {
 	}
 
 	public void loadLogin() {
-
+		
+		Parent root;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));
-			rootLayout = loader.load();
+			root = loader.load();
 			MainWindow controller = loader.getController();
-			// controller.setMain(this);
-			this.window.setScene(new Scene(rootLayout));
+			controller.setMain(this);
+			this.window.setScene(new Scene(root));
 			this.window.setResizable(true);
 			this.window.show();
-
+			this.window.setOnCloseRequest(e->closeConnection());
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("There was some kind of error and we haven't even started!");
