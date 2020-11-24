@@ -2,6 +2,7 @@ package pojos;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ECG implements Serializable {
@@ -10,23 +11,33 @@ public class ECG implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -6948532391999286976L;
-	private List<Float> ecg;
+	private ArrayList<Float> ecg;
+	private ArrayList<Float> times;
 	
 	
 	public ECG() {
 		super();
 	}
 	
-	public ECG(List<Float> ecg) {
-		this.setEcg(ecg);
+	public ECG(ArrayList<Float> ecg, ArrayList<Float> times) {
+		this.ecg = ecg;
+		this.times = times;
 	}
 
 	public List<Float> getEcg() {
 		return ecg;
 	}
 
-	public void setEcg(List<Float> ecg) {
+	public void setEcg( ArrayList<Float> ecg) {
 		this.ecg = ecg;
+	}
+
+	public List<Float> getTimes() {
+		return times;
+	}
+
+	public void setTimes( ArrayList<Float> times) {
+		this.times = times;
 	}
 	
 	@Override
@@ -56,7 +67,7 @@ public class ECG implements Serializable {
 	
 	@Override
 	public String toString() {
-		return ecg.toString();
+		return ecg.toString() + "\n" + times.toString();
 	}
 
 }
