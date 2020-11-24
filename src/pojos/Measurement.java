@@ -17,7 +17,7 @@ public class Measurement implements Serializable{
 	private Integer id;
 	private Patient patient;
 	private Date date;
-	private List<Float> ecg;
+	private ECG ecg;
 	private Float spO2;
 	private Integer bpm;
 	private Float temperature;
@@ -39,7 +39,7 @@ public class Measurement implements Serializable{
 
 	}
 
-	public Measurement(Integer id, Patient patient, Date date, List<Float> ecg, Float spO2, Integer bpm,
+	public Measurement(Integer id, Patient patient, Date date, ECG ecg, Float spO2, Integer bpm,
 						Float temperature, Symptom[] symptomChecklist) {
 		super();
 		this.id = id;
@@ -110,11 +110,11 @@ public class Measurement implements Serializable{
 		this.date = date;
 	}
 
-	public List<Float> getECG() {
+	public ECG getECG() {
 		return ecg;
 	}
 
-	public void setECG(List<Float> ecg) {
+	public void setECG(ECG ecg) {
 		this.ecg = ecg;
 	}
 
