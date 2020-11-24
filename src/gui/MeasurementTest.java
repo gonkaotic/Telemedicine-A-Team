@@ -10,8 +10,8 @@ public class MeasurementTest extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/NewMeasurementPanel.fxml"));
-        Parent root= (Parent) loader.load();
+        Parent root= FXMLLoader.load(getClass().getResource("ClientMainPanel.fxml"));
+
         //NewMeasurementPanelController controller = loader.<NewMeasurementPanelController>getController();
         //controller.initComponents();
 

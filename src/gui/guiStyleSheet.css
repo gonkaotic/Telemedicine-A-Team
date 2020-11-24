@@ -64,6 +64,17 @@
 	-fx-border-color: black;
 }
 
+.pane{
+	-fx-background-color: white;
+	-fx-border-style: solid none none solid;
+	-fx-border-color: black;
+}
+
+.grid-pane{
+	-fx-border-style: solid none none solid;
+	-fx-border-color: black;
+}
+
 #underlinedLabel{
 	-fx-underline: true;
 	-fx-font-family: 'American Typewriter', serif;

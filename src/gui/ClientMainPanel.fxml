@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane fx:id="clientPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.clientMainPanelController">
+   <top>
+      <MenuBar fx:id="menuBarClient" BorderPane.alignment="CENTER">
+        <menus>
+          <Menu fx:id="bitalinoMenu" mnemonicParsing="false" text="BITalino">
+            <items>
+              <MenuItem fx:id="configureBitalinoItem" mnemonicParsing="false" onAction="#configureBitalinoClicked" text="Configure ..." />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <left>
+      <VBox fx:id="vBoxClient" prefHeight="200.0" prefWidth="120.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="28.0" prefWidth="100.0" />
+            <Button fx:id="newMeasurementButton" mnemonicParsing="false" onAction="#newMeasurementClicked" prefHeight="26.0" prefWidth="122.0" stylesheets="@guiStyleSheet.css" text="New measurement" />
+            <Pane prefHeight="10.0" prefWidth="100.0" stylesheets="@guiStyleSheet.css" />
+            <Button fx:id="recordsButton" mnemonicParsing="false" onAction="#recordsButtonClicked" prefHeight="26.0" prefWidth="126.0" stylesheets="@guiStyleSheet.css" text="Records" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <Pane fx:id="centralPane" prefHeight="200.0" prefWidth="200.0" styleClass="pane" stylesheets="@guiStyleSheet.css" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
