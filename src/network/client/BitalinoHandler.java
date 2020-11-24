@@ -74,15 +74,17 @@ public class BitalinoHandler {
 		Frame[] samples = bitalino.read(nSamples);
 
 		ArrayList<Float> ecgSamples = new ArrayList<Float>();
+		ArrayList<Float> ecgTimes = new ArrayList<Float>();
 
 		for (int i=0; i<samples.length; i++) {
 			 // The BITalino reads ints therefore we have to convert the measurement to mV
 			ecgSamples.add(convertECG(samples[i].analog[0]));
+			ecgTimes.add(i*(1/(float)(samplingRate)*1000)); // sample number*1/Hz*1000 (ms)
 		}
 
 		bitalino.stop();
 
-		ECG ecg = new ECG(ecgSamples);
+		ECG ecg = new ECG(ecgSamples,ecgTimes);
 		return ecg;
 	}
 

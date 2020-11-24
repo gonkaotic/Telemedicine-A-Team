@@ -2,7 +2,6 @@
 
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -27,18 +26,19 @@
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="232.0" minWidth="10.0" prefWidth="54.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="9.0" prefHeight="31.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="35.0" minHeight="9.0" prefHeight="42.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="35.0" minHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="10.0" minHeight="0.0" prefHeight="4.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
-    <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="0.0" prefHeight="26.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
-    <RowConstraints fillHeight="false" maxHeight="7.0" minHeight="2.0" prefHeight="2.0" vgrow="SOMETIMES" />
-      <RowConstraints fillHeight="false" maxHeight="30.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="500.0" minHeight="5.0" prefHeight="150.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="34.0" minHeight="9.0" prefHeight="25.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="38.0" minHeight="10.0" prefHeight="37.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="41.0" minHeight="9.0" prefHeight="25.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="41.0" minHeight="0.0" prefHeight="35.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="17.0" minHeight="0.0" prefHeight="7.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="34.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+    <RowConstraints fillHeight="false" maxHeight="31.0" minHeight="0.0" prefHeight="20.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="34.0" minHeight="10.0" prefHeight="20.0" vgrow="SOMETIMES" />
+    <RowConstraints fillHeight="false" maxHeight="24.0" minHeight="2.0" prefHeight="5.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="45.0" minHeight="10.0" prefHeight="26.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="500.0" minHeight="5.0" prefHeight="180.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" maxHeight="23.0" minHeight="10.0" prefHeight="23.0" vgrow="SOMETIMES" />
       <RowConstraints fillHeight="false" maxHeight="20.0" minHeight="10.0" prefHeight="15.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
@@ -126,10 +126,10 @@
       </Button>
       <LineChart fx:id="ecgGraph" prefHeight="122.0" prefWidth="391.0" GridPane.columnIndex="1" GridPane.columnSpan="7" GridPane.rowIndex="11">
         <xAxis>
-          <CategoryAxis side="BOTTOM" />
+          <NumberAxis fx:id="timeAxis" side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" />
+          <NumberAxis fx:id="voltsAxis" lowerBound="-20.0" side="LEFT" upperBound="20.0" />
         </yAxis>
       </LineChart>
       <Label fx:id="chestPainLabel" alignment="CENTER_RIGHT" contentDisplay="CENTER" prefHeight="20.0" prefWidth="123.0" stylesheets="@guiStyleSheet.css" text="Chest pain" GridPane.columnIndex="4" GridPane.halignment="RIGHT" GridPane.rowIndex="8">
@@ -138,5 +138,6 @@
          </padding>
       </Label>
       <CheckBox id="checkBoxNoLabel" fx:id="chestPainCheckBox" mnemonicParsing="false" prefHeight="7.0" prefWidth="0.0" stylesheets="@guiStyleSheet.css" GridPane.columnIndex="7" GridPane.rowIndex="8" />
+      <Button fx:id="submitButton" mnemonicParsing="false" stylesheets="@guiStyleSheet.css" text="Submit" GridPane.columnIndex="7" GridPane.halignment="RIGHT" GridPane.rowIndex="12" />
    </children>
 </GridPane>
