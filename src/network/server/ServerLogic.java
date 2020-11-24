@@ -1,39 +1,30 @@
 package network.server;
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-
 import com.sun.security.ntlm.Server;
-import network.Network;
 import network.NetworkMessage;
 import pojos.Measurement;
 import pojos.Patient;
 
-public class ConnectionServer implements Network {	
-	
-	public static void main( String[] args ) {
-		ServerSocket server = null;
-		
-		try {
-			while ( true ) {
-				server = new ServerSocket(SERVERPORT);
-				acceptConnection(server.accept());
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			releaseResources(server);
-		}
-	}
+import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
+
+public class ServerLogic implements Runnable{
+
+    private Socket socket;
+
+    public ServerLogic () {
+        super();
+    }
+
+    public ServerLogic ( Socket socket ) {
+        this.socket = socket;
+    }
 
 
-	//one client at a time version
-	/*
-	private static void acceptConnection(Socket s) {
-		if ( socket != null ) {
+    @Override
+    public void run() {
+        if ( socket != null ) {
             ObjectInputStream inputStream = null;
             ObjectOutputStream outputStream = null;
             try {
@@ -72,41 +63,26 @@ public class ConnectionServer implements Network {
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
-                ServerLogic.releaseResources ( s, inputStream, outputStream );
+                releaseResources ( inputStream, outputStream );
             }
         }
-	}
-	*/
-	//Uses threads
-	private static void acceptConnection(Socket s) {
-		new Thread ( new ServerLogic( s )).start();
-	}
-	private static void releaseResources(ServerSocket server) {
-		if( server != null) {
-			try {
-				server.close();
-			} catch ( IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+    }
 
-	private void releaseResources (Socket socket, InputStream in, OutputStream out){
-		if( in != null) {
-			try {
-				in.close();
-			} catch ( IOException e) {
-				e.printStackTrace();
-				System.out.println("All is good");
-			}
-		}
+    private void releaseResources (InputStream in, OutputStream out){
+        if(in != null) {
+            try {
+                in.close();
+            } catch ( IOException e) {
+                e.printStackTrace();
+                System.out.println("All is good");
+            }
+        }
 
-		try {
-			socket.close();
-		} catch ( IOException e) {
-			e.printStackTrace();
-			System.out.println("All is good");
-		}
-	}
-
+        try {
+            socket.close();
+        } catch ( IOException e) {
+            e.printStackTrace();
+            System.out.println("All is good");
+        }
+    }
 }
