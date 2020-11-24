@@ -33,9 +33,11 @@ public class ServerLogic implements Runnable{
                 outputStream = new ObjectOutputStream( socket.getOutputStream() );
 
                 NetworkMessage msg = (NetworkMessage) inputStream.readObject();
+                System.out.println(msg.toString());
 
                 if ( msg.getProtocol() == NetworkMessage.Protocol.GET_PATIENT ) {
                     Patient patientLogged = msg.getPatient();
+                    System.out.println("Patient received: "+ patientLogged.toString());
                     //TODO: check if patient is in the database with the right connection.
                     NetworkMessage answer = null;
                     outputStream = new ObjectOutputStream ( socket.getOutputStream() );

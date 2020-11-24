@@ -81,4 +81,10 @@ public class NetworkMessage implements Serializable{
 		this.protocol = protocol;
 	}
 
+	@Override
+	public String toString() {
+		return "NetworkMessage{\n" +
+				" protocol=" + protocol.toString() +
+				"\n}";
+	}
 }

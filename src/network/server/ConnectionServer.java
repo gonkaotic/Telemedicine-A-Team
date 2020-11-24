@@ -31,56 +31,58 @@ public class ConnectionServer implements Network {
 
 
 	//one client at a time version
-	/*
 	private static void acceptConnection(Socket s) {
-		if ( socket != null ) {
-            ObjectInputStream inputStream = null;
-            ObjectOutputStream outputStream = null;
-            try {
+		if ( s != null ) {
+			ObjectInputStream inputStream = null;
+			ObjectOutputStream outputStream = null;
+			try {
 
-                inputStream = new ObjectInputStream( socket.getInputStream() );
-                outputStream = new ObjectOutputStream( socket.getOutputStream() );
+				inputStream = new ObjectInputStream( s.getInputStream() );
+				outputStream = new ObjectOutputStream( s.getOutputStream() );
 
-                NetworkMessage msg = (NetworkMessage) inputStream.readObject();
+				NetworkMessage msg = (NetworkMessage) inputStream.readObject();
+				System.out.println(msg.toString());
 
-                if ( msg.getProtocol() == NetworkMessage.Protocol.GET_PATIENT ) {
-                    Patient patientLogged = msg.getPatient();
-                    //TODO: check if patient is in the database with the right connection.
-                    NetworkMessage answer = null;
-                    outputStream = new ObjectOutputStream ( socket.getOutputStream() );
+				if ( msg.getProtocol() == NetworkMessage.Protocol.GET_PATIENT ) {
+					Patient patientLogged = msg.getPatient();
+					System.out.println("Patient received: "+ patientLogged.toString());
+					//TODO: check if patient is in the database with the right connection.
+					NetworkMessage answer = null;
+					outputStream = new ObjectOutputStream ( s.getOutputStream() );
 
-                    if(patientLogged != null) {
-                        //continue connection, do as necessary
-                        answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT, patientLogged);
-                        outputStream.writeObject( answer );
-                        while ( true ) {
-                            msg = (NetworkMessage) inputStream.readObject();
+					if(patientLogged != null) {
+						//continue connection, do as necessary
+						answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT, patientLogged);
+						outputStream.writeObject( answer );
+						while ( true ) {
+							msg = (NetworkMessage) inputStream.readObject();
 
-                            if ( msg.getProtocol() == NetworkMessage.Protocol.PUSH_MEASUREMENT ) {
-                                ArrayList<Measurement> measures = msg.getMeasurements();
-                                //TODO: write the measurements in the database
-                            } else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
-                                break;
-                            }
-                        }
-                    } else {
-                        //Deny the log in, close connection.
-                        answer = new NetworkMessage(NetworkMessage.Protocol.DENY_PATIENT);
-                        outputStream.writeObject( answer );
-                    }
-                }
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                ServerLogic.releaseResources ( s, inputStream, outputStream );
-            }
-        }
+							if ( msg.getProtocol() == NetworkMessage.Protocol.PUSH_MEASUREMENT ) {
+								ArrayList<Measurement> measures = msg.getMeasurements();
+								//TODO: write the measurements in the database
+							} else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
+								break;
+							}
+						}
+					} else {
+						//Deny the log in, close connection.
+						answer = new NetworkMessage(NetworkMessage.Protocol.DENY_PATIENT);
+						outputStream.writeObject( answer );
+					}
+				}
+			} catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				releaseResources ( s, inputStream, outputStream );
+			}
+		}
 	}
-	*/
 	//Uses threads
+	/*
 	private static void acceptConnection(Socket s) {
 		new Thread ( new ServerLogic( s )).start();
 	}
+	*/
 	private static void releaseResources(ServerSocket server) {
 		if( server != null) {
 			try {
@@ -91,7 +93,7 @@ public class ConnectionServer implements Network {
 		}
 	}
 
-	private void releaseResources (Socket socket, InputStream in, OutputStream out){
+	private static void releaseResources (Socket socket, InputStream in, OutputStream out){
 		if( in != null) {
 			try {
 				in.close();
