@@ -30,7 +30,7 @@ public class Main extends Application {
 			this.window.show();
 
 			this.window.setOnCloseRequest(e -> closeConnection());
-			SQLManager.connect("jdbc:sqlite:././Database/covid watchlist.db");
+			SQLManager.connect("jdbc:sqlite:src/Database/covid watchlist.db");
 
 			loadLogin();
 		} catch (SQLException | ClassNotFoundException | IOException e) {

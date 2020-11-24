@@ -33,7 +33,6 @@ public class MainWindow {
 	@FXML
 	private Button signInButton;
 
-
 	@FXML
 	void signInClicked(ActionEvent event) {
 		dni = userField.getText();
@@ -66,7 +65,6 @@ public class MainWindow {
 		} catch (SQLException e) {
 			Alert alert = new Alert(AlertType.ERROR, "Error in the database");
 
-		
 		}
 
 	}
