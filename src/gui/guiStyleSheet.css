@@ -57,7 +57,8 @@
 	-fx-font-family: 'American Typewriter', serif;
 	-fx-font-size: 12 px;
 	-fx-focus-color:transparent;
-	-fx-background-color:white
+	-fx-background-color:white;
+	-fx-text-alignment: right;
 }
 
 .text-field:focused{

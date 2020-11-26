@@ -30,9 +30,11 @@ public class Measurement implements Serializable{
 		super();
 		this.bpm = 75;
 		this.spO2 = Float.valueOf((float) 9.87);
-		this.ecg = new ArrayList<>();
-		this.ecg.add(Float.valueOf((float) 36));
-		this.ecg.add(Float.valueOf((float) 36.7));
+		this.ecg = new ECG();
+		ArrayList<Float> ecg = new ArrayList<Float>();
+		ecg.add(Float.valueOf((float) 36));
+		ecg.add(Float.valueOf((float) 36.7));
+		this.ecg.setEcg(ecg);
 		this.temperature = Float.valueOf((float) 37.5);
 		this.patient = new Patient();
 		this.patient.setId(1);

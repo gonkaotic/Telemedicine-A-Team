@@ -21,9 +21,15 @@ public class BitalinoHandler {
 	private int[] acquisitionChannels;
 	boolean connected;
 
-	// Missing: we should define the optimal sampling frequency among the available
-	// ones (10, 100, 1000 hz)
-	// Look which channel is the one that corresponds to the ECG and �pulseoxymeter?
+	/**
+	 * Constructor only specifying macAddress.
+	 * By default acquisitions channels are:
+	 * 	- A1: ECG
+	 * 	- A3: Heart Rate
+	 * 	- A4: O2 Saturation
+	 *
+	 * @param macAddress
+	 */
 	public BitalinoHandler(String macAddress) {
 		this.macAddress = macAddress;
 		bitalino = new BITalino();
@@ -34,8 +40,23 @@ public class BitalinoHandler {
 		samplingRate = 1000;
 		connected=false;
 	}
-	
-	
+
+	public String getMacAddress() {
+		return macAddress;
+	}
+
+	public void setMacAddress(String macAddress) {
+		this.macAddress = macAddress;
+	}
+
+	public int[] getAcquisitionChannels() {
+		return acquisitionChannels;
+	}
+
+	public void setAcquisitionChannels(int[] acquisitionChannels) {
+		this.acquisitionChannels = acquisitionChannels;
+	}
+
 	/**
 	 * Connection with the BITalino
 	 * 
