@@ -72,6 +72,21 @@ public class BitalinoHandler {
 			return false;
 		}
 	}
+
+	/**
+	 * Disconnect from the BITalino
+	 *
+	 * @return tru if disconnection was possible and false if there was any problem
+	 */
+	public boolean disconnect(){
+		try{
+			bitalino.close();
+			connected = false;
+			return true;
+		} catch (BITalinoException e) {
+			return false;
+		}
+	}
 	
 	
 	/**

@@ -1,7 +1,9 @@
 package gui;
+import BITalino.BITalino;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -10,10 +12,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import network.client.BitalinoHandler;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class clientMainPanelController {
+public class clientMainPanelController implements Initializable {
+    private BitalinoHandler bitalino;
 
     @FXML
     private BorderPane clientPane;
@@ -42,7 +48,22 @@ public class clientMainPanelController {
     @FXML
     //TODO openBitalinoPanel
     void configureBitalinoClicked(ActionEvent event) {
+        try{
+            bitalino.disconnect();
 
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("BitalinoPanel.fxml"));
+            GridPane bitalinoPanel = (GridPane) loader.load();
+            centralPane.getChildren().clear();
+            centralPane.getChildren().add(bitalinoPanel);
+            bitalinoPanel.prefHeightProperty().bind(centralPane.heightProperty());
+            bitalinoPanel.prefWidthProperty().bind(centralPane.widthProperty());
+
+            BitalinoPanelController controller = loader.<BitalinoPanelController>getController();
+            controller.initComponents(centralPane,bitalino);
+
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     @FXML
@@ -55,6 +76,9 @@ public class clientMainPanelController {
             measurementsPane.prefHeightProperty().bind(centralPane.heightProperty());
             measurementsPane.prefWidthProperty().bind(centralPane.widthProperty());
 
+            NewMeasurementPanelController controller = loader.<NewMeasurementPanelController>getController();
+            controller.initComponents(centralPane,bitalino);
+
         }catch(IOException ex){
             ex.printStackTrace();
         }
@@ -65,4 +89,12 @@ public class clientMainPanelController {
 
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        bitalino = new BitalinoHandler("20:17:09:18:49:21");
+    }
+
+    private void initComponents(BitalinoHandler bitalino){
+        this.bitalino = bitalino;
+    }
 }

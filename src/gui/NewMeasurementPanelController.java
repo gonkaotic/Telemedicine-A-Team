@@ -7,11 +7,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import network.client.BitalinoHandler;
 import pojos.ECG;
 
@@ -22,6 +20,7 @@ public class NewMeasurementPanelController implements Initializable {
 
     private BitalinoHandler bitalino;
     private XYChart.Series dataSeries;
+    private Pane centralPane;
 
     @FXML
     private GridPane measurementsPanel;
@@ -124,7 +123,7 @@ public class NewMeasurementPanelController implements Initializable {
             this.oxygenTextField.setText(""+pulseoximeter[1]);
         } catch (Throwable throwable) {
             //This should be a pop up or somthing similar
-            System.out.println("Problems when connecting with BITalino");
+            showErrorMessage("BITalino connection error","Problems when connecting with Bitalino: check out your device and the configuration");
         }
     }
 
@@ -140,8 +139,8 @@ public class NewMeasurementPanelController implements Initializable {
             ecgGraph.getData().add(dataSeries);
 
         } catch (Throwable throwable) {
-            //This should be a pop up or somthing similar
-            System.out.println("Problems when connecting with BITalino");
+            showErrorMessage("BITalino connection error","Problems when connecting with Bitalino: check out your device and the configuration");
+            //System.out.println("Problems when connecting with BITalino");
         }
     }
 
@@ -151,13 +150,27 @@ public class NewMeasurementPanelController implements Initializable {
 
     }
 
+    private void showErrorMessage (String title, String message){
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle(title);
+        a.setContentText(message);
+        a.showAndWait();
+
+    }
+
+    public void initComponents(Pane centralPane, BitalinoHandler bitalino){
+        this.centralPane=centralPane;
+        this.bitalino=bitalino;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        bitalino = new BitalinoHandler("20:17:09:18:49:21");
+        //bitalino = new BitalinoHandler("20:17:09:18:49:21");
         dataSeries = new XYChart.Series();
         voltsAxis.setLabel("mV");
         timeAxis.setLabel("ms");
     }
+
 }
 
 
