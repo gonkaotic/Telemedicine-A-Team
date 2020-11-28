@@ -25,6 +25,16 @@ public class SQLManager {
             //Measurement measurement = new Measurement();
             //insertMeasurement(measurement);
 
+            //Patient patient = new Patient();
+            //patient.setDni("51501353Y");
+            //insertPatient(patient);
+
+            //Patient newPatient = searchPatientByDniAndPassword("51501353Y","Craneos");
+
+            //System.out.println(newPatient.toString());
+
+            //getAllMeasurements();
+
 
             disconnect();
         } catch (Exception e) {
@@ -227,6 +237,30 @@ public class SQLManager {
 
 	}
 
+    public static Patient searchPatientByDniAndPassword(String dni, String password) throws SQLException {
+
+        String sql="SELECT * FROM patient WHERE dni = ? AND password = ? ;";
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setString(1, dni);
+        prep.setString(2, password);
+
+        ResultSet rs1 = prep.executeQuery();
+        Patient patient = getPatient(rs1);
+
+        if	(dni.equals(patient.getDni()) && password.equals(patient.getPassword())) {
+            prep.close();
+            rs1.close();
+            return patient;
+        }else {
+            System.out.println("Wrong Id or password");
+            prep.close();
+            rs1.close();
+            return null;
+        }
+
+    }
+
     public static List<Patient> getAllPatients() throws SQLException {
 
         String sql = "SELECT * FROM patient ;";
@@ -298,7 +332,7 @@ public class SQLManager {
         measurement.setBPM(rs1.getInt("bpm"));
         measurement.setTemperature(rs1.getFloat("temperature"));
         measurement.setPatient(searchPatientByID(rs1.getInt("patient_id")));
-        // TODO sympotoms missing
+        // TODO symptoms missing
         return measurement;
 
     }
