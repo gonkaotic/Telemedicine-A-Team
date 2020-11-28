@@ -18,22 +18,6 @@ public class SQLManager {
         try {
             connect("jdbc:sqlite:././Database/covid watchlist.db");
 
-            //generateDataBase();
-
-            List<Patient> allPatients = getAllPatients();
-            //List<Measurement> measurements = getAllMeasurements();
-            //Measurement measurement = new Measurement();
-            //insertMeasurement(measurement);
-
-            //Patient patient = new Patient();
-            //patient.setDni("51501353Y");
-            //insertPatient(patient);
-
-            //Patient newPatient = searchPatientByDniAndPassword("51501353Y","Craneos");
-
-            //System.out.println(newPatient.toString());
-
-            //getAllMeasurements();
 
 
             disconnect();
@@ -171,7 +155,7 @@ public class SQLManager {
 
         Patient patient = getPatient(rs1);
 
-        if (id == patient.getId()) {
+        if (id.equals(patient.getId())) {
             prep.close();
             rs1.close();
             return patient;
@@ -184,28 +168,23 @@ public class SQLManager {
 
     }
 
-    public static Measurement searchMeasurementByID(Integer id) throws SQLException, IOException, ClassNotFoundException {
+    public static Patient searchPatientByDniAndPassword(String dni, String password) throws SQLException {
 
-        String sql = "SELECT * FROM measures WHERE measure_id = ? ;";
-
+        String sql="SELECT * FROM patient WHERE dni = ? AND password = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
 
-        prep.setInt(1, id);
+        prep.setString(1, dni);
+        prep.setString(2, password);
 
         ResultSet rs1 = prep.executeQuery();
-        if (!rs1.isBeforeFirst()) {
-            prep.close();
-            return null;
-        }
+        Patient patient = getPatient(rs1);
 
-        Measurement measurement = getMeasurement(rs1);
-
-        if (id == measurement.getId()) {
+        if	(dni.equals(patient.getDni()) && password.equals(patient.getPassword())) {
             prep.close();
             rs1.close();
-            return measurement;
-        } else {
-
+            return patient;
+        }else {
+            System.out.println("Wrong Id or password");
             prep.close();
             rs1.close();
             return null;
@@ -237,36 +216,12 @@ public class SQLManager {
 
 	}
 
-    public static Patient searchPatientByDniAndPassword(String dni, String password) throws SQLException {
-
-        String sql="SELECT * FROM patient WHERE dni = ? AND password = ? ;";
-        PreparedStatement prep = c.prepareStatement(sql);
-
-        prep.setString(1, dni);
-        prep.setString(2, password);
-
-        ResultSet rs1 = prep.executeQuery();
-        Patient patient = getPatient(rs1);
-
-        if	(dni.equals(patient.getDni()) && password.equals(patient.getPassword())) {
-            prep.close();
-            rs1.close();
-            return patient;
-        }else {
-            System.out.println("Wrong Id or password");
-            prep.close();
-            rs1.close();
-            return null;
-        }
-
-    }
-
     public static List<Patient> getAllPatients() throws SQLException {
 
         String sql = "SELECT * FROM patient ;";
         PreparedStatement prep = c.prepareStatement(sql);
         ResultSet rs1 = prep.executeQuery();
-        List<Patient> patientList = new ArrayList<Patient>();
+        List<Patient> patientList = new ArrayList<>();
         while (rs1.next()) {
             patientList.add(getPatient(rs1));
         }
@@ -275,12 +230,68 @@ public class SQLManager {
         return patientList;
     }
 
+    public static Measurement searchMeasurementByID(Integer id) throws SQLException, IOException, ClassNotFoundException {
+
+        String sql = "SELECT * FROM measures WHERE measure_id = ? ;";
+
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setInt(1, id);
+
+        ResultSet rs1 = prep.executeQuery();
+        if (!rs1.isBeforeFirst()) {
+            prep.close();
+            return null;
+        }
+
+        Measurement measurement = getMeasurement(rs1);
+
+        if (id.equals(measurement.getId())) {
+            prep.close();
+            rs1.close();
+            return measurement;
+        } else {
+
+            prep.close();
+            rs1.close();
+            return null;
+        }
+
+    }
+
+    public static List<Measurement> searchMeasurementByPatientId(Integer patientId) throws SQLException, IOException, ClassNotFoundException {
+
+        String sql = "SELECT * FROM measures WHERE patient_id = ? ;";
+
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setInt(1, patientId);
+
+        ResultSet rs1 = prep.executeQuery();
+
+        if (!rs1.isBeforeFirst()) {
+            prep.close();
+            return null;
+        }
+
+        List<Measurement> measuresList = new ArrayList<>();
+
+        while (rs1.next()) {
+            measuresList.add(getMeasurement(rs1));
+        }
+
+            prep.close();
+            rs1.close();
+            return measuresList;
+
+    }
+
     public static List<Measurement> getAllMeasurements() throws SQLException, IOException, ClassNotFoundException {
 
         String sql = "SELECT * FROM measures ;";
         PreparedStatement prep = c.prepareStatement(sql);
         ResultSet rs1 = prep.executeQuery();
-        List<Measurement> measuresList = new ArrayList<Measurement>();
+        List<Measurement> measuresList = new ArrayList<>();
         while (rs1.next()) {
             measuresList.add(getMeasurement(rs1));
         }
