@@ -18,11 +18,17 @@ public class SQLManager {
         try {
             connect("jdbc:sqlite:././Database/covid watchlist.db");
 
+            //Measurement measurement = new Measurement();
+            //insertMeasurement(measurement);
 
+            Measurement measurement = searchMeasurementByID(4);
+
+            System.out.println(measurement.toString());
 
             disconnect();
         } catch (Exception e) {
             System.out.println("Error in connecting/generating/disconnecting from the database: " + e);
+            e.printStackTrace();
         }
 
     }
@@ -74,7 +80,7 @@ public class SQLManager {
         Statement stmt1 = c.createStatement();
         String sql1 = "CREATE TABLE measures " + "(measure_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " measure_date DATE NOT NULL," + " ecg BLOB," + " bpm INT NOT NULL,"
-                + " o2_saturation FLOAT," + " temperature FLOAT NOT NULL,"
+                + " o2_saturation FLOAT," + " temperature FLOAT NOT NULL," + " symptoms TEXT,"
                 + " patient_id REFERENCES patient (patient_id) ON UPDATE CASCADE ON DELETE CASCADE );";
         stmt1.executeUpdate(sql1);
         stmt1.close();
@@ -110,7 +116,7 @@ public class SQLManager {
     }
 
     public static void insertMeasurement(Measurement measurement) throws SQLException, IOException {
-    	String sql1 = "INSERT INTO measures(measure_date,ecg, bpm, o2_saturation,temperature,patient_id)" + "VALUES(?,?,?,?,?,?);";
+    	String sql1 = "INSERT INTO measures(measure_date,ecg, bpm, o2_saturation,temperature,symptoms,patient_id)" + "VALUES(?,?,?,?,?,?,?);";
 
     	PreparedStatement prep = c.prepareStatement(sql1);
 
@@ -129,7 +135,8 @@ public class SQLManager {
         prep.setInt(3,measurement.getBPM());
         prep.setFloat(4,measurement.getSpO2());
         prep.setFloat(5, measurement.getTemperature());
-        prep.setInt(6,measurement.getPatient().getId());
+        prep.setString(6,symptomsToBinaryString(measurement.getSymptomChecklist()));
+        prep.setInt(7,measurement.getPatient().getId());
 
         prep.executeUpdate();
         prep.close();
@@ -342,11 +349,72 @@ public class SQLManager {
         measurement.setSpO2(rs1.getFloat("o2_saturation"));
         measurement.setBPM(rs1.getInt("bpm"));
         measurement.setTemperature(rs1.getFloat("temperature"));
+        measurement.setSymptomChecklist(binaryStringToSymptoms(rs1.getString("symptoms")));
         measurement.setPatient(searchPatientByID(rs1.getInt("patient_id")));
-        // TODO symptoms missing
+
         return measurement;
 
     }
+
+    //Symptom {FEVER, DRY_COUGH, TIREDNESS, ANOSMIA, AUGEUSIA, DIFF_BREATH, CHEST_PAIN};
+
+    private static String symptomsToBinaryString(List<Measurement.Symptom> symptomChecklist){
+
+        Integer i, size = symptomChecklist.size(), binaryChain = 0;
+        String binaryFlag;
+
+        for(i = 0; i < size; i++){
+            if(symptomChecklist.get(i).equals(Measurement.Symptom.FEVER)){
+                binaryChain = binaryChain + 1000000;
+            }else if (symptomChecklist.get(i).equals(Measurement.Symptom.DRY_COUGH)) {
+                binaryChain = binaryChain + 100000;
+            }else if(symptomChecklist.get(i).equals(Measurement.Symptom.TIREDNESS)){
+                binaryChain = binaryChain + 10000;
+            }else if (symptomChecklist.get(i).equals(Measurement.Symptom.ANOSMIA)) {
+                binaryChain = binaryChain + 1000;
+            }else if(symptomChecklist.get(i).equals(Measurement.Symptom.AUGEUSIA)){
+                binaryChain = binaryChain + 100;
+            }else if (symptomChecklist.get(i).equals(Measurement.Symptom.DIFF_BREATH)) {
+                binaryChain = binaryChain + 10;
+            }else if(symptomChecklist.get(i).equals(Measurement.Symptom.CHEST_PAIN)){
+                binaryChain = binaryChain + 1;
+            }
+        }
+
+        binaryFlag = binaryChain.toString();
+
+        return binaryFlag;
+    }
+
+    private static List<Measurement.Symptom> binaryStringToSymptoms(String binaryString){
+
+        int binarySymptom;
+        List<Measurement.Symptom> symptomsList = new ArrayList<>();
+
+        for (int i = 0; i < binaryString.length(); i++) {
+
+            binarySymptom = Character.getNumericValue(binaryString.charAt(i));
+
+            if(binarySymptom == 1 && i == 0){
+                symptomsList.add(Measurement.Symptom.FEVER);
+            }else if (binarySymptom == 1 && i == 1) {
+                symptomsList.add(Measurement.Symptom.DRY_COUGH);
+            }else if(binarySymptom == 1 && i == 2){
+                symptomsList.add(Measurement.Symptom.TIREDNESS);
+            }else if (binarySymptom == 1 && i == 3) {
+                symptomsList.add(Measurement.Symptom.ANOSMIA);
+            }else if(binarySymptom == 1 && i == 4){
+                symptomsList.add(Measurement.Symptom.AUGEUSIA);
+            }else if (binarySymptom == 1 && i == 5) {
+                symptomsList.add(Measurement.Symptom.DIFF_BREATH);
+            }else if(binarySymptom == 1 && i == 6){
+                symptomsList.add(Measurement.Symptom.CHEST_PAIN);
+            }
+        }
+
+        return symptomsList;
+    }
+
 }
 
 
