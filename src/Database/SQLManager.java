@@ -8,6 +8,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 public class SQLManager {
@@ -113,6 +114,13 @@ public class SQLManager {
 
         prep.executeUpdate();
         prep.close();
+    }
+
+    public static void insertMeasurements ( ArrayList< Measurement> measurements) throws IOException, SQLException {
+        Iterator<Measurement> iterator = measurements.iterator();
+        while (iterator.hasNext()){
+            insertMeasurement( iterator.next() );
+        }
     }
 
     public static void insertMeasurement(Measurement measurement) throws SQLException, IOException {
