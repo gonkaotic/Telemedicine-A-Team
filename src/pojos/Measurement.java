@@ -3,7 +3,6 @@ package pojos;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Measurement implements Serializable{
@@ -21,7 +20,7 @@ public class Measurement implements Serializable{
 	private Float spO2;
 	private Integer bpm;
 	private Float temperature;
-	private Symptom symptomChecklist[];
+	private List<Symptom> symptomChecklist;
 	
 	public enum Symptom {FEVER, DRY_COUGH, TIREDNESS, ANOSMIA, AUGEUSIA, DIFF_BREATH, CHEST_PAIN};
 	
@@ -39,11 +38,15 @@ public class Measurement implements Serializable{
 		this.patient = new Patient();
 		this.patient.setId(1);
 
+		this.symptomChecklist = new ArrayList<>();
+
+		this.symptomChecklist.add(Symptom.ANOSMIA);
+		this.symptomChecklist.add(Symptom.CHEST_PAIN);
+		this.symptomChecklist.add(Symptom.FEVER);
+
 	}
 
-	public Measurement(Integer id, Patient patient, Date date, ECG ecg, Float spO2, Integer bpm,
-						Float temperature, Symptom[] symptomChecklist) {
-		super();
+	public Measurement(Integer id, Patient patient, Date date, ECG ecg, Float spO2, Integer bpm, Float temperature, List<Symptom> symptomChecklist) {
 		this.id = id;
 		this.patient = patient;
 		this.date = date;
@@ -53,7 +56,6 @@ public class Measurement implements Serializable{
 		this.temperature = temperature;
 		this.symptomChecklist = symptomChecklist;
 	}
-
 
 	@Override
 	public int hashCode() {
@@ -80,12 +82,19 @@ public class Measurement implements Serializable{
 		return true;
 	}
 
-	
+
 	@Override
 	public String toString() {
-		return "Measurements [id=" + id + ", patientId=" + patient + ", date=" + date + ", ECG=" + ecg + ", SpO2="
-				+ spO2 + ", BPM=" + bpm + ", Temperature=" + temperature + ", symptomChecklist="
-				+ Arrays.toString(symptomChecklist) + "]";
+		return "Measurement{" +
+				"id=" + id +
+				", patient=" + patient +
+				", date=" + date +
+				", ecg=" + ecg +
+				", spO2=" + spO2 +
+				", bpm=" + bpm +
+				", temperature=" + temperature +
+				", symptomChecklist=" + symptomChecklist +
+				'}';
 	}
 
 	public Integer getId() {
@@ -144,11 +153,11 @@ public class Measurement implements Serializable{
 		this.temperature = temperature;
 	}
 
-	public Symptom[] getSymptomChecklist() {
+	public List<Symptom> getSymptomChecklist() {
 		return symptomChecklist;
 	}
 
-	public void setSymptomChecklist(Symptom[] symptomChecklist) {
+	public void setSymptomChecklist(List<Symptom> symptomChecklist) {
 		this.symptomChecklist = symptomChecklist;
 	}
 }

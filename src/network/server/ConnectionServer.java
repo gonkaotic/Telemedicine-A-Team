@@ -3,8 +3,11 @@ package network.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import Database.SQLManager;
 import com.sun.security.ntlm.Server;
 import network.Network;
 import network.NetworkMessage;
@@ -15,16 +18,29 @@ public class ConnectionServer implements Network {
 	
 	public static void main( String[] args ) {
 		ServerSocket server = null;
-		
 		try {
+			SQLManager.connect("jdbc:sqlite:././Database/covid watchlist.db");
+
+			server = new ServerSocket(SERVERPORT);
+			System.out.println("Server started.");
 			while ( true ) {
-				server = new ServerSocket(SERVERPORT);
+				System.out.println("Waiting for new client.");
 				acceptConnection(server.accept());
 			}
 			
 		} catch (IOException e) {
+			System.out.println("Server error");
+			e.printStackTrace();
+		} catch ( SQLException | ClassNotFoundException e ){
+			System.out.println("Database error");
 			e.printStackTrace();
 		} finally {
+			try {
+				SQLManager.disconnect();
+			} catch ( SQLException e){
+				e.printStackTrace();
+			}
+			System.out.println("Closing the server");
 			releaseResources(server);
 		}
 	}
@@ -33,6 +49,7 @@ public class ConnectionServer implements Network {
 	//one client at a time version
 	private static void acceptConnection(Socket s) {
 		if ( s != null ) {
+			System.out.println("New client: " + s.getInetAddress());
 			ObjectInputStream inputStream = null;
 			ObjectOutputStream outputStream = null;
 			try {
@@ -46,9 +63,13 @@ public class ConnectionServer implements Network {
 				if ( msg.getProtocol() == NetworkMessage.Protocol.GET_PATIENT ) {
 					Patient patientLogged = msg.getPatient();
 					System.out.println("Patient received: "+ patientLogged.toString());
-					//TODO: check if patient is in the database with the right connection.
+					try {
+						patientLogged = SQLManager.searchPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
+					} catch ( SQLException e){
+						System.out.println( "Patient not found.");
+						patientLogged = null;
+					}
 					NetworkMessage answer = null;
-					outputStream = new ObjectOutputStream ( s.getOutputStream() );
 
 					if(patientLogged != null) {
 						//continue connection, do as necessary
@@ -58,14 +79,24 @@ public class ConnectionServer implements Network {
 							msg = (NetworkMessage) inputStream.readObject();
 
 							if ( msg.getProtocol() == NetworkMessage.Protocol.PUSH_MEASUREMENT ) {
+								System.out.println("Inserting measurements.");
 								ArrayList<Measurement> measures = msg.getMeasurements();
-								//TODO: write the measurements in the database
+								try {
+									if ( measures != null ) {
+										SQLManager.insertMeasurements( measures );
+									} else {
+										System.out.println( "Trying to insert empty measures, this shouldn't happen");
+									}
+								} catch ( SQLException e){
+									System.out.println("Error inserting the measurements in the database. ");
+								}
 							} else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
 								break;
 							}
 						}
 					} else {
 						//Deny the log in, close connection.
+						System.out.println("Wrong DNI or password");
 						answer = new NetworkMessage(NetworkMessage.Protocol.DENY_PATIENT);
 						outputStream.writeObject( answer );
 					}
