@@ -81,7 +81,7 @@ public class Client implements  Network{
 			objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(msg);
             objectInputStream = new ObjectInputStream(inputStream);
-            NetworkMessage msg_read = (NetworkMessage) inputStream.readObject();
+      //      NetworkMessage msg_read = (NetworkMessage) inputStream.readObject();
             
             if (msg.getProtocol() == NetworkMessage.Protocol.GET_PATIENT) {
             	System.out.println("Starting");

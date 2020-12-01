@@ -265,12 +265,13 @@ public static Patient searchPatientByDni(String dni) throws SQLException {
 
     }
 
+    //TODO El ecg no es un array es un BLOB
     private static Measurement getMeasurement(ResultSet rs1) throws SQLException {
 
         Measurement measurement = new Measurement();
         measurement.setId(rs1.getInt("measure_id"));
         measurement.setDate(rs1.getDate("measure_date"));
-        measurement.setECG((List<Float>) rs1.getArray("ecg"));
+      //  measurement.setECG((List<Float>) rs1.getArray("ecg"));
         measurement.setSpO2(rs1.getFloat("o2_saturation"));
         measurement.setBPM(rs1.getInt("bpm"));
         measurement.setTemperature(rs1.getFloat("temperature"));

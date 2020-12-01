@@ -127,6 +127,7 @@ public class NewMeasurementPanelController implements Initializable {
         }
     }
 
+    //TODO check ECG
     @FXML
     void recordEcgClicked(ActionEvent event) {
         try {
