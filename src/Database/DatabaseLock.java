@@ -17,7 +17,7 @@ public class DatabaseLock {
      * Reading access granted unless there is someone writing
      * @throws InterruptedException
      */
-    private synchronized void acquireRead () throws InterruptedException {
+    public synchronized void acquireRead () throws InterruptedException {
         while (dbWriting){
             wait();
         }
@@ -28,7 +28,7 @@ public class DatabaseLock {
      * Writing access is granted only if there is no one reading nor writing
      * @throws InterruptedException
      */
-    private synchronized void acquireWrite() throws InterruptedException {
+    public synchronized void acquireWrite() throws InterruptedException {
         while (dbWriting || readers > 0){
             wait();
         }
@@ -38,7 +38,7 @@ public class DatabaseLock {
     /**
      * Releases the reading lock. If the number of readers is 0 we can awake one writer (notify)
      */
-    private synchronized void releaseRead(){
+    public synchronized void releaseRead(){
         readers--;
         if(readers == 0) notify();
     }
@@ -46,7 +46,7 @@ public class DatabaseLock {
     /**
      * Releases the writing lock. It awakes all pending readers
      */
-    private synchronized void releaseWrite(){
+    public synchronized void releaseWrite(){
         dbWriting=false;
         notifyAll();
     }
