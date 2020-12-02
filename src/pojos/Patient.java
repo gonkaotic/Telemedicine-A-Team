@@ -22,7 +22,8 @@ public class Patient implements Serializable {
 
     public enum Sex {MALE, FEMALE}
 
-    public enum RiskFactor {ASTHMA, EPOC}//to expand
+    // CKD: Chronic Kidney Disease, Chronic Obstructive Pulmonary Disease
+    public enum RiskFactor {CANCER, CKD, COPD, HEART_CONDITIONS, IMMUNOCOMPROMISED, OBESITY, SMOKING, PREGNANCY, DIABETES2}
 
 
     public Patient() {
