@@ -108,6 +108,7 @@ public class Client implements Network {
 			NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.DISCONNECT);
 			objectOutputStream.writeObject( msg );
 		} catch ( IOException e){
+			System.out.println("Disconnection error");
 			e.printStackTrace();
 		} finally {
 			releaseResources(objectInputStream, objectOutputStream, socket);
@@ -115,49 +116,7 @@ public class Client implements Network {
 
 	}
 
-	public  boolean sendToServer(OutputStream outputStream, InputStream inputStream) throws ClassNotFoundException {
-
-		while (true) {
-			try {
-				// Here: out and in streams
-
-				objectOutputStream = new ObjectOutputStream(outputStream);
-				objectInputStream = new ObjectInputStream(inputStream);
-
-				// communication with server
-				//objectOutputStream.writeObject(msg);
-				objectOutputStream.flush();// just in case
-
-				NetworkMessage msg_read = (NetworkMessage) objectInputStream.readObject();
-
-				if (msg_read.getProtocol() == NetworkMessage.Protocol.PUSH_PATIENT) {
-					Patient patientLogged = msg_read.getPatient();
-					System.out.println("Patient received: "+ patientLogged.toString());
-
-				}else if (msg_read.getProtocol() == NetworkMessage.Protocol.PUSH_MEASUREMENT) {
-					ArrayList<Measurement> measures = msg_read.getMeasurements();
-					System.out.println("Measurement received"+ measures);
-					
-				}else if (msg_read.getProtocol() == NetworkMessage.Protocol.DISCONNECT) {
-					System.out.println("Finish");
-					releaseResources(inputStream, outputStream, socket);
-					System.exit(0);
-				}
-
-
-
-			} catch (IOException ex) {
-				System.out.println("It is not possible to connect with the Server");
-				Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-			} finally {
-				releaseResources( objectInputStream, objectOutputStream, socket );
-			}
-
-			return true;
-		}
-	}
-
-	//passing the current methods is kind of an overkill, as they are global variables, but lets work like that
+	//passing the parameters to the methods is kind of an overkill, as they are global variables, but lets work like that
 	private static void releaseResources(InputStream input, OutputStream output,
 			Socket socket) {
 

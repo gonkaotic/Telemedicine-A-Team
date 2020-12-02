@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import Database.DatabaseLock;
 import Database.SQLManager;
-import com.sun.security.ntlm.Server;
 import network.Network;
 import network.NetworkMessage;
 import pojos.Measurement;
@@ -20,12 +20,15 @@ public class ConnectionServer implements Network {
 		ServerSocket server = null;
 		try {
 			SQLManager.connect("jdbc:sqlite:././Database/covid watchlist.db");
+			DatabaseLock lock = new DatabaseLock();
 
 			server = new ServerSocket(SERVERPORT);
+
 			System.out.println("Server started.");
+
 			while ( true ) {
 				System.out.println("Waiting for new client.");
-				acceptConnection(server.accept());
+				acceptConnection(server.accept(), lock);
 			}
 			
 		} catch (IOException e) {
@@ -45,9 +48,9 @@ public class ConnectionServer implements Network {
 		}
 	}
 
-
+	/*
 	//one client at a time version
-	private static void acceptConnection(Socket s) {
+	private static void acceptConnection(Socket s, DatabaseLock lock) {
 		if ( s != null ) {
 			System.out.println("New client: " + s.getInetAddress());
 			ObjectInputStream inputStream = null;
@@ -64,10 +67,16 @@ public class ConnectionServer implements Network {
 					Patient patientLogged = msg.getPatient();
 					System.out.println("Patient received: "+ patientLogged.toString());
 					try {
+						lock.acquireRead();
 						patientLogged = SQLManager.searchPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
 					} catch ( SQLException e){
 						System.out.println( "Patient not found.");
 						patientLogged = null;
+					} catch ( InterruptedException e) {
+						System.out.println("There was an error with the database lock");
+						patientLogged = null;
+					} finally {
+						lock.releaseRead();
 					}
 					NetworkMessage answer = null;
 
@@ -83,12 +92,17 @@ public class ConnectionServer implements Network {
 								ArrayList<Measurement> measures = msg.getMeasurements();
 								try {
 									if ( measures != null ) {
-										SQLManager.insertMeasurements( measures );
+										lock.acquireWrite();
+										SQLManager.insertMeasurements(measures);
 									} else {
 										System.out.println( "Trying to insert empty measures, this shouldn't happen");
 									}
 								} catch ( SQLException e){
 									System.out.println("Error inserting the measurements in the database. ");
+								} catch ( InterruptedException e ) {
+									System.out.println("There was an error with the database lock");
+								}finally {
+									lock.releaseWrite();
 								}
 							} else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
 								break;
@@ -108,12 +122,13 @@ public class ConnectionServer implements Network {
 			}
 		}
 	}
-	//Uses threads
-	/*
-	private static void acceptConnection(Socket s) {
-		new Thread ( new ServerLogic( s )).start();
-	}
 	*/
+
+	//Uses threads
+	private static void acceptConnection(Socket s, DatabaseLock lock) {
+		new Thread ( new ServerLogic( s, lock )).start();
+	}
+
 	private static void releaseResources(ServerSocket server) {
 		if( server != null) {
 			try {
@@ -121,24 +136,6 @@ public class ConnectionServer implements Network {
 			} catch ( IOException e) {
 				e.printStackTrace();
 			}
-		}
-	}
-
-	private static void releaseResources (Socket socket, InputStream in, OutputStream out){
-		if( in != null) {
-			try {
-				in.close();
-			} catch ( IOException e) {
-				e.printStackTrace();
-				System.out.println("All is good");
-			}
-		}
-
-		try {
-			socket.close();
-		} catch ( IOException e) {
-			e.printStackTrace();
-			System.out.println("All is good");
 		}
 	}
 

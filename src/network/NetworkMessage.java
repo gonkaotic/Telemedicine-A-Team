@@ -17,7 +17,7 @@ public class NetworkMessage implements Serializable{
 		/*Protocols from client to server*/
 		GET_PATIENT, PUSH_MEASUREMENT, 
 		/*Protocols from server to client*/
-		PUSH_PATIENT, DENY_PATIENT,
+		PUSH_PATIENT, DENY_PATIENT, ERROR,
 		/*Protocols that can be used by both*/
 		DISCONNECT
 	}

@@ -3,7 +3,9 @@ package network.client;
 import pojos.Measurement;
 import pojos.Patient;
 
+import javax.sound.midi.Soundbank;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class NetworkTester {
@@ -22,13 +24,13 @@ public class NetworkTester {
                     measurements.add(new Measurement());
                     client.sendToServer(measurements);
                     System.out.println("measurements sent");
+                    client.disconnect();
                 } else {
-                    System.out.println("Patient not found");
+                    System.out.println("Patient not found. The connection is closed");
                 }
             } catch (ClassNotFoundException | IOException e) {
+                System.out.println("There was an error in the process");
                 e.printStackTrace();
-            } finally {
-                client.disconnect();
             }
         } else {
             System.out.println("Connection unsuccessful");
