@@ -12,6 +12,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import network.ProtocolException;
 import pojos.Patient;
 
 import java.io.IOException;
@@ -39,32 +40,21 @@ public class MainWindow {
 		password = passField.getText();
 		this.stage = new Stage();
 
-		try {
+		if (login()) {
+			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/PatientPanel.fxml"));
+			try {
+				BorderPane panel = loaderPatient.load();
+				PatientWindow controller = loaderPatient.<PatientWindow>getController();
+				main.updateScene(new Scene(panel));
+				// controller.setMainWindow(this);
 
-			if (checkExistance()) {
-				if (checkPassword()) {
-					FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/PatientPanel.fxml"));
-					try {
-						BorderPane panel = loaderPatient.load();
-						PatientWindow controller = loaderPatient.<PatientWindow>getController();
-						main.updateScene(new Scene(panel));
-						// controller.setMainWindow(this);
-
-					} catch (IOException e) {
-						Alert alert = new Alert(AlertType.ERROR, "Error loading the patient view");
-						alert.showAndWait();
-					}
-				} else {
-					Alert alert = new Alert(AlertType.ERROR, "Wrong username or password");
-					alert.showAndWait();
-				}
-			} else {
-				Alert alert = new Alert(AlertType.ERROR, "Wrong username or password");
+			} catch (IOException e) {
+				Alert alert = new Alert(AlertType.ERROR, "Error loading the patient view");
 				alert.showAndWait();
 			}
-		} catch (SQLException e) {
-			Alert alert = new Alert(AlertType.ERROR, "Error in the database");
-
+		} else {
+			Alert alert = new Alert(AlertType.ERROR, "Wrong username or password");
+			alert.showAndWait();
 		}
 
 	}
@@ -100,9 +90,15 @@ public class MainWindow {
 		return false;
 	}
 
-	private boolean checkExistance() throws SQLException {
-
-		extractedPatient = SQLManager.searchPatientByDni(dni);
+	private boolean login() {
+		try {
+			extractedPatient = main.getClient().sendToServer(new Patient(dni, password));
+		} catch ( ProtocolException e){
+			extractedPatient = null;
+			e.printStackTrace();
+			Alert alert = new Alert(AlertType.ERROR, e.getErrorMessage());
+			alert.showAndWait();
+		}
 
 		if (extractedPatient == null) {
 			return false;

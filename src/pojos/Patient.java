@@ -35,6 +35,13 @@ public class Patient implements Serializable {
         this.password = "Craneos";
     }
 
+    public Patient( String dni, String password) {
+        super();
+        this.dni = dni;
+        this.password = password;
+
+    }
+
     public Patient(Integer id, String name, Date birthDate, Sex sex, List<RiskFactor> riskFactor) {
         super();
         this.id = id;

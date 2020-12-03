@@ -1,5 +1,6 @@
 package network.client;
 
+import network.ProtocolException;
 import pojos.Measurement;
 import pojos.Patient;
 
@@ -28,7 +29,7 @@ public class NetworkTester {
                 } else {
                     System.out.println("Patient not found. The connection is closed");
                 }
-            } catch (ClassNotFoundException | IOException e) {
+            } catch (ProtocolException e) {
                 System.out.println("There was an error in the process");
                 e.printStackTrace();
             }

@@ -62,23 +62,29 @@ public class ServerLogic implements Runnable{
                         outputStream.writeObject( answer );
                         while ( true ) {
                             msg = (NetworkMessage) inputStream.readObject();
+                            NetworkMessage.Protocol protocol = msg.getProtocol();
 
-                            if ( msg.getProtocol() == NetworkMessage.Protocol.PUSH_MEASUREMENT ) {
+                            if ( protocol == NetworkMessage.Protocol.PUSH_MEASUREMENT ) {
                                 System.out.println("Inserting measurements.");
                                 ArrayList<Measurement> measures = msg.getMeasurements();
                                 try {
                                     if ( measures != null ) {
                                         lock.acquireWrite();
                                         SQLManager.insertMeasurements(measures);
+                                        answer = new NetworkMessage( NetworkMessage.Protocol.ACK );
                                     } else {
                                         System.out.println( "Trying to insert empty measures, this shouldn't happen");
+                                        answer = new NetworkMessage( NetworkMessage.Protocol.ERROR);
                                     }
                                 } catch ( SQLException e){
                                     System.out.println("Error inserting the measurements in the database. ");
+                                    answer = new NetworkMessage( NetworkMessage.Protocol.ERROR);
                                 } catch ( InterruptedException e ) {
                                     System.out.println("There was an error with the database lock");
+                                    answer = new NetworkMessage( NetworkMessage.Protocol.ERROR);
                                 }finally {
                                     lock.releaseWrite();
+                                    outputStream.writeObject( answer );
                                 }
                             } else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
                                 break;

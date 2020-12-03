@@ -11,11 +11,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import network.client.Client;
 
 public class Main extends Application {
 
 	private Stage window;
 	private BorderPane rootLayout;
+	private Client client = null;
 
 	@Override
 	public void start(Stage stage) {
@@ -28,12 +30,13 @@ public class Main extends Application {
 			this.window.setScene(new Scene(root));
 			this.window.setResizable(true);
 			this.window.show();
-
 			this.window.setOnCloseRequest(e -> closeConnection());
-			SQLManager.connect("jdbc:sqlite:src/Database/covid watchlist.db");
-
-			loadLogin();
-		} catch (SQLException | ClassNotFoundException | IOException e) {
+			client = new Client( "localhost" );
+			if ( client.connect() ) {
+				//TODO: show loading circle while connecting.
+				loadLogin();
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -62,17 +65,14 @@ public class Main extends Application {
 	}
 
 	public void updateScene(Scene scene) {
-
 		window.setScene(scene);
-
 	}
 
 	private void closeConnection() {
-		try {
+		if ( client != null ) client.disconnect();
+	}
 
-			SQLManager.disconnect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	protected Client getClient (){
+		return client;
 	}
 }

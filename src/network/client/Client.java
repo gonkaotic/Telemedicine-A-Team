@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import network.Network;
 import network.NetworkMessage;
+import network.ProtocolException;
 import pojos.Measurement;
 import pojos.Patient;
 
@@ -62,40 +63,56 @@ public class Client implements Network {
 	 *  This would be the first message a client should sent to the server to "log in"
 	 * @returns the patient with the measurements if the id and password are correct, null otherwise.
 	 * @param patient A patient that should have DNI and password in it
+	 * @throws  ProtocolException when there is an error.
 	 */
-	public Patient sendToServer ( Patient patient ) throws IOException, ClassNotFoundException {
+	public Patient sendToServer ( Patient patient ) throws ProtocolException {
 
 		NetworkMessage msg = new NetworkMessage( NetworkMessage.Protocol.GET_PATIENT, patient);
 
 		System.out.println("socket: "+ socket.getInetAddress());
 
-		//objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-		//objectInputStream = new ObjectInputStream(socket.getInputStream());
-
 		if ( objectOutputStream != null ) {
-			objectOutputStream.writeObject( msg );
-			objectOutputStream.flush();
-			NetworkMessage answer = (NetworkMessage) objectInputStream.readObject();
+			try {
+				objectOutputStream.writeObject( msg );
+				objectOutputStream.flush();
+				NetworkMessage answer = (NetworkMessage) objectInputStream.readObject();
+				NetworkMessage.Protocol protocol = answer.getProtocol();
+				if ( protocol == NetworkMessage.Protocol.PUSH_PATIENT ){
+					return answer.getPatient();
+				} else if ( protocol == NetworkMessage.Protocol.DENY_PATIENT ){
+					return null;
+				} else if (protocol == NetworkMessage.Protocol.ERROR) {
+					throw new ProtocolException("There was an error on the server side.", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.CONNECTION_ERROR);
+			}
 
-			if ( answer.getProtocol() == NetworkMessage.Protocol.PUSH_PATIENT ){
-				return answer.getPatient();
-			}
-			/*
-			else if ( answer.getProtocol() == NetworkMessage.Protocol.DENY_PATIENT ){
-				return null;
-			}
-			*/
 		}
 		return null;
 	}
+
 	/**
 	 *  Sends the measurements to save in the database.
 	 *  If the client hasn't logged in with the previous message there will be an error
 	 * @param  measurements list of measurements to insert in the database
+	 * @throws  ProtocolException when there is an error.
 	 */
-	public void sendToServer ( ArrayList<Measurement> measurements ) throws IOException {
+	public void sendToServer ( ArrayList<Measurement> measurements ) throws ProtocolException {
 		NetworkMessage msg = new NetworkMessage( NetworkMessage.Protocol.PUSH_MEASUREMENT, measurements );
-		objectOutputStream.writeObject( msg );
+		try {
+			objectOutputStream.writeObject( msg );
+			NetworkMessage answer = ( NetworkMessage ) objectInputStream.readObject();
+			NetworkMessage.Protocol protocol = answer.getProtocol();
+			if ( protocol == NetworkMessage.Protocol.ACK ){
+				//all good
+				return;
+			} else if ( protocol == NetworkMessage.Protocol.ERROR ){
+				throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+			}
+		} catch ( ClassNotFoundException | IOException e){
+			throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.CONNECTION_ERROR);
+		}
 	}
 
 
