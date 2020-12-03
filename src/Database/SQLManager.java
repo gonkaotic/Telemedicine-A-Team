@@ -106,9 +106,7 @@ public class SQLManager {
         } else {
             prep.setString(3, "MALE");
         }
-
-        // Faltan los risk factors
-
+        prep.setString(4, rFactorToBinaryString(patient.getRiskFactor()));
         prep.setString(5, patient.getDni());
         prep.setString(6, patient.getPassword());
 
@@ -333,10 +331,11 @@ public class SQLManager {
         } else if (rs1.getString("sex").equals("FEMALE")) {
             patient.setSex(Sex.FEMALE);
         }
+        patient.setRiskFactor(binaryStringToRFactor(rs1.getString("risk_factors")));
         patient.setDni(rs1.getString("dni"));
         patient.setPassword(rs1.getString("password"));
 
-        //TODO risk factors missing
+
 
         return patient;
 
@@ -423,7 +422,71 @@ public class SQLManager {
         return symptomsList;
     }
 
+    //RiskFactor {CANCER, CKD, COPD, HEART_CONDITIONS, IMMUNOCOMPROMISED, OBESITY, SMOKING, PREGNANCY, DIABETES2}
+
+    private static String rFactorToBinaryString(List<Patient.RiskFactor> riskFactorList){
+
+        Integer i, size = riskFactorList.size(), binaryChain = 0;
+        String binaryFlag;
+
+        for(i = 0; i < size; i++){
+            if(riskFactorList.get(i).equals(Patient.RiskFactor.CANCER)){
+                binaryChain = binaryChain + 100000000;
+            }else if (riskFactorList.get(i).equals(Patient.RiskFactor.CKD)) {
+                binaryChain = binaryChain + 10000000;
+            }else if(riskFactorList.get(i).equals(Patient.RiskFactor.COPD)){
+                binaryChain = binaryChain + 1000000;
+            }else if (riskFactorList.get(i).equals(Patient.RiskFactor.HEART_CONDITIONS)) {
+                binaryChain = binaryChain + 100000;
+            }else if(riskFactorList.get(i).equals(Patient.RiskFactor.IMMUNOCOMPROMISED)){
+                binaryChain = binaryChain + 10000;
+            }else if (riskFactorList.get(i).equals(Patient.RiskFactor.OBESITY)) {
+                binaryChain = binaryChain + 1000;
+            }else if(riskFactorList.get(i).equals(Patient.RiskFactor.SMOKING)){
+                binaryChain = binaryChain + 100;
+            }else if (riskFactorList.get(i).equals(Patient.RiskFactor.PREGNANCY)) {
+                binaryChain = binaryChain + 10;
+            }else if(riskFactorList.get(i).equals(Patient.RiskFactor.DIABETES2)){
+                binaryChain = binaryChain + 1;
+            }
+        }
+
+        binaryFlag = binaryChain.toString();
+
+        return binaryFlag;
+    }
+
+    private static List<Patient.RiskFactor> binaryStringToRFactor(String binaryString){
+
+        int binaryRiskFactor;
+        List<Patient.RiskFactor> riskFactorList = new ArrayList<>();
+
+        for (int i = 0; i < binaryString.length(); i++) {
+
+            binaryRiskFactor = Character.getNumericValue(binaryString.charAt(i));
+
+            if(binaryRiskFactor == 1 && i == 0){
+                riskFactorList.add(Patient.RiskFactor.CANCER);
+            }else if (binaryRiskFactor == 1 && i == 1) {
+                riskFactorList.add(Patient.RiskFactor.CKD);
+            }else if(binaryRiskFactor == 1 && i == 2){
+                riskFactorList.add(Patient.RiskFactor.COPD);
+            }else if (binaryRiskFactor == 1 && i == 3) {
+                riskFactorList.add(Patient.RiskFactor.HEART_CONDITIONS);
+            }else if(binaryRiskFactor == 1 && i == 4){
+                riskFactorList.add(Patient.RiskFactor.IMMUNOCOMPROMISED);
+            }else if (binaryRiskFactor == 1 && i == 5) {
+                riskFactorList.add(Patient.RiskFactor.OBESITY);
+            }else if(binaryRiskFactor == 1 && i == 6){
+                riskFactorList.add(Patient.RiskFactor.SMOKING);
+            }else if (binaryRiskFactor == 1 && i == 7) {
+                riskFactorList.add(Patient.RiskFactor.PREGNANCY);
+            }else if(binaryRiskFactor == 1 && i == 8){
+                riskFactorList.add(Patient.RiskFactor.DIABETES2);
+            }
+        }
+
+        return riskFactorList;
+    }
+
 }
-
-
-
