@@ -41,10 +41,11 @@ public class MainWindow {
 		this.stage = new Stage();
 
 		if (login()) {
-			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/PatientPanel.fxml"));
+			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/ClientMainPanel.fxml"));
 			try {
 				BorderPane panel = loaderPatient.load();
-				PatientWindow controller = loaderPatient.<PatientWindow>getController();
+				clientMainPanelController controller = loaderPatient.<clientMainPanelController>getController();
+				//TODO: give the patient to the new panel.
 				main.updateScene(new Scene(panel));
 				// controller.setMainWindow(this);
 
