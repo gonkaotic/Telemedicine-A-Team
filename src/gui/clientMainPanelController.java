@@ -86,6 +86,20 @@ public class clientMainPanelController implements Initializable {
 
     @FXML
     void recordsButtonClicked(ActionEvent event) {
+    	try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientViewMesurements.fxml"));
+            GridPane recordsPane = (GridPane) loader.load();
+            centralPane.getChildren().clear();
+            centralPane.getChildren().add(recordsPane);
+            recordsPane.prefHeightProperty().bind(centralPane.heightProperty());
+            recordsPane.prefWidthProperty().bind(centralPane.widthProperty());
+
+            ClientsViewMeasurementsController controller = loader.<ClientsViewMeasurementsController>getController();
+            controller.initComponents(centralPane);
+
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
 
     }
 

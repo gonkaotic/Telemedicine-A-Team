@@ -92,13 +92,13 @@ public class ClientsViewMeasurementsController implements Initializable {
 			return measurements;
 		}
 		
-	  }
+	  }*/
 
 	public void initComponents(Pane mainPane) {
 		this.mainPane = mainPane;
-		measurementsTable.setItems(setMeasurements());
+		//measurementsTable.setItems(setMeasurements());
 	}
-*/
+
 	private void setMeasurements(ArrayList<Measurement> measurements) {
 		ObservableList<Measurement> observableMeasurement = FXCollections.observableArrayList();
 		observableMeasurement.addAll(measurements);
