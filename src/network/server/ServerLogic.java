@@ -39,7 +39,7 @@ public class ServerLogic implements Runnable{
                 NetworkMessage msg = (NetworkMessage) inputStream.readObject();
                 System.out.println(msg.toString());
 
-                if ( msg.getProtocol() == NetworkMessage.Protocol.GET_PATIENT ) {
+                if ( msg.getProtocol() == NetworkMessage.Protocol.PATIENT_LOGIN) {
                     Patient patientLogged = msg.getPatient();
                     System.out.println("Patient received: "+ patientLogged.toString());
                     try {
@@ -58,7 +58,7 @@ public class ServerLogic implements Runnable{
 
                     if(patientLogged != null) {
                         //continue connection, do as necessary
-                        answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT, patientLogged);
+                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, patientLogged);
                         outputStream.writeObject( answer );
                         while ( true ) {
                             msg = (NetworkMessage) inputStream.readObject();
@@ -68,12 +68,12 @@ public class ServerLogic implements Runnable{
                                 System.out.println("Inserting measurements.");
                                 ArrayList<Measurement> measures = msg.getMeasurements();
                                 try {
-                                    if ( measures != null ) {
+                                    if ( measures != null && securityCheck(measures, patientLogged) ) {
                                         lock.acquireWrite();
                                         SQLManager.insertMeasurements(measures);
                                         answer = new NetworkMessage( NetworkMessage.Protocol.ACK );
                                     } else {
-                                        System.out.println( "Trying to insert empty measures, this shouldn't happen");
+                                        System.out.println( "Trying to insert empty measures or with an incorrect id");
                                         answer = new NetworkMessage( NetworkMessage.Protocol.ERROR);
                                     }
                                 } catch ( SQLException e){
@@ -93,9 +93,11 @@ public class ServerLogic implements Runnable{
                     } else {
                         //Deny the log in, close connection.
                         System.out.println("Wrong DNI or password");
-                        answer = new NetworkMessage(NetworkMessage.Protocol.DENY_PATIENT);
+                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
                         outputStream.writeObject( answer );
                     }
+                } else {
+
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
@@ -135,5 +137,16 @@ public class ServerLogic implements Runnable{
                 System.out.println("All is good. Don't worry, everything will be alright, there was just an error closing the Output Stream");
             }
         }
+    }
+
+    private boolean securityCheck (ArrayList<Measurement> measures, Patient patient){
+
+        for (Measurement m : measures ) {
+            //TODO: check measures' patient id
+            if ( false ){
+                return false;
+            }
+        }
+        return true;
     }
 }
