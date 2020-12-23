@@ -457,7 +457,8 @@ public class SQLManager {
     }
 
     private static List<Patient.RiskFactor> binaryStringToRFactor(String binaryString){
-
+    	
+    	if (binaryString!=null) {
         int binaryRiskFactor;
         List<Patient.RiskFactor> riskFactorList = new ArrayList<>();
 
@@ -487,6 +488,8 @@ public class SQLManager {
         }
 
         return riskFactorList;
+    	}
+    
+    return null;
     }
-
 }
