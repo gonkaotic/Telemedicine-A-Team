@@ -24,7 +24,7 @@ public class BitalinoHandler {
 	/**
 	 * Constructor only specifying macAddress.
 	 * By default acquisitions channels are:
-	 * 	- A1: ECG
+	 * 	- A2: ECG
 	 * 	- A3: Heart Rate
 	 * 	- A4: O2 Saturation
 	 *
@@ -34,7 +34,7 @@ public class BitalinoHandler {
 		this.macAddress = macAddress;
 		bitalino = new BITalino();
 		acquisitionChannels= new int[3];
-		acquisitionChannels[0]=0; //ECG Channel: A1
+		acquisitionChannels[0]=1; //ECG Channel: A2
 		acquisitionChannels[1]=2; //HR Channel: A3
 		acquisitionChannels[2]=3; //SpO2 Channel: A4
 		samplingRate = 1000;
@@ -90,7 +90,7 @@ public class BitalinoHandler {
 	
 	
 	/**
-	 * Records 60 s of ECG and parses the read value to its true voltage
+	 * Records 5 s of ECG and parses the read value to its true voltage
 	 * 
 	 * @return the true ECG signal
 	 * @throws Throwable
@@ -98,7 +98,7 @@ public class BitalinoHandler {
 	 */
 	public ECG recordECG() throws Throwable {
 		int[] ecgChannel = {acquisitionChannels[0]};
-		int secondsToRecord = 60;
+		int secondsToRecord = 5;
 		if (!connected){
 			boolean verification = this.connect();
 			if (!verification) throw new Exception("Unable to connect");
@@ -112,10 +112,10 @@ public class BitalinoHandler {
 		ArrayList<Float> ecgSamples = new ArrayList<Float>();
 		ArrayList<Float> ecgTimes = new ArrayList<Float>();
 
-		for (int i=0; i<samples.length; i++) {
+		for (int i=0; i<samples.length; i=i+10) {
 			 // The BITalino reads ints therefore we have to convert the measurement to mV
 			ecgSamples.add(convertECG(samples[i].analog[0]));
-			ecgTimes.add(i*(1/(float)(samplingRate)*1000)); // sample number*1/Hz*1000 (ms)
+			ecgTimes.add(((1F/(float)samplingRate)*1000F)*i); // sample number*1/Hz*1000 (ms)
 		}
 
 		bitalino.stop();
@@ -178,7 +178,7 @@ public class BitalinoHandler {
      */
 	private float convertECG (int rawValue) {
 		float VCC = 3.3F;
-		float trueValue= (rawValue*VCC/ (float)(Math.pow(2, 10)) - (VCC/2F)) /1100F; //Volts conversion
+		float trueValue= ((float)(rawValue)*VCC/ (float)(Math.pow(2, 10)) - (VCC/2F)) /1100F; //Volts conversion
 		trueValue=trueValue*1000; //mV conversion
 		return trueValue;
 	}
