@@ -25,7 +25,7 @@
             </AnchorPane>
             <ImageView fitHeight="169.0" fitWidth="189.0" layoutX="58.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../../../../Downloads/pngwing.com.png" />
+                  <Image url="@../../images/pngwing.com.png" />
                </image>
             </ImageView>
             <Label layoutX="70.0" layoutY="61.0" prefHeight="47.0" prefWidth="180.0" text="WELCOME">
