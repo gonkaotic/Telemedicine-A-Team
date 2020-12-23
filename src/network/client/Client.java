@@ -67,7 +67,7 @@ public class Client implements Network {
 	 */
 	public Patient sendToServer ( Patient patient ) throws ProtocolException {
 
-		NetworkMessage msg = new NetworkMessage( NetworkMessage.Protocol.GET_PATIENT, patient);
+		NetworkMessage msg = new NetworkMessage( NetworkMessage.Protocol.PATIENT_LOGIN, patient);
 
 		System.out.println("socket: "+ socket.getInetAddress());
 
@@ -77,9 +77,9 @@ public class Client implements Network {
 				objectOutputStream.flush();
 				NetworkMessage answer = (NetworkMessage) objectInputStream.readObject();
 				NetworkMessage.Protocol protocol = answer.getProtocol();
-				if ( protocol == NetworkMessage.Protocol.PUSH_PATIENT ){
+				if ( protocol == NetworkMessage.Protocol.LOGIN_ACCEPT){
 					return answer.getPatient();
-				} else if ( protocol == NetworkMessage.Protocol.DENY_PATIENT ){
+				} else if ( protocol == NetworkMessage.Protocol.LOGIN_DENY){
 					return null;
 				} else if (protocol == NetworkMessage.Protocol.ERROR) {
 					throw new ProtocolException("There was an error on the server side.", ProtocolException.ErrorType.SERVERSIDE_ERROR);

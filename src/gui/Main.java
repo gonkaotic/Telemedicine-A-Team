@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import network.client.Client;
 
 public class Main extends Application {
@@ -23,14 +24,17 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		this.window = stage;
 		try {
-
+			 
 			this.window = stage;
 
-			Parent root = FXMLLoader.load(getClass().getResource("/gui/MainWindow.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));
+			Parent root = loader.load();
+			MainWindow controller = loader.getController();
+			controller.setMain(this);
 			this.window.setScene(new Scene(root));
 			this.window.setResizable(true);
 			this.window.show();
-			this.window.setOnCloseRequest(e -> closeConnection());
+		
 			client = new Client( "localhost" );
 			if ( client.connect() ) {
 				//TODO: show loading circle while connecting.
