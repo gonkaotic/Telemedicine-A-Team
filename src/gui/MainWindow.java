@@ -41,7 +41,7 @@ public class MainWindow {
 		this.stage = new Stage();
 
 		if (login()) {
-			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/clientMainPanelController.fxml"));
+			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/ClientMainPanel.fxml"));
 			try {
 				BorderPane panel = loaderPatient.load();
 				clientMainPanelController controller = loaderPatient.<clientMainPanelController>getController();

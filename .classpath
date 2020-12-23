@@ -33,5 +33,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/bluecove-2.1.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/jfoenix-8.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
