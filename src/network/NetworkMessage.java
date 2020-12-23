@@ -14,11 +14,19 @@ public class NetworkMessage implements Serializable{
 	private static final long serialVersionUID = -2994950066983701095L;
 
 	public enum Protocol {
-		/*Protocols from client to server*/
-		GET_PATIENT, PUSH_MEASUREMENT, 
-		/*Protocols from server to client*/
-		PUSH_PATIENT, DENY_PATIENT, ERROR, ACK,
-		/*Protocols that can be used by both*/
+		/*Protocols from Patient to Server*/
+		PATIENT_LOGIN, PUSH_MEASUREMENT,
+		/*Protocols from Doctor to Server*/
+		DOCTOR_LOGIN, GET_PATIENT_MEASURES,
+		/*Protocols from Server to Doctor*/
+		PUSH_PATIENT_MEASURES,
+		/*Protocols from Admin to Server*/
+		ADMIN_LOGIN, REGISTER_PATIENT, REGISTER_DOCTOR, SERVER_SHUTDOWN, SERVER_CANCEL_SHUTDOWN,
+		/*Protocols from Server to Admin*/
+		SERVER_SHUTDOWN_CONFIRM,
+		/*Protocols from Server to ANY client*/
+		LOGIN_ACCEPT, LOGIN_DENY, ERROR, ACK,
+		/*Protocols that can be used by all*/
 		DISCONNECT
 	}
 	

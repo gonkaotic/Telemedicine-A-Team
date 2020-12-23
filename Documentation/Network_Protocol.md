@@ -15,47 +15,154 @@ other attributes.
 Here we will see what each protocol implies and what should be expected in the **NetworkMessage**
 object with it.
 
-###### From Client to Server
-* Protocol: _**GET_PATIENT**_
+###### From Patient to Server
+* Protocol: _**PATIENT_LOGIN**_
 
-    * **Usage**: After a successful connection, this should be the first message sent to the
-    server by any client. Its intention is to check if the user is registered in the
-    database and with the right password.
+    * **Usage**: After a successful TCP connection, this should be the first message sent to the
+    server by any patient client. Its intention is to check if the user is registered in the
+    database as a patient and with the right password.
     * **Requirements**: Requires a **Patient** object with at least DNI and password.
     * **Possible answers**: 
-        * _**PUSH_PATIENT**_
-        * _**DENY_PATIENT**_
+        * _**LOGIN_ACCEPT**_
+        * _**LOGIN_DENY**_
         * _**ERROR**_
 
 * Protocol: _**PUSH_MEASUREMENT**_
 
     * **Usage**: Once the client has logged in with a patient DNI and password, they can 
-    upload as many measurements as they want. it can't be done before loggin with _GET_PATIENT_
+    upload as many measurements as they want. It can't be done before login in with _PATIENT_LOGIN_
     * **Requirements**: Requires a **ArrayList< Measurement >** of at least 1 measurement.
     * **Possible answers**:
         * _**ACK**_ 
         * _**ERROR**_
-    
-###### From Server to Client
-
-* Protocol: _**PUSH_PATIENT**_
-
-    * **Usage**: When the DNI and password provided by protocol _GET_PATIENT_ matches with
-    those registered in the database, this protocol will be used as answer. 
-    * **Returns**: a _Patient_ object will be returned, with all the information 
-    required, included the measures taken in previous sessions.
-    * **Answers to**: 
-        * _**GET_PATIENT**_
         
-* Protocol: _**DENY_PATIENT**_
+###### From Doctor to Server
+* Protocol: _**DOCTOR_LOGIN**_
 
-    * **Usage**: When the DNI and password provided by protocol _GET_PATIENT_ doesn't
+    * **Usage**: After a successful TCP connection, this should be the first message sent to the
+    server by any Doctor client. Its intention is to check if the user is registered in the
+    database as a doctor and with the right password.
+    * **Requirements**: Requires a **Doctor** object with at least DNI and password.
+    * **Possible answers**: 
+        * _**LOGIN_ACCEPT**_
+        * _**LOGIN_DENY**_
+        * _**ERROR**_
+
+* Protocol: _**GET_PATIENT_MEASURES**_
+
+    * **Usage**: When the Doctor chooses a patient to look the measurements of, this protocol is called
+    to retrieve the measurements of the patient.
+    * **Requirements**: Requires a **Patient** object.
+    * **Possible answers**:
+        * _**PUSH_PATIENT_MEASURES**_ 
+        * _**ERROR**_
+        
+###### From Server to Doctor
+* Protocol: _**PUSH_PATIENT_MEASURES**_
+
+    * **Usage**: Answers when the doctor wants the measurements of a particular patient.
+    * **Requirements**: Requires an **ArrayList< Measurement >** to return. This list could be empty.
+    * **Answers to**: 
+        * _**GET_PATIENT_MEASURES**_
+
+###### From Admin to Server
+* Protocol: _**ADMIN_LOGIN**_
+
+    * **Usage**: After a successful TCP connection, this should be the first message sent to the
+    server by any admin client. Its intention is to check if the user is registered in the
+    database as a admin and with the right password.
+    * **Requirements**: Requires an **Administrator** object with at least DNI and password.
+    * **Possible answers**: 
+        * _**LOGIN_ACCEPT**_
+        * _**LOGIN_DENY**_
+        * _**ERROR**_
+        
+* Protocol: _**REGISTER_PATIENT**_
+
+    * **Usage**: to add a new patient to the database by an admin
+    * **Requirements**: Requires a **Patient** object with the database requirements; when provided the
+    server answers with _ACK_, otherwise with _ERROR_.
+    * **Possible answers**:
+        * _**ACK**_ 
+        * _**ERROR**_
+
+
+* Protocol: _**REGISTER_DOCTOR**_
+
+    * **Usage**: to add a new patient to the database by an admin
+    * **Requirements**: Requires a **Doctor** object with the database requirements; when provided the
+    server answers with _ACK_, otherwise with _ERROR_.
+    * **Possible answers**:
+        * _**ACK**_ 
+        * _**ERROR**_
+
+
+* Protocol: _**REGISTER_ADMIN**_
+
+    * **Usage**: to add a new patient to the database by an admin
+    * **Requirements**: Requires a **Administrator** object with the database requirements; when provided the
+    server answers with _ACK_, otherwise with _ERROR_.
+    * **Possible answers**:
+        * _**ACK**_ 
+        * _**ERROR**_
+
+
+* Protocol: _**SERVER_SHUTDOWN**_
+
+    * **Usage**: When the administrator wants to shutdown the server
+    * **Requirements**: An **Administrator** object with the id and the password of the administrator
+    requesting the shutdown, for extra security.
+    * **Possible answers**:
+        * _**ACK**_ 
+        * _**SERVER_SHUTDOWN_CONFIRM**_: Used in case there are other clients connected.
+        * _**ERROR**_
+
+
+* Protocol: _**SERVER_CANCEL_SHUTDOWN**_
+
+    * **Usage**: When there are other clients connected to the server and the administrator decides not
+    to shutdown the server.
+    * **Requirements**: none.
+    * **Possible answers**:
+        * _**ACK**_ 
+        * _**ERROR**_
+ 
+        
+###### From Server to Admin
+* Protocol: _**SERVER_SHUTDOWN_CONFIRM**_
+
+    * **Usage**: To answer _SERVER_SHUTDOWN_ if there are any other clients connected. 
+    * **Requirements**: none
+    * **Answers to**: 
+        * _**SERVER_SHUTDOWN**_
+  
+         
+###### From Server to ANY Client
+
+* Protocol: _**LOGIN_ACCEPT**_
+
+    * **Usage**: When the DNI and password provided by a protocol _LOGIN_ matches with
+    those registered in the database, this protocol will be used as answer. 
+    * **Returns**: 
+        * A _Patient_ object will be returned, with all the information required, included the 
+        measures taken in previous sessions if this was called _PATIENT_LOGIN_
+        * A _Doctor_ object and a list of patients under their care if this was called from _DOCTOR_LOGIN_
+    * **Answers to**: 
+        * _**PATIENT_LOGIN**_
+        * _**DOCTOR_LOGIN**_
+        * _**ADMIN_LOGIN**_
+        
+* Protocol: _**LOGIN_DENY**_
+
+    * **Usage**: When the DNI and password provided by a protocol _LOGIN_  doesn't
      match with those registered in the database, this protocol will be used as answer.
      When this protocol is sent, the connection will be closed, so the client needs to
      connect again. 
     * **Returns**: just the protocol.
     * **Answers to**: 
-        * _**GET_PATIENT**_
+        * _**PATIENT_LOGIN**_
+        * _**DOCTOR_LOGIN**_
+        * _**ADMIN_LOGIN**_
         
 * Protocol: _**ACK**_
 
@@ -71,7 +178,9 @@ object with it.
     again some other time. 
     * **Returns**: just the protocol.
     * **Answers to**: 
-        * _**GET_PATIENT**_
+        * _**PATIENT_LOGIN**_
+        * _**DOCTOR_LOGIN**_
+        * _**ADMIN_LOGIN**_
         * _**PUSH_MEASUREMENT**_
 
     
