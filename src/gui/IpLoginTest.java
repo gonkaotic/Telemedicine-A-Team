@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class IPLoginTest extends Application {
+public class IpLoginTest extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
