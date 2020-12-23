@@ -45,7 +45,7 @@ public class Main extends Application {
 		
 		Parent root;
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml" ));
 			root = loader.load();
 			MainWindow controller = loader.getController();
 			controller.setMain(this);
