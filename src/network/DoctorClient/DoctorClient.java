@@ -50,8 +50,10 @@ public class DoctorClient extends Client {
 				} else if (protocol == NetworkMessage.Protocol.ERROR) {
 					throw new ProtocolException("There was an error on the server side.", ProtocolException.ErrorType.SERVERSIDE_ERROR);
 				}
-			} catch (ClassNotFoundException | IOException e) {
+			} catch (ClassNotFoundException e) {
 				throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.CONNECTION_ERROR);
+			} catch ( IOException e ){
+				throw new ProtocolException("There was a connection error", ProtocolException.ErrorType.CONNECTION_ERROR);
 			}
 
 		}

@@ -214,6 +214,7 @@ public class ServerLogic implements Runnable{
                         } finally {
                             lock.releaseWrite();
                             outputStream.writeObject(answer);
+                            outputStream.flush();
                         }
                     } else if (msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT) {
                         break;
@@ -230,10 +231,44 @@ public class ServerLogic implements Runnable{
     }
 
     private void doctorLogic( Doctor doctorLogged){
+        if ( doctorLogged != null ) {
+            NetworkMessage msg = null;
+            NetworkMessage answer = null;
+            while (true) {
+                try {
+                    msg = (NetworkMessage) inputStream.readObject();
+                    NetworkMessage.Protocol protocol = msg.getProtocol();
 
+                    if ( protocol == NetworkMessage.Protocol.GET_PATIENT_MEASURES ) {
+                        Patient patient = msg.getPatient();
+                        try {
+                            lock.acquireRead();
+                            answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT_MEASURES, SQLManager.getMeasuresByPatientId( patient.getId() ));
+                        } catch ( SQLException | InterruptedException e ) {
+                            answer = new NetworkMessage( NetworkMessage.Protocol.ERROR);
+                        } finally {
+                            lock.releaseRead();
+                            outputStream.writeObject(answer);
+                            outputStream.flush();
+                        }
+
+                    } else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
+                        break;
+                    }
+                } catch (IOException e) {
+                    System.out.println("There was a connection error");
+                } catch (ClassNotFoundException e) {
+                    System.out.println("Client using incorrect object");
+                }
+            }
+
+            releaseResources( socket, inputStream, outputStream);
+        }
     }
 
     private void adminLogic( Administrator admin){
+        if ( admin != null ){
 
+        }
     }
 }
