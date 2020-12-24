@@ -104,9 +104,6 @@ public class NewMeasurementPanelController implements Initializable {
     private Button submitButton;
 
 
-    public void initComponents (){
-
-    }
 
     /**
      * Records the heart rate and oxygen saturation and displays them in their corresponding textfields
@@ -134,7 +131,7 @@ public class NewMeasurementPanelController implements Initializable {
             ECG ecgValues = bitalino.recordECG();
             dataSeries.getData().clear();
             for (int i=0; i<ecgValues.getEcg().size(); i++){
-                dataSeries.getData().add(new XYChart.Data(ecgValues.getEcg().get(i), ecgValues.getTimes().get(i)));
+                dataSeries.getData().add(new XYChart.Data<>(ecgValues.getTimes().get(i),ecgValues.getEcg().get(i)));
             }
             ecgGraph.getData().clear();
             ecgGraph.getData().add(dataSeries);
@@ -168,6 +165,7 @@ public class NewMeasurementPanelController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         //bitalino = new BitalinoHandler("20:17:09:18:49:21");
         dataSeries = new XYChart.Series();
+        ecgGraph.setCreateSymbols(false);
         voltsAxis.setLabel("mV");
         timeAxis.setLabel("ms");
     }

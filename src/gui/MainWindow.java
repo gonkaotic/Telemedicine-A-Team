@@ -46,7 +46,7 @@ public class MainWindow {
 				BorderPane panel = loaderPatient.load();
 				clientMainPanelController controller = loaderPatient.<clientMainPanelController>getController();
 				//TODO: give the patient to the new panel.
-				main.updateScene(new Scene(panel));
+				main.updateScene(new Scene(panel,800,800));
 				// controller.setMainWindow(this);
 
 			} catch (IOException e) {
