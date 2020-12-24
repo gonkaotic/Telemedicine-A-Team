@@ -10,7 +10,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import network.client.BitalinoHandler;
+import network.PatientClient.BitalinoHandler;
 import pojos.ECG;
 
 import java.net.URL;

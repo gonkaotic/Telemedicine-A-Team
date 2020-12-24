@@ -1,28 +1,21 @@
 package gui;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
-import Database.SQLManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import network.client.Client;
+import network.PatientClient.PatientClient;
 
 public class Main extends Application {
 
 	private Stage window;
-	private BorderPane rootLayout;
-	private Client client = null;
+	private PatientClient patientClient = null;
 
 	@Override
 	public void start(Stage stage) {
-		this.window = stage;
 		try {
 			 
 			this.window = stage;
@@ -35,8 +28,8 @@ public class Main extends Application {
 			this.window.setResizable(true);
 			this.window.show();
 		
-			client = new Client( "localhost" );
-			if ( client.connect() ) {
+			patientClient = new PatientClient( "localhost" );
+			if ( patientClient.connect() ) {
 				//TODO: show loading circle while connecting.
 				loadLogin();
 			}
@@ -73,10 +66,10 @@ public class Main extends Application {
 	}
 
 	private void closeConnection() {
-		if ( client != null ) client.disconnect();
+		if ( patientClient != null ) patientClient.disconnect();
 	}
 
-	protected Client getClient (){
-		return client;
+	protected PatientClient getClient (){
+		return patientClient;
 	}
 }

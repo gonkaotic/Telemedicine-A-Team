@@ -1,6 +1,5 @@
 package gui;
 
-import Database.SQLManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,7 +15,6 @@ import network.ProtocolException;
 import pojos.Patient;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class MainWindow {
 
@@ -93,7 +91,7 @@ public class MainWindow {
 
 	private boolean login() {
 		try {
-			extractedPatient = main.getClient().sendToServer(new Patient(dni, password));
+			extractedPatient = main.getClient().login(new Patient(dni, password));
 		} catch ( ProtocolException e){
 			extractedPatient = null;
 			e.printStackTrace();

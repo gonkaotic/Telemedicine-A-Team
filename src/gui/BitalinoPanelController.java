@@ -1,15 +1,13 @@
 package gui;
-import BITalino.BITalino;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import network.client.BitalinoHandler;
+import network.PatientClient.BitalinoHandler;
 
 import java.net.URL;
 import java.util.ResourceBundle;
