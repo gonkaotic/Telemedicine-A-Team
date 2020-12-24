@@ -6,8 +6,13 @@ public class Doctor {
     private String password;
 
 
-    public Doctor (){
+    public Doctor () {
 
+    }
+
+    public Doctor ( String dni, String password){
+        this.dni = dni;
+        this.password = password;
     }
     public String getDni() {
         return dni;
