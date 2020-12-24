@@ -1,4 +1,4 @@
-package network.client;
+package network.PatientClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,52 +11,20 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import network.Client;
 import network.Network;
 import network.NetworkMessage;
 import network.ProtocolException;
 import pojos.Measurement;
 import pojos.Patient;
 
-public class PatientClient implements Network {
-
-	private String serverIP;
-	private Socket socket = null;
-	private ObjectOutputStream objectOutputStream = null;
-	private ObjectInputStream objectInputStream = null;
+public class PatientClient extends Client {
 
 	/**
 	 * Client constructor
 	 */
 	public PatientClient(String serverIP) {
 		this.serverIP = serverIP;
-	}
-	
-	
-
-	/**
-	 * Connection to the server
-	 * 
-	 * @return true if the connection was established false if an error occurred
-	 */
-	public boolean connect() {
-		try {
-			this.socket = new Socket(serverIP, SERVERPORT);
-
-			objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-			objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-			return true;
-		} catch (UnknownHostException e) {
-			System.out.println("Unknown server");
-			e.printStackTrace();
-			releaseResources(objectInputStream, objectOutputStream, socket );
-			return false;
-		} catch (IOException e) {
-			System.out.println("It was not possible to connect to the server.");
-			e.printStackTrace();
-			releaseResources(objectInputStream, objectOutputStream, socket );
-			return false;
-		}
 	}
 
 	/**
