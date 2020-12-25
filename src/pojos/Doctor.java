@@ -4,6 +4,7 @@ public class Doctor {
 
     private String dni;
     private String password;
+    private String name;
 
 
     public Doctor () {
@@ -30,5 +31,11 @@ public class Doctor {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 }
