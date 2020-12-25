@@ -14,7 +14,7 @@ public class Measurement implements Serializable{
 	
 	
 	private Integer id;
-	private Patient patient;
+	private Integer patientId;
 	private Date date;
 	private ECG ecg;
 	private Float spO2;
@@ -22,21 +22,20 @@ public class Measurement implements Serializable{
 	private Float temperature;
 	private List<Symptom> symptomChecklist;
 	
-	public enum Symptom {FEVER, DRY_COUGH, TIREDNESS, ANOSMIA, AUGEUSIA, DIFF_BREATH, CHEST_PAIN};
+	public enum Symptom {FEVER, DRY_COUGH, TIREDNESS, ANOSMIA, AUGEUSIA, DIFF_BREATH, CHEST_PAIN}
 	
 	public Measurement() {
 
 		super();
 		this.bpm = 75;
-		this.spO2 = Float.valueOf((float) 9.87);
+		this.spO2 = 9.87f;
 		this.ecg = new ECG();
 		ArrayList<Float> ecg = new ArrayList<Float>();
-		ecg.add(Float.valueOf((float) 36));
-		ecg.add(Float.valueOf((float) 36.7));
+		ecg.add(36f);
+		ecg.add(36.7f);
 		this.ecg.setEcg(ecg);
-		this.temperature = Float.valueOf((float) 37.5);
-		this.patient = new Patient();
-		this.patient.setId(1);
+		this.temperature = 37.5f;
+		this.patientId = 1;
 
 		this.symptomChecklist = new ArrayList<>();
 
@@ -46,9 +45,9 @@ public class Measurement implements Serializable{
 
 	}
 
-	public Measurement(Integer id, Patient patient, Date date, ECG ecg, Float spO2, Integer bpm, Float temperature, List<Symptom> symptomChecklist) {
+	public Measurement(Integer id, Integer patientId, Date date, ECG ecg, Float spO2, Integer bpm, Float temperature, List<Symptom> symptomChecklist) {
 		this.id = id;
-		this.patient = patient;
+		this.patientId = patientId;
 		this.date = date;
 		this.ecg = ecg;
 		this.spO2 = spO2;
@@ -75,11 +74,10 @@ public class Measurement implements Serializable{
 			return false;
 		Measurement other = (Measurement) obj;
 		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
+			return other.id != null;
+		} else {
+			return id.equals(other.id);
+		}
 	}
 
 
@@ -87,7 +85,7 @@ public class Measurement implements Serializable{
 	public String toString() {
 		return "Measurement{" +
 				"id=" + id +
-				", patient=" + patient +
+				", patient=" + patientId +
 				", date=" + date +
 				", ecg=" + ecg +
 				", spO2=" + spO2 +
@@ -105,12 +103,12 @@ public class Measurement implements Serializable{
 		this.id = id; 
 	}
 
-	public Patient getPatient() {
-		return patient;
+	public Integer getPatientId() {
+		return patientId;
 	}
 
-	public void setPatient(Patient patient) {
-		this.patient = patient;
+	public void setPatientId(Integer patientId) {
+		this.patientId = patientId;
 	}
 
 	public Date getDate() {
