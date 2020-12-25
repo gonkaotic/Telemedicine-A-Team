@@ -1,10 +1,14 @@
 package pojos;
 
+import java.util.ArrayList;
+
 public class Doctor {
 
     private String dni;
     private String password;
     private String name;
+
+    private ArrayList<Patient> patients;
 
 
     public Doctor () {
@@ -15,6 +19,7 @@ public class Doctor {
         this.dni = dni;
         this.password = password;
     }
+
     public String getDni() {
         return dni;
     }
@@ -37,5 +42,13 @@ public class Doctor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ArrayList<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(ArrayList<Patient> patients) {
+        this.patients = patients;
     }
 }
