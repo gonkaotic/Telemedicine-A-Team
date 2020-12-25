@@ -22,10 +22,36 @@ public class Patient implements Serializable {
     private String password;
     private ArrayList<Measurement> measurements;
 
-    public enum Sex {MALE, FEMALE}
+    public enum Sex {
+        MALE ( "Male"), FEMALE ( "Female");
+
+        private final String name;
+        private Sex(String name){
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
     // CKD: Chronic Kidney Disease, Chronic Obstructive Pulmonary Disease
-    public enum RiskFactor {CANCER, CKD, COPD, HEART_CONDITIONS, IMMUNOCOMPROMISED, OBESITY, SMOKING, PREGNANCY, DIABETES2}
+    public enum RiskFactor {
+        CANCER("Cancer"), CKD("Chronic Kidney Disease"), COPD("Chronic Obstructive Pulmonary Disease"),
+        HEART_CONDITIONS ("Heart Conditions"), IMMUNOCOMPROMISED( "Inmunocompromised"), OBESITY("Obesity"),
+        SMOKING("Smoker"), PREGNANCY( "Pregnant"), DIABETES2("Diabetes Type 2");
+
+        private final String name;
+        private RiskFactor( String name ){
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 
 
     public Patient() {
