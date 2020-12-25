@@ -2,6 +2,7 @@ package pojos;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Patient implements Serializable {
@@ -19,6 +20,7 @@ public class Patient implements Serializable {
     private List<RiskFactor> riskFactor;
     private String dni;
     private String password;
+    private ArrayList<Measurement> measurements;
 
     public enum Sex {MALE, FEMALE}
 
@@ -153,5 +155,12 @@ public class Patient implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
+    public ArrayList<Measurement> getMeasurements() {
+        return measurements;
+    }
+
+    public void setMeasurements(ArrayList<Measurement> measurements) {
+        this.measurements = measurements;
+    }
 }
