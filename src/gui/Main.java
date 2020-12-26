@@ -47,7 +47,7 @@ public class Main extends Application {
 		}
 	}
 
-	public void loadLogin() {
+/*	public void loadLogin() {
 		
 		Parent root;
 		try {
@@ -80,5 +80,5 @@ public class Main extends Application {
 
 	protected PatientClient getClient (){
 		return patientClient;
-	}
+	}*/
 }
