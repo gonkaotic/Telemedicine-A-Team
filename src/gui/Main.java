@@ -18,8 +18,17 @@ public class Main extends Application {
 	public void start(Stage stage) {
 		try {
 			 
-			this.window = stage;
+			Parent root= FXMLLoader.load(getClass().getResource("clientSetIP.fxml"));
 
+	        //clientSetIPController controller = loader.<clientSetIPController>getController();
+	        //controller.initComponents();
+
+	        Scene scene=new Scene(root, 560, 405);
+	        stage.setScene(scene);
+	        stage.centerOnScreen();
+	        stage.show();
+			/*this.window = stage;
+			//TODO: Add clientSetIP.fxml
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));
 			Parent root = loader.load();
 			MainWindow controller = loader.getController();
@@ -32,7 +41,7 @@ public class Main extends Application {
 			if ( patientClient.connect() ) {
 				//TODO: show loading circle while connecting.
 				loadLogin();
-			}
+			}*/
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
