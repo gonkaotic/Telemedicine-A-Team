@@ -42,8 +42,9 @@ public class MainWindow {
 			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/ClientMainPanel.fxml"));
 			try {
 				BorderPane panel = loaderPatient.load();
-				clientMainPanelController controller = loaderPatient.<clientMainPanelController>getController();
+				ClientMainPanelController controller = loaderPatient.<ClientMainPanelController>getController();
 				//TODO: give the patient to the new panel.
+				controller.setPatient( extractedPatient );
 				main.updateScene(new Scene(panel,800,800));
 				// controller.setMainWindow(this);
 
@@ -78,17 +79,6 @@ public class MainWindow {
 
 	}
 
-	private boolean checkPassword() {
-		if (extractedPatient != null) {
-			if (extractedPatient.getPassword().equals(password)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
-
 	private boolean login() {
 		try {
 			extractedPatient = main.getClient().login(new Patient(dni, password));
@@ -99,11 +89,7 @@ public class MainWindow {
 			alert.showAndWait();
 		}
 
-		if (extractedPatient == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return extractedPatient != null;
 
 	}
 
