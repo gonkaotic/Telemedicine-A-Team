@@ -3,6 +3,7 @@ package pojos;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,9 +62,10 @@ public class Patient implements Serializable {
         this.name = "Joaquin";
         this.birthDate = Date.valueOf("1998-10-15");
         this.sex = Sex.MALE;
-        this.riskFactor = null;
+        this.riskFactor = new ArrayList<RiskFactor>(Arrays. asList(RiskFactor.CANCER,RiskFactor.COPD,RiskFactor.IMMUNOCOMPROMISED));;
         this.dni = String.valueOf((Math.random()*1000));
         this.password = "Craneos";
+        this.doctorId = 1;
     }
 
     public Patient( String dni, String password) {

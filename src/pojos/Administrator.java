@@ -7,7 +7,8 @@ public class Administrator {
     private String password;
 
     public Administrator ( ) {
-
+        this.dni = "22222222Y";
+        this.password = "Craneos";
     }
 
     public String getDni() {

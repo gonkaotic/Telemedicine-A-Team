@@ -7,7 +7,6 @@ import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 public class SQLManager {
@@ -19,11 +18,11 @@ public class SQLManager {
             connect("jdbc:sqlite:././Database/covid watchlist.db");
 
             //Measurement measurement = new Measurement();
+
             //insertMeasurement(measurement);
 
-            //Measurement measurement = searchMeasurementByID(4);
-
-            //System.out.println(measurement.toString());
+            //Patient patient =  getPatientByID(1);
+            //System.out.println(patient.toString());
 
             disconnect();
         } catch (Exception e) {
@@ -138,14 +137,14 @@ public class SQLManager {
     }
 
     public static void insertMeasurements ( ArrayList< Measurement> measurements) throws IOException, SQLException {
-        Iterator<Measurement> iterator = measurements.iterator();
-        while (iterator.hasNext()){
-            insertMeasurement( iterator.next() );
+        for (Measurement measurement : measurements) {
+            insertMeasurement(measurement);
         }
     }
 
     public static void insertMeasurement(Measurement measurement) throws SQLException, IOException {
-    	String sql1 = "INSERT INTO measures(measure_date,ecg, bpm, o2_saturation,temperature,symptoms)" + "VALUES(?,?,?,?,?,?,?);";
+    	String sql1 = "INSERT INTO measures(measure_date,ecg, bpm, o2_saturation,temperature,symptoms, patient_id)"
+                + "VALUES(?,?,?,?,?,?,?);";
 
     	PreparedStatement prep = c.prepareStatement(sql1);
 
@@ -202,7 +201,7 @@ public class SQLManager {
      *
      */
 
-    public static Patient getPatientByID(Integer id) throws SQLException {
+    public static Patient getPatientByID(Integer id) throws SQLException, IOException, ClassNotFoundException {
         String sql = "SELECT * FROM patient WHERE patient_id = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
 
@@ -215,6 +214,7 @@ public class SQLManager {
         }
 
         Patient patient = getPatient(rs1);
+        patient.setMeasurements((ArrayList<Measurement>) getMeasurementsByPatientId(patient.getId()));
 
         if (id.equals(patient.getId())) {
             prep.close();
@@ -229,7 +229,7 @@ public class SQLManager {
 
     }
 
-    public static Patient getPatientByDniAndPassword(String dni, String password) throws SQLException {
+    public static Patient getPatientByDniAndPassword(String dni, String password) throws SQLException, IOException, ClassNotFoundException {
 
         String sql="SELECT * FROM patient WHERE dni = ? AND password = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
@@ -239,6 +239,7 @@ public class SQLManager {
 
         ResultSet rs1 = prep.executeQuery();
         Patient patient = getPatient(rs1);
+        patient.setMeasurements((ArrayList<Measurement>) getMeasurementsByPatientId(patient.getId()));
 
         if	(dni.equals(patient.getDni()) && password.equals(patient.getPassword())) {
             prep.close();
@@ -253,7 +254,7 @@ public class SQLManager {
 
     }
 
-    public static Patient getPatientByDni(String dni) throws SQLException {
+    public static Patient getPatientByDni(String dni) throws SQLException, IOException, ClassNotFoundException {
 		
 		String sql="SELECT * FROM patient WHERE dni = ? ;";
 		PreparedStatement prep = c.prepareStatement(sql);
@@ -263,6 +264,7 @@ public class SQLManager {
 		
 		ResultSet rs1 = prep.executeQuery();	
 		Patient patient = getPatient(rs1);
+		patient.setMeasurements((ArrayList<Measurement>) getMeasurementsByPatientId(patient.getId()));
 				
 		if	(dni.equals(patient.getDni())) {
 			prep.close();
@@ -277,14 +279,49 @@ public class SQLManager {
 
 	}
 
-    public static List<Patient> getAllPatients() throws SQLException {
+    public static List<Patient> getPatientsByDoctorId(Integer doctorId) throws SQLException, IOException, ClassNotFoundException {
 
+        Patient tempPatient;
+        String sql = "SELECT * FROM patient WHERE doctor_id = ? ;";
+
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setInt(1, doctorId);
+
+        ResultSet rs1 = prep.executeQuery();
+
+        if (!rs1.isBeforeFirst()) {
+            prep.close();
+            return null;
+        }
+
+        List<Patient> patientList = new ArrayList<>();
+
+        while (rs1.next()) {
+            tempPatient = getPatient(rs1);
+            tempPatient.setMeasurements((ArrayList<Measurement>) getMeasurementsByPatientId(tempPatient.getId()));
+            tempPatient.setDni(null);
+            tempPatient.setPassword(null);
+            patientList.add(tempPatient);
+        }
+
+        prep.close();
+        rs1.close();
+        return patientList;
+
+    }
+
+    public static List<Patient> getAllPatients() throws SQLException, IOException, ClassNotFoundException {
+
+        Patient tempPatient;
         String sql = "SELECT * FROM patient ;";
         PreparedStatement prep = c.prepareStatement(sql);
         ResultSet rs1 = prep.executeQuery();
         List<Patient> patientList = new ArrayList<>();
         while (rs1.next()) {
-            patientList.add(getPatient(rs1));
+            tempPatient = getPatient(rs1);
+            tempPatient.setMeasurements((ArrayList<Measurement>) getMeasurementsByPatientId(tempPatient.getId()));
+            patientList.add(tempPatient);
         }
         rs1.close();
         prep.close();
@@ -362,7 +399,7 @@ public class SQLManager {
 
     }
 
-    public static Doctor getDoctorByDniAndPassword(String dni, String password) throws SQLException {
+    public static Doctor getDoctorByDniAndPassword(String dni, String password) throws SQLException, IOException, ClassNotFoundException {
 
         String sql="SELECT * FROM doctor WHERE dni = ? AND password = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
@@ -372,6 +409,7 @@ public class SQLManager {
 
         ResultSet rs1 = prep.executeQuery();
         Doctor doctor = getDoctor(rs1);
+        doctor.setPatients((ArrayList<Patient>) getPatientsByDoctorId(doctor.getId()));
 
         if	(dni.equals(doctor.getDni()) && password.equals(doctor.getPassword())) {
             prep.close();
@@ -464,6 +502,7 @@ public class SQLManager {
 
         Doctor doctor = new Doctor();
 
+        doctor.setId(rs1.getInt("doctor_id"));
         doctor.setName(rs1.getString("name"));
         doctor.setDni(rs1.getString("dni"));
         doctor.setPassword(rs1.getString("password"));
