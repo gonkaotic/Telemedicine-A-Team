@@ -73,7 +73,8 @@ public class DoctorClient extends Client {
 			NetworkMessage answer = ( NetworkMessage ) objectInputStream.readObject();
 			NetworkMessage.Protocol protocol = answer.getProtocol();
 			if ( protocol == NetworkMessage.Protocol.PUSH_PATIENT_MEASURES ){
-				return answer.getPatient();
+				patient.setMeasurements( answer.getMeasurements() );
+				return patient;
 			} else if ( protocol == NetworkMessage.Protocol.ERROR ){
 				throw new ProtocolException("There was an error in the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
 			}
