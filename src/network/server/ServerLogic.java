@@ -47,7 +47,7 @@ public class ServerLogic implements Runnable{
                     System.out.println("Patient received: "+ patientLogged.toString());
                     try {
                         lock.acquireRead();
-                        patientLogged = SQLManager.searchPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
+                        patientLogged = SQLManager.getPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
                     } catch ( SQLException e){
                         System.out.println( "Patient not found.");
                         patientLogged = null;
@@ -77,7 +77,7 @@ public class ServerLogic implements Runnable{
                     System.out.println("Doctor received: "+ doctorLogged.toString());
                     try {
                         lock.acquireRead();
-                        doctorLogged = SQLManager.searchDoctorByDniAndPassword(doctorLogged.getDni(), doctorLogged.getPassword());
+                        doctorLogged = SQLManager.getDoctorByDniAndPassword(doctorLogged.getDni(), doctorLogged.getPassword());
                     } catch ( SQLException e){
                         System.out.println( "Doctor not found.");
                         doctorLogged = null;
@@ -107,7 +107,7 @@ public class ServerLogic implements Runnable{
                     System.out.println("Doctor received: "+ adminLogged.toString());
                     try {
                         lock.acquireRead();
-                        adminLogged = SQLManager.searchAdminByDniAndPassword(adminLogged.getDni(), adminLogged.getPassword());
+                        adminLogged = SQLManager.getAdminByDniAndPassword(adminLogged.getDni(), adminLogged.getPassword());
                     } catch ( SQLException e){
                         System.out.println( "Doctor not found.");
                         adminLogged = null;

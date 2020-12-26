@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Patient implements Serializable {
 
@@ -15,6 +16,7 @@ public class Patient implements Serializable {
 
     private Integer id;
     private String name;
+    private Integer doctorId;
     private Date birthDate;
     private Sex sex;
     private List<RiskFactor> riskFactor;
@@ -71,19 +73,23 @@ public class Patient implements Serializable {
 
     }
 
-    public Patient(Integer id, String name, Date birthDate, Sex sex, List<RiskFactor> riskFactor) {
+
+
+    public Patient(Integer id, String name, Integer doctorId, Date birthDate, Sex sex, List<RiskFactor> riskFactor) {
         super();
         this.id = id;
         this.name = name;
+        this.doctorId = doctorId;
         this.birthDate = birthDate;
         this.sex = sex;
         this.riskFactor = riskFactor;
 
     }
 
-    public Patient(Integer id, String name, Date birthDate, Sex sex, List<RiskFactor> riskFactor, String dni, String password) {
+    public Patient(Integer id, String name, Integer doctorId, Date birthDate, Sex sex, List<RiskFactor> riskFactor, String dni, String password) {
         this.id = id;
         this.name = name;
+        this.doctorId = doctorId;
         this.birthDate = birthDate;
         this.sex = sex;
         this.riskFactor = riskFactor;
@@ -92,25 +98,16 @@ public class Patient implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Patient patient = (Patient) o;
+        return id.equals(patient.id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Patient other = (Patient) obj;
-        if (id == null) {
-            return other.id == null;
-        } else return id.equals(other.id);
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
@@ -118,11 +115,13 @@ public class Patient implements Serializable {
         return "Patient{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", doctorId=" + doctorId +
                 ", birthDate=" + birthDate +
                 ", sex=" + sex +
                 ", riskFactor=" + riskFactor +
                 ", dni='" + dni + '\'' +
                 ", password='" + password + '\'' +
+                ", measurements=" + measurements +
                 '}';
     }
 
@@ -140,6 +139,14 @@ public class Patient implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(Integer doctorId) {
+        this.doctorId = doctorId;
     }
 
     public Date getBirthDate() {

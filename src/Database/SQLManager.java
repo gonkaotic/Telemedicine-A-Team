@@ -70,7 +70,8 @@ public class SQLManager {
                 "sex TEXT NOT NULL, \r\n" +
                 "risk_factors TEXT, \r\n" +
                 "dni TEXT UNIQUE NOT NULL, \r\n" +
-                "password TEXT NOT NULL);";
+                "password TEXT NOT NULL,\r\n" +
+                "doctor_id INTEGER REFERENCES doctor (doctor_id) ON UPDATE CASCADE ON DELETE CASCADE );";
         stmt.executeUpdate(table);
         stmt.close();
 
@@ -81,7 +82,7 @@ public class SQLManager {
         String sql1 = "CREATE TABLE measures " + "(measure_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " measure_date DATE NOT NULL," + " ecg BLOB," + " bpm INT NOT NULL,"
                 + " o2_saturation FLOAT," + " temperature FLOAT NOT NULL," + " symptoms TEXT,"
-                + " patient_id REFERENCES patient (patient_id) ON UPDATE CASCADE ON DELETE CASCADE );";
+                + " patient_id INTEGER REFERENCES patient (patient_id) ON UPDATE CASCADE ON DELETE CASCADE );";
         stmt1.executeUpdate(sql1);
         stmt1.close();
     }
@@ -115,7 +116,8 @@ public class SQLManager {
 
     public static void insertPatient(Patient patient) throws SQLException {
 
-        String sql1 = "INSERT INTO patient(name, date_birth, sex, risk_factors, dni, password)" + "VALUES(?,?,?,?,?,?);";
+        String sql1 = "INSERT INTO patient(name, date_birth, sex, risk_factors, dni, password,doctor_id)" +
+                "VALUES(?,?,?,?,?,?,?);";
 
         PreparedStatement prep = c.prepareStatement(sql1);
         prep.setString(1, patient.getName());
@@ -129,6 +131,7 @@ public class SQLManager {
         prep.setString(4, rFactorToBinaryString(patient.getRiskFactor()));
         prep.setString(5, patient.getDni());
         prep.setString(6, patient.getPassword());
+        prep.setInt(7,patient.getDoctorId());
 
         prep.executeUpdate();
         prep.close();
@@ -199,7 +202,7 @@ public class SQLManager {
      *
      */
 
-    public static Patient searchPatientByID(Integer id) throws SQLException {
+    public static Patient getPatientByID(Integer id) throws SQLException {
         String sql = "SELECT * FROM patient WHERE patient_id = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
 
@@ -226,7 +229,7 @@ public class SQLManager {
 
     }
 
-    public static Patient searchPatientByDniAndPassword(String dni, String password) throws SQLException {
+    public static Patient getPatientByDniAndPassword(String dni, String password) throws SQLException {
 
         String sql="SELECT * FROM patient WHERE dni = ? AND password = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
@@ -250,7 +253,7 @@ public class SQLManager {
 
     }
 
-    public static Patient searchPatientByDni(String dni) throws SQLException {
+    public static Patient getPatientByDni(String dni) throws SQLException {
 		
 		String sql="SELECT * FROM patient WHERE dni = ? ;";
 		PreparedStatement prep = c.prepareStatement(sql);
@@ -288,7 +291,7 @@ public class SQLManager {
         return patientList;
     }
 
-    public static Measurement searchMeasurementByID(Integer id) throws SQLException, IOException, ClassNotFoundException {
+    public static Measurement getMeasurementByID(Integer id) throws SQLException, IOException, ClassNotFoundException {
 
         String sql = "SELECT * FROM measures WHERE measure_id = ? ;";
 
@@ -359,7 +362,7 @@ public class SQLManager {
 
     }
 
-    public static Doctor searchDoctorByDniAndPassword(String dni, String password) throws SQLException {
+    public static Doctor getDoctorByDniAndPassword(String dni, String password) throws SQLException {
 
         String sql="SELECT * FROM doctor WHERE dni = ? AND password = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
@@ -383,7 +386,7 @@ public class SQLManager {
 
     }
 
-    public static Administrator searchAdminByDniAndPassword(String dni, String password) throws SQLException {
+    public static Administrator getAdminByDniAndPassword(String dni, String password) throws SQLException {
 
         String sql="SELECT * FROM admin WHERE dni = ? AND password = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
@@ -427,6 +430,7 @@ public class SQLManager {
         patient.setRiskFactor(binaryStringToRFactor(rs1.getString("risk_factors")));
         patient.setDni(rs1.getString("dni"));
         patient.setPassword(rs1.getString("password"));
+        patient.setDoctorId(rs1.getInt("doctor_id"));
 
 
 
