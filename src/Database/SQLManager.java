@@ -1,4 +1,5 @@
 package Database;
+
 import pojos.ECG;
 import pojos.Measurement;
 import pojos.Patient;
@@ -22,9 +23,9 @@ public class SQLManager {
             //Measurement measurement = new Measurement();
             //insertMeasurement(measurement);
 
-            Measurement measurement = searchMeasurementByID(4);
+            //Measurement measurement = searchMeasurementByID(4);
 
-            System.out.println(measurement.toString());
+            //System.out.println(measurement.toString());
 
             disconnect();
         } catch (Exception e) {
@@ -122,7 +123,7 @@ public class SQLManager {
     }
 
     public static void insertMeasurement(Measurement measurement) throws SQLException, IOException {
-    	String sql1 = "INSERT INTO measures(measure_date,ecg, bpm, o2_saturation,temperature,symptoms,patient_id)" + "VALUES(?,?,?,?,?,?,?);";
+    	String sql1 = "INSERT INTO measures(measure_date,ecg, bpm, o2_saturation,temperature,symptoms)" + "VALUES(?,?,?,?,?,?,?);";
 
     	PreparedStatement prep = c.prepareStatement(sql1);
 
@@ -142,7 +143,7 @@ public class SQLManager {
         prep.setFloat(4,measurement.getSpO2());
         prep.setFloat(5, measurement.getTemperature());
         prep.setString(6,symptomsToBinaryString(measurement.getSymptomChecklist()));
-        prep.setInt(7,measurement.getPatient().getId());
+        prep.setInt(7,measurement.getPatientId());
 
         prep.executeUpdate();
         prep.close();
@@ -357,7 +358,7 @@ public class SQLManager {
         measurement.setBPM(rs1.getInt("bpm"));
         measurement.setTemperature(rs1.getFloat("temperature"));
         measurement.setSymptomChecklist(binaryStringToSymptoms(rs1.getString("symptoms")));
-        measurement.setPatient(searchPatientByID(rs1.getInt("patient_id")));
+        measurement.setPatientId(rs1.getInt("patient_id"));
 
         return measurement;
 
