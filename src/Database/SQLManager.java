@@ -24,6 +24,8 @@ public class SQLManager {
             //Patient patient =  getPatientByID(1);
             //System.out.println(patient.toString());
 
+
+
             disconnect();
         } catch (Exception e) {
             System.out.println("Error in connecting/generating/disconnecting from the database: " + e);
