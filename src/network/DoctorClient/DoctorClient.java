@@ -27,7 +27,7 @@ public class DoctorClient extends Client {
 
 	/**
 	 *  This would be the first message a client should sent to the server to "log in"
-	 * @returns the Doctor with the Patients if the id and password are correct, null otherwise.
+	 * @return the Doctor with the Patients if the id and password are correct, null otherwise.
 	 * @param doctor A doctor that should have DNI and password in it
 	 * @throws  ProtocolException when there is an error.
 	 */
@@ -53,7 +53,7 @@ public class DoctorClient extends Client {
 			} catch (ClassNotFoundException e) {
 				throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.CONNECTION_ERROR);
 			} catch ( IOException e ){
-				throw new ProtocolException("There was a connection error", ProtocolException.ErrorType.CONNECTION_ERROR);
+				throw new ProtocolException("Server closed the connection", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
 			}
 
 		}
@@ -62,7 +62,7 @@ public class DoctorClient extends Client {
 
 	/**
 	 *  Requests the measurements of a particular patient.
-	 * @returns A patient with a list of measurements inside.
+	 * @return A patient with a list of measurements inside.
 	 * @param  patient a patient object, that must have the patient id
 	 * @throws  ProtocolException when there is an error.
 	 */
@@ -77,8 +77,10 @@ public class DoctorClient extends Client {
 			} else if ( protocol == NetworkMessage.Protocol.ERROR ){
 				throw new ProtocolException("There was an error in the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
 			}
-		} catch ( ClassNotFoundException | IOException e){
+		} catch ( ClassNotFoundException e){
 			throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.CONNECTION_ERROR);
+		} catch (IOException e) {
+			throw new ProtocolException("Server closed the connection", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
 		}
 
 		return null;

@@ -58,7 +58,7 @@ public class AdminClient extends Client {
             }
         }
         else{
-            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CONNECTION_ERROR);
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
         }
     }
 
@@ -78,7 +78,7 @@ public class AdminClient extends Client {
             }
         }
         else{
-            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CONNECTION_ERROR);
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
         }
     }
 
@@ -96,7 +96,7 @@ public class AdminClient extends Client {
                 objectOutputStream.flush();
                 return msg = (NetworkMessage) objectInputStream.readObject();
             } catch (IOException e) {
-                //e.printStackTrace(); --> Esto en realidad saltará cuando no se pueda leer o escribir (aka conexion cerrada)
+                throw new ProtocolException("Server closed the connection", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
             } catch (ClassNotFoundException e) {
                 throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.CONNECTION_ERROR);
             }
