@@ -12,8 +12,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import network.PatientClient.BitalinoHandler;
 import pojos.ECG;
+import pojos.Measurement;
+import pojos.Patient;
 
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 
 public class NewMeasurementPanelController implements Initializable {
@@ -21,6 +24,8 @@ public class NewMeasurementPanelController implements Initializable {
     private BitalinoHandler bitalino;
     private XYChart.Series dataSeries;
     private Pane centralPane;
+    private ECG ecg;
+    private Patient patient;
 
     @FXML
     private GridPane measurementsPanel;
@@ -124,11 +129,11 @@ public class NewMeasurementPanelController implements Initializable {
         }
     }
 
-    //TODO check ECG
     @FXML
     void recordEcgClicked(ActionEvent event) {
         try {
             ECG ecgValues = bitalino.recordECG();
+            this.ecg=ecgValues;
             dataSeries.getData().clear();
             for (int i=0; i<ecgValues.getEcg().size(); i++){
                 dataSeries.getData().add(new XYChart.Data<>(ecgValues.getTimes().get(i),ecgValues.getEcg().get(i)));
@@ -145,7 +150,71 @@ public class NewMeasurementPanelController implements Initializable {
     @FXML
     //TODO send new measurement to server
     void submitClicked(ActionEvent event) {
+        String temperature = this.temperatureTextField.getText();
+        if (temperature==""){
+            showErrorMessage("Temperature error", "Temperature field is empty");
+        }
+        else{
+            try {
+                Float temp = Float.parseFloat(temperature);
+                String text = heartRateTextField.getText();
+                if(text==""){
+                    showErrorMessage("Pulse oxymeter error", "No data was recorded from the pulse oxymeter");
+                }
+                else {
+                    try {
+                        Integer heartRate = Integer.parseInt(text);//This will work because it is set internally
+                        text= oxygenTextField.getText();
+                        if (text==""){
+                            showErrorMessage("Pulse oxymeter error", "No data was recorded from the pulse oxymeter");
+                        }
+                        else{
+                            try {
+                                Float oxygen = Float.parseFloat(text);
 
+                                //Symptoms checklist
+                                LinkedList<Measurement.Symptom> symptomsList = new LinkedList<>();
+                                if(coughCheckBox.isSelected()){
+                                    symptomsList.add(Measurement.Symptom.DRY_COUGH);
+                                }
+                                if(smellCheckBox.isSelected()){
+                                    symptomsList.add(Measurement.Symptom.ANOSMIA);
+                                }
+                                if(breathCheckBox.isSelected()){
+                                    symptomsList.add(Measurement.Symptom.DIFF_BREATH);
+                                }
+                                if(tasteCheckBox.isSelected()){
+                                    symptomsList.add(Measurement.Symptom.AUGEUSIA);
+                                }
+                                if(tirednessCheckBox.isSelected()){
+                                    symptomsList.add(Measurement.Symptom.TIREDNESS);
+                                }
+
+                                if(symptomsList.isEmpty()) {
+                                   boolean confirmation = showConfirmationMessage("Empty symprtoms", "No symptoms selected. " +
+                                            "Do you want to continue?");
+                                   if (confirmation){
+                                       if(this.ecg!=null){
+                                           Measurement measurement = new Measurement()
+                                       }
+                                       else{
+
+                                       }
+                                   }
+                                }
+
+                            }catch(NumberFormatException ex){
+                                showErrorMessage("Oxymeter error", "Oxygen saturation should be a number");
+                            }
+                        }
+                    }catch(NumberFormatException ex){
+                        showErrorMessage("Heart rate error", "Heart rate should be a number");
+                    }
+                }
+            }catch(NumberFormatException ex){
+                showErrorMessage("Temperature error", "Temperature must be a number");
+            }
+        }
     }
 
     private void showErrorMessage (String title, String message){
@@ -156,9 +225,22 @@ public class NewMeasurementPanelController implements Initializable {
 
     }
 
-    public void initComponents(Pane centralPane, BitalinoHandler bitalino){
+    private boolean showConfirmationMessage(String title, String message) {
+        Alert a = new Alert(Alert.AlertType.CONFIRMATION, message,
+                new ButtonType("Yes", ButtonBar.ButtonData.YES), ButtonType.NO);
+        a.setTitle(title);
+        String confirmation = a.showAndWait().get().getText();
+        if (confirmation.equals("Yes")) {
+            return true;
+        }
+        return false;
+    }
+
+
+    public void initComponents(Pane centralPane, BitalinoHandler bitalino, Patient patient){
         this.centralPane=centralPane;
         this.bitalino=bitalino;
+        this.patient = patient;
     }
 
     @Override
