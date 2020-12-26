@@ -1,9 +1,10 @@
 package pojos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Doctor {
+public class Doctor implements Serializable {
 
     private Integer id;
     private String dni;

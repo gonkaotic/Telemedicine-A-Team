@@ -1,8 +1,9 @@
 package pojos;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Administrator {
+public class Administrator implements Serializable {
 
 
     private String dni;
