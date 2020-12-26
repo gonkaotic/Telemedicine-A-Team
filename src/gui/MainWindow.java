@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class MainWindow {
 
-	private Main main;
+	private clientSetIPController main;
 	private Stage stage;
 	private String dni;
 	private Patient extractedPatient;
@@ -67,9 +67,9 @@ public class MainWindow {
 		this.stage = stage;
 	}
 
-	public void setMain(Main main) {
+	public void setMain(clientSetIPController clientSetIPController) {
 
-		this.main = main;
+		this.main = clientSetIPController;
 
 	}
 
