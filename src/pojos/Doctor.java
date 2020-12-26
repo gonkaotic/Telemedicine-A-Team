@@ -7,7 +7,6 @@ public class Doctor {
     private String dni;
     private String password;
     private String name;
-
     private ArrayList<Patient> patients;
 
 

@@ -243,7 +243,8 @@ public class ServerLogic implements Runnable{
                         Patient patient = msg.getPatient();
                         try {
                             lock.acquireRead();
-                            answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT_MEASURES, SQLManager.getMeasuresByPatientId( patient.getId() ));
+                            answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT_MEASURES,
+                                    (ArrayList<Measurement>) SQLManager.getMeasurementsByPatientId( patient.getId() ));
                         } catch ( SQLException | InterruptedException e ) {
                             answer = new NetworkMessage( NetworkMessage.Protocol.ERROR);
                         } finally {

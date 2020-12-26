@@ -1,8 +1,6 @@
 package Database;
 
-import pojos.ECG;
-import pojos.Measurement;
-import pojos.Patient;
+import pojos.*;
 import pojos.Patient.Sex;
 
 import java.io.*;
@@ -88,6 +86,27 @@ public class SQLManager {
         stmt1.close();
     }
 
+    public static void createTableDoctor() throws SQLException {
+        Statement stmt1 = c.createStatement();
+        String sql1 = "CREATE TABLE doctor(\r\n" +
+                "doctor_id INTEGER PRIMARY KEY AUTOINCREMENT,\r\n" +
+                "name TEXT NOT NULL,\r\n" +
+                "dni TEXT UNIQUE NOT NULL, \r\n" +
+                "password TEXT NOT NULL);";
+        stmt1.executeUpdate(sql1);
+        stmt1.close();
+    }
+
+    public static void createTableAdmin() throws SQLException {
+        Statement stmt1 = c.createStatement();
+        String sql1 = "CREATE TABLE admin(\r\n" +
+                "admin_id INTEGER PRIMARY KEY AUTOINCREMENT,\r\n" +
+                "dni TEXT UNIQUE NOT NULL, \r\n" +
+                "password TEXT NOT NULL);";
+        stmt1.executeUpdate(sql1);
+        stmt1.close();
+    }
+
     /*
      *
      * Inserts
@@ -148,6 +167,31 @@ public class SQLManager {
         prep.executeUpdate();
         prep.close();
 	}
+
+    public static void insertDoctor(Doctor doctor) throws SQLException {
+
+        String sql1 = "INSERT INTO doctor(name, dni, password)" + "VALUES(?,?,?);";
+
+        PreparedStatement prep = c.prepareStatement(sql1);
+        prep.setString(1, doctor.getName());
+        prep.setString(2, doctor.getDni());
+        prep.setString(3, doctor.getPassword());
+
+        prep.executeUpdate();
+        prep.close();
+    }
+
+    public static void insertAdmin(Administrator admin) throws SQLException {
+
+        String sql1 = "INSERT INTO admin(dni, password)" + "VALUES(?,?);";
+
+        PreparedStatement prep = c.prepareStatement(sql1);
+        prep.setString(1, admin.getDni());
+        prep.setString(2, admin.getPassword());
+
+        prep.executeUpdate();
+        prep.close();
+    }
 
     /*
      *
@@ -273,7 +317,7 @@ public class SQLManager {
 
     }
 
-    public static List<Measurement> searchMeasurementByPatientId(Integer patientId) throws SQLException, IOException, ClassNotFoundException {
+    public static List<Measurement> getMeasurementsByPatientId(Integer patientId) throws SQLException, IOException, ClassNotFoundException {
 
         String sql = "SELECT * FROM measures WHERE patient_id = ? ;";
 
@@ -312,6 +356,54 @@ public class SQLManager {
         rs1.close();
         prep.close();
         return measuresList;
+
+    }
+
+    public static Doctor searchDoctorByDniAndPassword(String dni, String password) throws SQLException {
+
+        String sql="SELECT * FROM doctor WHERE dni = ? AND password = ? ;";
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setString(1, dni);
+        prep.setString(2, password);
+
+        ResultSet rs1 = prep.executeQuery();
+        Doctor doctor = getDoctor(rs1);
+
+        if	(dni.equals(doctor.getDni()) && password.equals(doctor.getPassword())) {
+            prep.close();
+            rs1.close();
+            return doctor;
+        }else {
+            System.out.println("Wrong Id or password");
+            prep.close();
+            rs1.close();
+            return null;
+        }
+
+    }
+
+    public static Administrator searchAdminByDniAndPassword(String dni, String password) throws SQLException {
+
+        String sql="SELECT * FROM admin WHERE dni = ? AND password = ? ;";
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setString(1, dni);
+        prep.setString(2, password);
+
+        ResultSet rs1 = prep.executeQuery();
+        Administrator admin = getAdmin(rs1);
+
+        if	(dni.equals(admin.getDni()) && password.equals(admin.getPassword())) {
+            prep.close();
+            rs1.close();
+            return admin;
+        }else {
+            System.out.println("Wrong Id or password");
+            prep.close();
+            rs1.close();
+            return null;
+        }
 
     }
 
@@ -361,6 +453,29 @@ public class SQLManager {
         measurement.setPatientId(rs1.getInt("patient_id"));
 
         return measurement;
+
+    }
+
+    private static Doctor getDoctor(ResultSet rs1) throws SQLException {
+
+        Doctor doctor = new Doctor();
+
+        doctor.setName(rs1.getString("name"));
+        doctor.setDni(rs1.getString("dni"));
+        doctor.setPassword(rs1.getString("password"));
+
+        return doctor;
+
+    }
+
+    private static Administrator getAdmin(ResultSet rs1) throws SQLException {
+
+        Administrator admin = new Administrator();
+
+        admin.setDni(rs1.getString("dni"));
+        admin.setPassword(rs1.getString("password"));
+
+        return admin;
 
     }
 
