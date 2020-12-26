@@ -12,13 +12,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import network.PatientClient.BitalinoHandler;
+import pojos.Patient;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class clientMainPanelController implements Initializable {
+public class ClientMainPanelController implements Initializable {
     private BitalinoHandler bitalino;
+    private Patient patient;
 
     @FXML
     private BorderPane clientPane;
@@ -109,5 +111,13 @@ public class clientMainPanelController implements Initializable {
 
     private void initComponents(BitalinoHandler bitalino){
         this.bitalino = bitalino;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 }
