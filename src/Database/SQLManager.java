@@ -18,7 +18,8 @@ public class SQLManager {
         try {
             connect("jdbc:sqlite:././Database/covid watchlist.db");
 
-            System.out.println(getPatientByDniAndPassword("862.698116228668","Craneos").toString());
+            Doctor doctor = getDoctorByDniAndPassword("11111111Y","Craneos");
+            System.out.println(doctor.toString());
 
             disconnect();
         } catch (Exception e) {
