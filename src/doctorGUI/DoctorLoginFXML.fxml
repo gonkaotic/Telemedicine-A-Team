@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="doctorGUI.DoctorLoginController">
+    <center>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="300.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+            <children>
+                <AnchorPane layoutX="328.0" layoutY="42.0" prefHeight="297.0" prefWidth="279.0" style="-fx-background-color: 20120F;">
+                    <children>
+                        <TextField fx:id="userField" layoutX="34.0" layoutY="109.0" prefHeight="27.0" prefWidth="212.0" promptText="DNI" />
+                        <PasswordField fx:id="passField" layoutX="34.0" layoutY="162.0" prefHeight="27.0" prefWidth="212.0" promptText="Password" />
+                        <Button fx:id="signInButton" layoutX="66.0" layoutY="224.0" mnemonicParsing="false" onAction="#signInClicked" onMouseClicked="#signInClicked" prefHeight="39.0" prefWidth="148.0" text="Login" />
+                        <Label alignment="TOP_CENTER" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="95.0" layoutY="43.0" prefHeight="22.0" prefWidth="81.0" text="Sign In" textAlignment="JUSTIFY" textOverrun="CLIP" />
+                    </children>
+                </AnchorPane>
+                <ImageView fitHeight="169.0" fitWidth="189.0" layoutX="58.0" layoutY="106.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/pngwing.com.png" />
+                    </image>
+                </ImageView>
+                <Label layoutX="70.0" layoutY="61.0" prefHeight="47.0" prefWidth="180.0" text="WELCOME">
+                    <effect>
+                        <Glow />
+                    </effect>
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
+                </Label>
+            </children>
+        </AnchorPane>
+    </center>
+</BorderPane>
