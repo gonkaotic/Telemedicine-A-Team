@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import network.PatientClient.BitalinoHandler;
+import network.PatientClient.PatientClient;
 import pojos.ECG;
 import pojos.Measurement;
 import pojos.Patient;
@@ -26,6 +27,7 @@ public class NewMeasurementPanelController implements Initializable {
     private Pane centralPane;
     private ECG ecg;
     private Patient patient;
+    private PatientClient client;
 
     @FXML
     private GridPane measurementsPanel;
@@ -195,7 +197,7 @@ public class NewMeasurementPanelController implements Initializable {
                                             "Do you want to continue?");
                                    if (confirmation){
                                        if(this.ecg!=null){
-                                           Measurement measurement = new Measurement()
+                                           Measurement measurement = new Measurement();
                                        }
                                        else{
 
@@ -241,6 +243,7 @@ public class NewMeasurementPanelController implements Initializable {
         this.centralPane=centralPane;
         this.bitalino=bitalino;
         this.patient = patient;
+        //this.client= client;
     }
 
     @Override

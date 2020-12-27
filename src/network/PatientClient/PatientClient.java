@@ -97,8 +97,8 @@ public class PatientClient extends Client {
 			NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.DISCONNECT);
 			objectOutputStream.writeObject( msg );
 		} catch ( IOException e){
-			System.out.println("Disconnection error");
-			e.printStackTrace();
+			//System.out.println("Disconnection error");
+			//e.printStackTrace();
 		} finally {
 			releaseResources(objectInputStream, objectOutputStream, socket);
 		}
@@ -132,6 +132,5 @@ public class PatientClient extends Client {
 				Logger.getLogger(PatientClient.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
-
 	}
 }

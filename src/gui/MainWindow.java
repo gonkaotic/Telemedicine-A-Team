@@ -3,6 +3,7 @@ package gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -11,6 +12,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import network.PatientClient.PatientClient;
 import network.ProtocolException;
 import pojos.Patient;
 
@@ -18,11 +20,15 @@ import java.io.IOException;
 
 public class MainWindow {
 
-	private Main main;
+	private PatientClient client;
 	private Stage stage;
 	private String dni;
 	private Patient extractedPatient;
 	private String password;
+
+	@FXML
+	private BorderPane loginPane;
+
 	@FXML
 	private TextField userField;
 
@@ -41,11 +47,18 @@ public class MainWindow {
 		if (login()) {
 			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/ClientMainPanel.fxml"));
 			try {
-				BorderPane panel = loaderPatient.load();
+				Parent clientPanel = (Parent) loaderPatient.load();
 				clientMainPanelController controller = loaderPatient.<clientMainPanelController>getController();
+				controller.initComponents(extractedPatient, client);
+				Stage stage = (Stage) (loginPane.getScene().getWindow());
+				Scene scene = new Scene(clientPanel, 700,550);
+				stage.setScene(scene);
+				stage.setResizable(true);
+				stage.centerOnScreen();
+
 				//TODO: give the patient to the new panel.
-				main.updateScene(new Scene(panel,800,800));
-				// controller.setMainWindow(this);
+				//main.updateScene(new Scene(panel,800,800));
+				//controller.setMainWindow(this);
 
 			} catch (IOException e) {
 				Alert alert = new Alert(AlertType.ERROR, "Error loading the patient view");
@@ -54,6 +67,8 @@ public class MainWindow {
 		} else {
 			Alert alert = new Alert(AlertType.ERROR, "Wrong username or password");
 			alert.showAndWait();
+			client.disconnect(); //????
+			System.exit(0);
 		}
 
 	}
@@ -66,6 +81,7 @@ public class MainWindow {
 		this.stage = stage;
 	}
 
+	/*
 	public void setMain(Main main) {
 
 		this.main = main;
@@ -77,6 +93,8 @@ public class MainWindow {
 		main.loadLogin();
 
 	}
+
+	 */
 
 	private boolean checkPassword() {
 		if (extractedPatient != null) {
@@ -91,7 +109,7 @@ public class MainWindow {
 
 	private boolean login() {
 		try {
-			extractedPatient = main.getClient().login(new Patient(dni, password));
+			extractedPatient = client.login(new Patient(dni, password));
 		} catch ( ProtocolException e){
 			extractedPatient = null;
 			e.printStackTrace();
@@ -105,6 +123,10 @@ public class MainWindow {
 			return true;
 		}
 
+	}
+
+	public void initComponents(PatientClient client){
+		this.client = client;
 	}
 
 }

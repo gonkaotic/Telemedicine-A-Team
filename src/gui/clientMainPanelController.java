@@ -12,6 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import network.PatientClient.BitalinoHandler;
+import network.PatientClient.PatientClient;
+import pojos.Patient;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,6 +21,8 @@ import java.util.ResourceBundle;
 
 public class clientMainPanelController implements Initializable {
     private BitalinoHandler bitalino;
+    private Patient patient;
+    private PatientClient client;
 
     @FXML
     private BorderPane clientPane;
@@ -76,7 +80,7 @@ public class clientMainPanelController implements Initializable {
             measurementsPane.prefWidthProperty().bind(centralPane.widthProperty());
 
             NewMeasurementPanelController controller = loader.<NewMeasurementPanelController>getController();
-            controller.initComponents(centralPane,bitalino);
+            controller.initComponents(centralPane,bitalino,patient);
 
         }catch(IOException ex){
             ex.printStackTrace();
@@ -107,7 +111,8 @@ public class clientMainPanelController implements Initializable {
         bitalino = new BitalinoHandler("20:17:09:18:49:21");
     }
 
-    private void initComponents(BitalinoHandler bitalino){
-        this.bitalino = bitalino;
+    public void initComponents(Patient patient, PatientClient client){
+        this.patient=patient;
+        this.client = client;
     }
 }
