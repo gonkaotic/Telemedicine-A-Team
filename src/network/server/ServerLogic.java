@@ -221,6 +221,7 @@ public class ServerLogic implements Runnable{
                     }
                 } catch (IOException e) {
                     System.out.println("There was a connection error");
+                    break;
                 } catch (ClassNotFoundException e) {
                     System.out.println("Client using incorrect object");
                 }
@@ -258,6 +259,7 @@ public class ServerLogic implements Runnable{
                     }
                 } catch (IOException e) {
                     System.out.println("There was a connection error");
+                    break;
                 } catch (ClassNotFoundException e) {
                     System.out.println("Client using incorrect object");
                 }
