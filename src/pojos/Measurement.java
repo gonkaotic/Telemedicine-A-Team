@@ -22,7 +22,19 @@ public class Measurement implements Serializable{
 	private Float temperature;
 	private List<Symptom> symptomChecklist;
 	
-	public enum Symptom {FEVER, DRY_COUGH, TIREDNESS, ANOSMIA, AUGEUSIA, DIFF_BREATH, CHEST_PAIN}
+	public enum Symptom {FEVER("Fever"), DRY_COUGH ("Dry cough"), TIREDNESS("Tiredness"), ANOSMIA ( "Anosmia" ),
+		AUGEUSIA("Augesia"), DIFF_BREATH("Difficulties breathing"), CHEST_PAIN("Chest pain");
+
+		private String name;
+		private Symptom ( String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
 	
 	public Measurement() {
 
