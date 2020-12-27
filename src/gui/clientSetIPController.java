@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import network.PatientClient.PatientClient;
 
@@ -22,6 +23,9 @@ public class clientSetIPController implements Initializable {
 
 	private String ipAddress;
 	private PatientClient patientClient = null;
+
+	@FXML
+	private GridPane ipPanel;
 
 	@FXML
 	private TextField ipAddressTextfield;
@@ -38,6 +42,7 @@ public class clientSetIPController implements Initializable {
 			showErrorMessage("Unvalid IpAddres: check it!");
 		} else {
 			patientClient = new PatientClient(ipAddress);
+			patientClient.connect();
 			changeWindow();
 		}
 
@@ -50,16 +55,28 @@ public class clientSetIPController implements Initializable {
 			root = loader.load();
 
 			MainWindow controller = loader.getController();
-			controller.setMain(this);
+			controller.initComponents(patientClient);
+			Stage stage = (Stage) (ipPanel.getScene().getWindow());
+			stage.setOnCloseRequest(e->closeConnection());
+			Scene scene = new Scene(root, 700,550);
+			stage.setScene(scene);
+			stage.setResizable(true);
+			stage.centerOnScreen();
+			//controller.setMain(this);
+			/*
 			this.window.setScene(new Scene(root));
 			this.window.setResizable(true);
 			this.window.show();
 
+			 */
+			/*
 			patientClient = new PatientClient("localhost");
 			if (patientClient.connect()) {
 				// TODO: show loading circle while connecting.
 				loadLogin();
 			}
+
+			 */
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

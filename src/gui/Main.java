@@ -16,32 +16,33 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		//try {
+		try {
 			this.window = stage;
 			this.window.setOnCloseRequest(e->closeConnection());
-/*
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));
+
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/clientSetIP.fxml"));
 			Parent root = loader.load();
-			MainWindow controller = loader.getController();
+			//MainWindow controller = loader.getController();
 			//controller.setMain(this);
 			this.window.setScene(new Scene(root));
 			this.window.setResizable(true);
 			this.window.show();
-			 */
-
+			/*
 			patientClient = new PatientClient( "localhost" );
 			if ( patientClient.connect() ) {
 				//TODO: show loading circle while connecting.
 				loadLogin();
 			}
 			//TODO: show alert if connection was not possible
-		/*} catch (IOException e) {
+
+			 */
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		 */
-	}
 
+	}
+/*
 	public void loadLogin() {
 		
 		Parent root;
@@ -61,6 +62,8 @@ public class Main extends Application {
 		}
 
 	}
+	*/
+
 
 	public static void main(String[] args) {
 		launch(args);
