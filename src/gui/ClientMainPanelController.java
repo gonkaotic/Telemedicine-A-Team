@@ -115,4 +115,12 @@ public class ClientMainPanelController implements Initializable {
         this.patient=patient;
         this.client = client;
     }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 }

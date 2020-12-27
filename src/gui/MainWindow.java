@@ -20,6 +20,7 @@ import java.io.IOException;
 
 public class MainWindow {
 
+	private clientSetIPController main;
 	private PatientClient client;
 	private Stage stage;
 	private String dni;
@@ -49,16 +50,15 @@ public class MainWindow {
 			try {
 				Parent clientPanel = (Parent) loaderPatient.load();
 				ClientMainPanelController controller = loaderPatient.<ClientMainPanelController>getController();
+				//TODO: give the patient to the new panel.
 				controller.initComponents(extractedPatient, client);
 				Stage stage = (Stage) (loginPane.getScene().getWindow());
 				Scene scene = new Scene(clientPanel, 700,550);
 				stage.setScene(scene);
 				stage.setResizable(true);
 				stage.centerOnScreen();
-
-				//TODO: give the patient to the new panel.
 				//main.updateScene(new Scene(panel,800,800));
-				//controller.setMainWindow(this);
+				// controller.setMainWindow(this);
 
 			} catch (IOException e) {
 				Alert alert = new Alert(AlertType.ERROR, "Error loading the patient view");
@@ -81,10 +81,9 @@ public class MainWindow {
 		this.stage = stage;
 	}
 
-	/*
-	public void setMain(Main main) {
+	public void setMain(clientSetIPController clientSetIPController) {
 
-		this.main = main;
+		this.main = clientSetIPController;
 
 	}
 
@@ -94,18 +93,9 @@ public class MainWindow {
 
 	}
 
-	 */
 
-	private boolean checkPassword() {
-		if (extractedPatient != null) {
-			if (extractedPatient.getPassword().equals(password)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return false;
-	}
+
+
 
 	private boolean login() {
 		try {
@@ -117,11 +107,7 @@ public class MainWindow {
 			alert.showAndWait();
 		}
 
-		if (extractedPatient == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return extractedPatient != null;
 
 	}
 

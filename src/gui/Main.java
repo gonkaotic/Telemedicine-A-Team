@@ -28,7 +28,7 @@ public class Main extends Application {
 			this.window.setResizable(true);
 			this.window.show();
 			 */
-		
+
 			patientClient = new PatientClient( "localhost" );
 			if ( patientClient.connect() ) {
 				//TODO: show loading circle while connecting.
@@ -43,6 +43,7 @@ public class Main extends Application {
 	}
 
 	public void loadLogin() {
+		
 		Parent root;
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml" ));
