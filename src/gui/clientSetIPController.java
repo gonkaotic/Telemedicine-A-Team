@@ -1,19 +1,27 @@
 package gui;
 
-
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import network.PatientClient.PatientClient;
 
 public class clientSetIPController implements Initializable {
 
+	private Stage window;
+
 	private String ipAddress;
+	private PatientClient patientClient = null;
 
 	@FXML
 	private TextField ipAddressTextfield;
@@ -24,12 +32,38 @@ public class clientSetIPController implements Initializable {
 	@FXML
 	void okButtonClicked(ActionEvent event) {
 		ipAddress = ipAddressTextfield.getText();
-		
+
 		boolean verification = verifyIPAddress();
 		if (!verification) {
 			showErrorMessage("Unvalid IpAddres: check it!");
+		} else {
+			patientClient = new PatientClient(ipAddress);
+			changeWindow();
 		}
-		
+
+	}
+
+	private void changeWindow() {
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));
+		Parent root;
+		try {
+			root = loader.load();
+
+			MainWindow controller = loader.getController();
+			controller.setMain(this);
+			this.window.setScene(new Scene(root));
+			this.window.setResizable(true);
+			this.window.show();
+
+			patientClient = new PatientClient("localhost");
+			if (patientClient.connect()) {
+				// TODO: show loading circle while connecting.
+				loadLogin();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -39,12 +73,15 @@ public class clientSetIPController implements Initializable {
 			return false;
 		if (this.ipAddress.matches("^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\.(?!$)|$)){4}$"))
 			return true;
+		if (this.ipAddress.matches("localhost"))
+			return true;
 		return false;
+
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
+
 	}
 
 	private void showErrorMessage(String message) {
@@ -53,6 +90,38 @@ public class clientSetIPController implements Initializable {
 		a.setContentText(message);
 		a.showAndWait();
 
+	}
+
+	public void loadLogin() {
+
+		Parent root;
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainWindow.fxml"));
+			root = loader.load();
+			MainWindow controller = loader.getController();
+			// controller.setMain(this);
+			this.window.setScene(new Scene(root));
+			this.window.setResizable(true);
+			this.window.show();
+			this.window.setOnCloseRequest(e -> closeConnection());
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("There was some kind of error and we haven't even started!");
+		}
+
+	}
+
+	public void updateScene(Scene scene) {
+		window.setScene(scene);
+	}
+
+	private void closeConnection() {
+		if (patientClient != null)
+			patientClient.disconnect();
+	}
+
+	protected PatientClient getClient() {
+		return patientClient;
 	}
 
 }

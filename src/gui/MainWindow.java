@@ -48,7 +48,7 @@ public class MainWindow {
 			FXMLLoader loaderPatient = new FXMLLoader(getClass().getResource("/gui/ClientMainPanel.fxml"));
 			try {
 				Parent clientPanel = (Parent) loaderPatient.load();
-				clientMainPanelController controller = loaderPatient.<clientMainPanelController>getController();
+				ClientMainPanelController controller = loaderPatient.<ClientMainPanelController>getController();
 				controller.initComponents(extractedPatient, client);
 				Stage stage = (Stage) (loginPane.getScene().getWindow());
 				Scene scene = new Scene(clientPanel, 700,550);

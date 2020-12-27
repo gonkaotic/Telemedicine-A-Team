@@ -1,9 +1,12 @@
 package pojos;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 
-public class Doctor {
+public class Doctor implements Serializable {
 
+    private Integer id;
     private String dni;
     private String password;
     private String name;
@@ -11,12 +14,51 @@ public class Doctor {
 
 
     public Doctor () {
-
+        this.dni = "11111111Y";
+        this.password = "Craneos";
+        this.name = "Juan";
     }
 
     public Doctor ( String dni, String password){
         this.dni = dni;
         this.password = password;
+    }
+
+    public Doctor(String dni, String password, String name) {
+        this.dni = dni;
+        this.password = password;
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Doctor doctor = (Doctor) o;
+        return dni.equals(doctor.dni);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dni);
+    }
+
+    @Override
+    public String toString() {
+        return "Doctor{" +
+                "dni='" + dni + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", patients=" + patients +
+                '}';
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getDni() {

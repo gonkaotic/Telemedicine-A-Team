@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class clientMainPanelController implements Initializable {
+public class ClientMainPanelController implements Initializable {
     private BitalinoHandler bitalino;
     private Patient patient;
     private PatientClient client;
