@@ -67,8 +67,8 @@ public class MainWindow {
 		} else {
 			Alert alert = new Alert(AlertType.ERROR, "Wrong username or password");
 			alert.showAndWait();
-			client.disconnect(); //????
-			System.exit(0);
+			//client.disconnect(); //????
+			//System.exit(0);
 		}
 
 	}

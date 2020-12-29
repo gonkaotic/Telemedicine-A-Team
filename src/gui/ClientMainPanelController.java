@@ -98,7 +98,7 @@ public class ClientMainPanelController implements Initializable {
             recordsPane.prefWidthProperty().bind(centralPane.widthProperty());
 
             ClientsViewMeasurementsController controller = loader.<ClientsViewMeasurementsController>getController();
-            controller.initComponents(centralPane);
+            controller.initComponents(centralPane,patient);
 
         }catch(IOException ex){
             ex.printStackTrace();

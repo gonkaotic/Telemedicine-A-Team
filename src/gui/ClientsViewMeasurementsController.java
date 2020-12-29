@@ -29,10 +29,12 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import pojos.Measurement;
+import pojos.Patient;
 
 public class ClientsViewMeasurementsController implements Initializable {
 
 	private Pane mainPane;
+	private Patient patient;
 
 	@FXML
 	private GridPane clientsViewMeasurements;
@@ -53,7 +55,7 @@ public class ClientsViewMeasurementsController implements Initializable {
 	private TableColumn<Measurement, Float> temperatureColumn;
 
 	@FXML
-	private TableColumn<Measurement, String> symptomsColumn;
+	private TableColumn<Measurement, ArrayList<Measurement.Symptom> > symptomsColumn;
 
 	@FXML
 	private Label measurementsLabel;
@@ -68,42 +70,21 @@ public class ClientsViewMeasurementsController implements Initializable {
 		bpmColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Integer>("BPM"));
 		o2SaturationColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("O2 Saturation"));
 		temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("Temperature"));
-		symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement, String>("Symptoms"));
-		try {
-			measurementsTable.getItems().addAll(SQLManager.getAllMeasurements());
-		} catch (SQLException | ClassNotFoundException | IOException e) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.show();
-		}
-
-	}
-/* TODO: sacar solo medidas del cliente que se entre
-	private ObservableList<Measurement> setMeasurements() {
-    	ObservableList<Measurement> measurements = FXCollections.observableArrayList();
-			
-		try {
-			NewMeasurementPanelController controller = SQLManager.
-	        //controller.initComponents();
-			measurements.addAll(controller.); 
-			return measurements;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			measurements.clear();
-			return measurements;
-		}
+		symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
 		
-	  }*/
 
-	public void initComponents(Pane mainPane) {
-		this.mainPane = mainPane;
-		//measurementsTable.setItems(setMeasurements());
 	}
 
-	private void setMeasurements(ArrayList<Measurement> measurements) {
-		ObservableList<Measurement> observableMeasurement = FXCollections.observableArrayList();
-		observableMeasurement.addAll(measurements);
-		measurementsTable.getItems().clear();
-		measurementsTable.getItems().setAll(observableMeasurement);
+	
+	public void initComponents(Pane centralPane, Patient patient) {
+		 dateColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Date>("date"));
+	        bpmColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Integer>("BPM"));
+	        o2SaturationColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Float>("spO2"));
+	        temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Float>("temperature"));
+	        symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
+
+	            
+	    	measurementsTable.getItems().addAll(patient.getMeasurements());
 	}
 
 }
