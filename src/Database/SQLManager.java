@@ -389,6 +389,36 @@ public class SQLManager {
 
     }
 
+    public static List<Measurement> getMeasurementsByPatientDni(String dni) throws SQLException, IOException, ClassNotFoundException {
+
+        Patient patient = getPatientByDni(dni);
+        Integer patientId = patient.getId();
+
+        String sql = "SELECT * FROM measures WHERE patient_id = ? ;";
+
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setInt(1, patientId);
+
+        ResultSet rs1 = prep.executeQuery();
+
+        if (!rs1.isBeforeFirst()) {
+            prep.close();
+            return null;
+        }
+
+        List<Measurement> measuresList = new ArrayList<>();
+
+        while (rs1.next()) {
+            measuresList.add(getMeasurement(rs1));
+        }
+
+        prep.close();
+        rs1.close();
+        return measuresList;
+
+    }
+
     public static List<Measurement> getAllMeasurements() throws SQLException, IOException, ClassNotFoundException {
 
         String sql = "SELECT * FROM measures ;";
