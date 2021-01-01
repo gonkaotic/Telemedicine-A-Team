@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class Client implements Network {
 
-
+    private boolean connected;
 
     protected String serverIP;
     protected Socket socket = null;
@@ -28,18 +28,18 @@ public class Client implements Network {
 
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
-
-            return true;
+            connected = true;
         } catch (UnknownHostException e) {
             System.out.println("Unknown server");
             e.printStackTrace();
             releaseResources(objectInputStream, objectOutputStream, socket );
-            return false;
         } catch (IOException e) {
             System.out.println("It was not possible to connect to the server.");
             e.printStackTrace();
             releaseResources(objectInputStream, objectOutputStream, socket );
-            return false;
+        } finally {
+            //set to false in the "releaseResources" method
+            return connected;
         }
     }
 
@@ -62,14 +62,18 @@ public class Client implements Network {
     }
 
     //passing the parameters to the methods is kind of an overkill, as they are global variables, but lets work like that
-    private static void releaseResources(InputStream input, OutputStream output,
+    protected void releaseResources(InputStream input, OutputStream output,
                                          Socket socket) {
+
+        connected = false;
 
         if( input != null) {
             try {
                 input.close();
             } catch (IOException ex) {
                 Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                input = null;
             }
         }
 
@@ -78,6 +82,8 @@ public class Client implements Network {
                 output.close();
             } catch (IOException ex) {
                 Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+            }finally {
+                output = null;
             }
         }
 
@@ -86,9 +92,15 @@ public class Client implements Network {
                 socket.close();
             } catch (IOException ex) {
                 Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+            }finally {
+                socket = null;
             }
         }
 
+    }
+
+    public boolean isConnected(){
+        return connected;
     }
 
 }

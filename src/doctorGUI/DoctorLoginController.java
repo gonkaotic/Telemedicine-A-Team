@@ -35,7 +35,6 @@ public class DoctorLoginController {
     void signInClicked(ActionEvent event) {
 
         if ( event.getSource() == signInButton ) {
-
             if (login()) {
                 FXMLLoader doctorLoader = new FXMLLoader(getClass().getResource("/doctorGUI/DoctorMainPanelFXML.fxml"));
                 try {
@@ -51,6 +50,7 @@ public class DoctorLoginController {
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Wrong username or password");
                 alert.showAndWait();
+                if ( !client.isConnected() ) client.connect();
             }
         }
 
