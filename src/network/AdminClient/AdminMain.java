@@ -1,8 +1,7 @@
 package network.AdminClient;
 
-import network.Network;
+import network.ProtocolException;
 import pojos.Administrator;
-import security.PasswordAuthentication;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,18 +14,20 @@ import java.io.InputStreamReader;
 public class AdminMain {
     private static BufferedReader console = null;
     private static AdminClient adminClient;
+    private static Administrator admin = null;
 
     public static void main(String[] args) {
         console = new BufferedReader(new InputStreamReader(System.in));
-        while (!connectToServer()) ;
+        boolean login=false;
+        do {
+            while (!connectToServer()) ;
+            login = login();
+        }while (!login);
 
-
-        /*
         while(true){
             int option = displayMenu();
         }
 
-         */
 
     }
 
@@ -60,7 +61,9 @@ public class AdminMain {
     /**
      * Starts connection with the server by opening a socket against the server
      *
-     * @return true if everything went ok, false if an error occurred throughout the process
+     * @return
+     *      true if everything went ok
+     *      false if an error occurred during the process
      */
     private static boolean connectToServer() {
         try {
@@ -86,17 +89,29 @@ public class AdminMain {
         }
     }
 
-    private static void login() {
+    /**
+     * Gets the info from the admin needed to login in the server
+     * @return
+     *      true if login was successful
+     *      false otherwise
+     */
+    private static boolean login() {
         try {
             System.out.print("DNI: ");
             String dni = console.readLine();
             System.out.println("Password: ");
             String password = console.readLine();
 
-            Administrator admin = new Administrator(dni,password);
+            Administrator adminData = new Administrator(dni,password);
+            admin = adminClient.login(adminData);
+            return (admin!=null);
 
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
