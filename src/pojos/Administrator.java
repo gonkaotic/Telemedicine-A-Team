@@ -14,6 +14,11 @@ public class Administrator implements Serializable {
         this.password = "Craneos";
     }
 
+    public Administrator (String dni, String password){
+        this.dni=dni;
+        this.password=password;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

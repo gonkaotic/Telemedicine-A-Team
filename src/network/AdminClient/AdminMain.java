@@ -26,6 +26,20 @@ public class AdminMain {
 
         while(true){
             int option = displayMenu();
+            switch (option){
+                case 1:break;
+                case 2: break;
+                case 3: break;
+                case 4: break;
+                case 5:
+                    System.out.println("Exiting ...");
+                    adminClient.disconnect();
+                    closeConsole();
+                    System.exit(0);
+
+                default:
+                    System.out.println("Invalid option");
+            }
         }
 
 
@@ -112,6 +126,16 @@ public class AdminMain {
         } catch (ProtocolException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private static void closeConsole(){
+        if(console != null){
+            try{
+                console.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
