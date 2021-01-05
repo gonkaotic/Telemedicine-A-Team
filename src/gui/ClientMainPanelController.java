@@ -131,24 +131,25 @@ public class ClientMainPanelController implements Initializable {
     }
     
     
-    public void showMeasurement( Measurement newMeasure ){
+    public void showNewMeasurement( Measurement newMeasure ){
         try {
-            //patient = client.getPatient(newMeasure);
-            System.out.println("Showing Patient: " + patient.toString());
-            FXMLLoader measureChooserLoader = new FXMLLoader(getClass().getResource("/doctorGUI/MeasuresChooser.fxml"));
-            FXMLLoader measureListLoader = new FXMLLoader(getClass().getResource("/doctorGUI/MeasurementsListView.fxml"));
+          // patient = patient.setMeasurements(newMeasure);
+           System.out.println("llego");
+            FXMLLoader measureChooserLoader = new FXMLLoader(getClass().getResource("NewMeasurementPanel.fxml"));
+            
             try {
 
-                BorderPane panel = measureChooserLoader.load();
-                MeasuresChooserController controller = measureChooserLoader.getController();
-                controller.setPatient(patient);
+                
+                
+                GridPane recordsPane = (GridPane) measureChooserLoader.load();
+                centralPane.getChildren().clear();
+                centralPane.getChildren().add(recordsPane);
+                recordsPane.prefHeightProperty().bind(centralPane.heightProperty());
+                recordsPane.prefWidthProperty().bind(centralPane.widthProperty());
 
-                GridPane listviewPane = measureListLoader.load();
-                MeasurementListViewerController listController = measureListLoader.getController();
-                listController.init( patient.getMeasurements() );
+                ClientsViewMeasurementsController controller = measureChooserLoader.<ClientsViewMeasurementsController>getController();
+                controller.initComponents(centralPane,patient);
 
-               // panel.setCenter( listviewPane );
-               // mainPane.setCenter( panel );
                 //bottomLeftBorderPane.setCenter( patientList );
 
             } catch (IOException e) {
