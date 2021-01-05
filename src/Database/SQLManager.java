@@ -526,13 +526,13 @@ public class SQLManager {
      *
      */
 
-    public static void updateMeasurement(Measurement measurement) throws SQLException {
+    public static void updateMeasurementComment(Integer measurement_id, String comment) throws SQLException {
 
         String sql = "UPDATE measures SET comment = ? WHERE measure_id = ? ;";
         PreparedStatement prep = c.prepareStatement(sql);
 
-        prep.setString(1, measurement.getComment());
-        prep.setInt(2, measurement.getId());
+        prep.setString(1, comment);
+        prep.setInt(2, measurement_id);
 
         prep.executeUpdate();
         prep.close();
