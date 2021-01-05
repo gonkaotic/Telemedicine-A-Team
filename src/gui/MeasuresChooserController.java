@@ -53,7 +53,7 @@ public class MeasuresChooserController {
 
     }
 
-    public void init( Patient patient ) {
+    public void init( Patient patient,  ) {
         setPatient(patient, measurements);
        
     }

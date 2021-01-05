@@ -134,8 +134,8 @@ public class ClientMainPanelController implements Initializable {
     public void showNewMeasurement( Measurement newMeasure ){
         try {
           // patient = patient.setMeasurements(newMeasure);
-           System.out.println("llego");
-            FXMLLoader measureChooserLoader = new FXMLLoader(getClass().getResource("NewMeasurementPanel.fxml"));
+          
+            FXMLLoader measureChooserLoader = new FXMLLoader(getClass().getResource("MeasuresChooser.fxml"));
             
             try {
 
