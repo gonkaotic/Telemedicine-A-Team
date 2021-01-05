@@ -106,31 +106,5 @@ public class PatientClient extends Client {
 	}
 
 	//passing the parameters to the methods is kind of an overkill, as they are global variables, but lets work like that
-	private static void releaseResources(InputStream input, OutputStream output,
-			Socket socket) {
 
-		if( input != null) {
-			try {
-				input.close();
-			} catch (IOException ex) {
-				Logger.getLogger(PatientClient.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
-
-		if ( output != null ) {
-			try {
-				output.close();
-			} catch (IOException ex) {
-				Logger.getLogger(PatientClient.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
-
-		if ( socket != null ) {
-			try {
-				socket.close();
-			} catch (IOException ex) {
-				Logger.getLogger(PatientClient.class.getName()).log(Level.SEVERE, null, ex);
-			}
-		}
-	}
 }
