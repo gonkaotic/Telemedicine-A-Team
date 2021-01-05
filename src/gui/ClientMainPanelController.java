@@ -22,8 +22,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import doctorGUI.MeasurementListViewerController;
-import doctorGUI.MeasuresChooserController;
+
 
 public class ClientMainPanelController implements Initializable {
     private BitalinoHandler bitalino;
@@ -132,35 +131,20 @@ public class ClientMainPanelController implements Initializable {
     
     
     public void showNewMeasurement( Measurement newMeasure ){
-        try {
-          // patient = patient.setMeasurements(newMeasure);
-          
-            FXMLLoader measureChooserLoader = new FXMLLoader(getClass().getResource("MeasuresChooser.fxml"));
-            
-            try {
+    	try {
+    		System.out.println("Showing Patient: " + newMeasure.toString());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("MeasuresChooser.fxml"));
+            GridPane measuresPane = (GridPane) loader.load();
+            centralPane.getChildren().clear();
+            centralPane.getChildren().add(measuresPane);
+            measuresPane.prefHeightProperty().bind(centralPane.heightProperty());
+            measuresPane.prefWidthProperty().bind(centralPane.widthProperty());
 
-                
-                
-                GridPane recordsPane = (GridPane) measureChooserLoader.load();
-                centralPane.getChildren().clear();
-                centralPane.getChildren().add(recordsPane);
-                recordsPane.prefHeightProperty().bind(centralPane.heightProperty());
-                recordsPane.prefWidthProperty().bind(centralPane.widthProperty());
+            MeasuresChooserController controller = loader.<MeasuresChooserController>getController();
+           // controller.init(patient, measuresPane);
 
-                ClientsViewMeasurementsController controller = measureChooserLoader.<ClientsViewMeasurementsController>getController();
-                controller.initComponents(centralPane,patient);
-
-                //bottomLeftBorderPane.setCenter( patientList );
-
-            } catch (IOException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading the measure chooser");
-                alert.showAndWait();
-            }
-
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR, e.getErrorMessage());
-            alert.showAndWait();
+        }catch(IOException ex){
+            ex.printStackTrace();
         }
     }
 

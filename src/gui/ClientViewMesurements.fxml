@@ -32,7 +32,7 @@
       <RowConstraints maxHeight="104.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
-      <TableView fx:id="measurementsTable" prefHeight="313.0" prefWidth="420.0" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="4" GridPane.rowSpan="3">
+      <TableView fx:id="measurementsTable" onMouseClicked="#showNewMeasurement" prefHeight="313.0" prefWidth="420.0" GridPane.columnIndex="1" GridPane.columnSpan="5" GridPane.rowIndex="4" GridPane.rowSpan="3">
          <columns>
             <TableColumn fx:id="dateColumn" editable="false" prefWidth="212.0" text="DATE" />
             <TableColumn fx:id="bpmColumn" editable="false" minWidth="0.0" prefWidth="215.0" text="BPM" />

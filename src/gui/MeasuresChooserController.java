@@ -16,7 +16,7 @@ public class MeasuresChooserController {
 
     private Patient patient;
     private ArrayList<Measurement> measurements;
-
+    private ClientMainPanelController pane;
    
 
     @FXML
@@ -53,8 +53,9 @@ public class MeasuresChooserController {
 
     }
 
-    public void init( Patient patient,  ) {
+    public void init( Patient patient, ClientMainPanelController pane  ) {
         setPatient(patient, measurements);
+        this.pane=pane;
        
     }
 }

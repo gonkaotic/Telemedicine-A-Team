@@ -68,13 +68,16 @@ public class ClientsViewMeasurementsController implements Initializable {
 	@FXML
 	private DatePicker dateSearch;
 
-	 @FXML
-	    void showNewMeasurement(MouseEvent event){
-		 System.out.println("estoy dentro ANTES");
+	  @FXML
+	    void showNewMeasurement(MouseEvent event) {
+
+	
 	        if ( event.getClickCount()<=2){
-	        	System.out.println("estoy dentro");
+	        	
 	            Measurement m = measurementsTable.getSelectionModel().getSelectedItem();
-	            mainPanel.showNewMeasurement( m );
+	           if (m!=null) {
+	        	   mainPanel.showNewMeasurement( m );
+	           }
 	        }
 	    }
 
@@ -103,5 +106,6 @@ public class ClientsViewMeasurementsController implements Initializable {
 	            
 	    	measurementsTable.getItems().addAll(patient.getMeasurements());
 	}
+	
 
 }
