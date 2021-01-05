@@ -2,6 +2,7 @@ package network.AdminClient;
 
 import network.ProtocolException;
 import pojos.Administrator;
+import pojos.Doctor;
 import pojos.Patient;
 
 import java.io.BufferedReader;
@@ -37,7 +38,9 @@ public class AdminMain {
                 case 1:
                     registerPatient();
                     break;
-                case 2: break;
+                case 2:
+                    registerDoctor();
+                    break;
                 case 3: break;
                 case 4: break;
                 case 5:
@@ -154,7 +157,7 @@ public class AdminMain {
             String dni = console.readLine();
             if (exitOption(dni)) return;
             while (!verifyDNI(dni)) {
-                System.out.print("\nInvalid DNI (should be 8 digits and a letter)");
+                System.out.print("Invalid DNI (should be 8 digits and a letter)");
                 System.out.print("\nDNI: ");
                 dni = console.readLine();
                 if (exitOption(dni)) return;
@@ -309,11 +312,44 @@ public class AdminMain {
     /**
      * Gets all data required to register a doctor. And calls the AdminClient's registerDoctor method
      */
-    private static void registerDoctor(){
+    private static void registerDoctor() {
+        try {
+            System.out.print("\n ------ DOCTOR INFO ------- " +
+                    "\nYou can type x at any time to cancel the resgistry\n");
 
+            System.out.print("\nName:");
+            String name = console.readLine();
+            if (exitOption(name)) return;
+
+            System.out.print("DNI: ");
+            String dni = console.readLine();
+            if (exitOption(dni)) return;
+            while (!verifyDNI(dni)) {
+                System.out.print("Invalid DNI (should be 8 digits and a letter)");
+                System.out.print("\nDNI: ");
+                dni = console.readLine();
+                if (exitOption(dni)) return;
+            }
+
+            System.out.print("Password: ");
+            String password = console.readLine();
+            if (exitOption(password)) return;
+
+            Doctor doctor = new Doctor(dni,password,name);
+
+            System.out.println("Doctor data completed");
+           /* adminClient.registerDoctor(doctor);
+
+        } catch (ProtocolException e) {
+            System.out.println(e.getErrorMessage());
+
+            */
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
+        /**
      * Verifies that DNI is a combination of 8 numbers and a letter: does not evaluate that the letter is correct
      * @param dni
      * @return
