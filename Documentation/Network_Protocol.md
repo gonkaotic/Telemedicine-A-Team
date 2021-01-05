@@ -57,6 +57,14 @@ object with it.
         * _**PUSH_PATIENT_MEASURES**_ 
         * _**ERROR**_
         
+* Protocol: _**PUSH_MEASUREMENT_COMMENT**_
+
+    * **Usage**: to add a comment to the measurement of a patient.
+        * **Requirements**: Requires a **Measurement** object.
+        * **Possible answers**:
+            * _**ACK**_ 
+            * _**ERROR**_
+    
 ###### From Server to Doctor
 * Protocol: _**PUSH_PATIENT_MEASURES**_
 
