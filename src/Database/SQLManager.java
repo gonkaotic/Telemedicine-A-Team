@@ -18,8 +18,7 @@ public class SQLManager {
         try {
             connect("jdbc:sqlite:././Database/covid watchlist.db");
 
-            Doctor doctor = getDoctorByDniAndPassword("11111111Y","Craneos");
-            System.out.println(doctor.toString());
+
 
             disconnect();
         } catch (Exception e) {
@@ -29,7 +28,7 @@ public class SQLManager {
 
     }
 
-    private static void generateDataBase() throws SQLException, IOException {
+    public static void generateDataBase() throws SQLException, IOException {
         createTablePatients();
         createTableMeasures();
         createTableDoctor();
@@ -60,7 +59,7 @@ public class SQLManager {
      *
      */
 
-    public static void createTablePatients() throws SQLException {
+    private static void createTablePatients() throws SQLException {
         Statement stmt = c.createStatement();
         String table = "CREATE TABLE patient(\r\n" +
                 "patient_id INTEGER PRIMARY KEY AUTOINCREMENT,\r\n" +
@@ -76,7 +75,7 @@ public class SQLManager {
 
     }
 
-    public static void createTableMeasures() throws SQLException {
+    private static void createTableMeasures() throws SQLException {
         Statement stmt1 = c.createStatement();
         String sql1 = "CREATE TABLE measures " + "(measure_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " measure_date DATE NOT NULL," + " ecg BLOB," + " bpm INT NOT NULL,"
@@ -86,7 +85,7 @@ public class SQLManager {
         stmt1.close();
     }
 
-    public static void createTableDoctor() throws SQLException {
+    private static void createTableDoctor() throws SQLException {
         Statement stmt1 = c.createStatement();
         String sql1 = "CREATE TABLE doctor(\r\n" +
                 "doctor_id INTEGER PRIMARY KEY AUTOINCREMENT,\r\n" +
@@ -97,7 +96,7 @@ public class SQLManager {
         stmt1.close();
     }
 
-    public static void createTableAdmin() throws SQLException {
+    private static void createTableAdmin() throws SQLException {
         Statement stmt1 = c.createStatement();
         String sql1 = "CREATE TABLE admin(\r\n" +
                 "admin_id INTEGER PRIMARY KEY AUTOINCREMENT,\r\n" +
@@ -505,6 +504,41 @@ public class SQLManager {
 
     }
 
+    public static List<Administrator> getAllAdmins() throws SQLException {
+
+        Administrator tempAdmin;
+        String sql = "SELECT * FROM admin ;";
+        PreparedStatement prep = c.prepareStatement(sql);
+        ResultSet rs1 = prep.executeQuery();
+        List<Administrator> adminList = new ArrayList<>();
+        while (rs1.next()) {
+            tempAdmin = getAdmin(rs1);
+            tempAdmin.setPassword(null);
+            adminList.add(tempAdmin);
+        }
+        rs1.close();
+        prep.close();
+        return adminList;
+    }
+    /*
+     *
+     * Updates
+     *
+     */
+
+    public static void updateMeasurement(Measurement measurement) throws SQLException {
+
+        String sql = "UPDATE measures SET comment = ? WHERE measure_id = ? ;";
+        PreparedStatement prep = c.prepareStatement(sql);
+
+        prep.setString(1, measurement.getComment());
+        prep.setInt(2, measurement.getId());
+
+        prep.executeUpdate();
+        prep.close();
+    }
+
+
     /*
      *
      * Private Get Methods
@@ -550,6 +584,7 @@ public class SQLManager {
         measurement.setTemperature(rs1.getFloat("temperature"));
         measurement.setSymptomChecklist(binaryStringToSymptoms(rs1.getString("symptoms")));
         measurement.setPatientId(rs1.getInt("patient_id"));
+        measurement.setComment(rs1.getString("comment"));
 
         return measurement;
 
