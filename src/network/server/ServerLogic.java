@@ -174,10 +174,8 @@ public class ServerLogic implements Runnable{
     }
 
     private boolean securityCheck (ArrayList<Measurement> measures, Patient patient){
-
         for (Measurement m : measures ) {
-            //TODO: check measures' patient id
-            if ( false ){
+            if ( m.getPatientId() != patient.getId() ){
                 return false;
             }
         }
@@ -243,18 +241,20 @@ public class ServerLogic implements Runnable{
 
                     if ( protocol == NetworkMessage.Protocol.GET_PATIENT_MEASURES ) {
                         patient = msg.getPatient();
-                        if ( patient.getDoctorId() == doctorLogged.getId() ) {
+                        if ( patient.getDoctorId().compareTo(doctorLogged.getId()) == 0 ) {
                             try {
                                 lock.acquireRead();
                                 answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT_MEASURES,
                                         (ArrayList<Measurement>) SQLManager.getMeasurementsByPatientId(patient.getId()));
                             } catch (SQLException | InterruptedException e) {
+                                System.out.println("Error reading the measurements. ");
                                 answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
                             } finally {
                                 lock.releaseRead();
                             }
                         } else {
                             //doctor asking for information about a patient that isn't theirs.
+                            System.out.println("Error in information given for what is requested");
                             answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
                         }
                         outputStream.writeObject(answer);
@@ -265,8 +265,8 @@ public class ServerLogic implements Runnable{
                             //for this message there will only be 1 measurement
                             Measurement measurement = msg.getMeasurements().get(0);
 
-                            if ( measurement.getPatientId() == patient.getId() &&
-                                 patient.getDoctorId() == doctorLogged.getId() &&
+                            if ( measurement.getPatientId().compareTo(patient.getId()) == 0 &&
+                                 patient.getDoctorId().compareTo(doctorLogged.getId()) == 0 &&
                                  measurement.getComment() != null ) {
                                 //we made sure that everything is in place about what is being sent to the database
                                 try {
@@ -278,6 +278,7 @@ public class ServerLogic implements Runnable{
                                 }
 
                             } else {
+                                System.out.println("Error in information given for what is requested");
                                 answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
                             }
 
