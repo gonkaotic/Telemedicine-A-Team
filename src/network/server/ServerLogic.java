@@ -235,25 +235,55 @@ public class ServerLogic implements Runnable{
         if ( doctorLogged != null ) {
             NetworkMessage msg = null;
             NetworkMessage answer = null;
+            Patient patient = null;
             while (true) {
                 try {
                     msg = (NetworkMessage) inputStream.readObject();
                     NetworkMessage.Protocol protocol = msg.getProtocol();
 
                     if ( protocol == NetworkMessage.Protocol.GET_PATIENT_MEASURES ) {
-                        Patient patient = msg.getPatient();
-                        try {
-                            lock.acquireRead();
-                            answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT_MEASURES,
-                                    (ArrayList<Measurement>) SQLManager.getMeasurementsByPatientId( patient.getId() ));
-                        } catch ( SQLException | InterruptedException e ) {
-                            answer = new NetworkMessage( NetworkMessage.Protocol.ERROR);
-                        } finally {
-                            lock.releaseRead();
+                        patient = msg.getPatient();
+                        if ( patient.getDoctorId() == doctorLogged.getId() ) {
+                            try {
+                                lock.acquireRead();
+                                answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_PATIENT_MEASURES,
+                                        (ArrayList<Measurement>) SQLManager.getMeasurementsByPatientId(patient.getId()));
+                            } catch (SQLException | InterruptedException e) {
+                                answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                            } finally {
+                                lock.releaseRead();
+                            }
+                        } else {
+                            //doctor asking for information about a patient that isn't theirs.
+                            answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                        }
+                        outputStream.writeObject(answer);
+                        outputStream.flush();
+
+                    } else if ( msg.getProtocol() == NetworkMessage.Protocol.PUSH_MEASUREMENT_COMMENT ) {
+                        if ( patient != null ) {
+                            //for this message there will only be 1 measurement
+                            Measurement measurement = msg.getMeasurements().get(0);
+
+                            if ( measurement.getPatientId() == patient.getId() &&
+                                 patient.getDoctorId() == doctorLogged.getId() &&
+                                 measurement.getComment() != null ) {
+                                //we made sure that everything is in place about what is being sent to the database
+                                try {
+                                    lock.acquireWrite();
+                                    SQLManager.updateMeasurementComment(measurement.getId(), measurement.getComment());
+                                } catch (InterruptedException | SQLException e) {
+                                    System.out.println("there was an error writing the measurement");
+                                    answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                                }
+
+                            } else {
+                                answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                            }
+
                             outputStream.writeObject(answer);
                             outputStream.flush();
                         }
-
                     } else if ( msg.getProtocol() == NetworkMessage.Protocol.DISCONNECT ) {
                         break;
                     }
