@@ -89,5 +89,24 @@ public class DoctorClient extends Client {
 		return null;
 	}
 
+	public void updateMeasurementComment( Measurement measurement ) throws ProtocolException {
+		ArrayList<Measurement> measurements = new ArrayList<Measurement>();
+		measurements.add(measurement);
+		NetworkMessage msg = new NetworkMessage( NetworkMessage.Protocol.PUSH_MEASUREMENT_COMMENT, measurements );
+		try {
+			objectOutputStream.writeObject( msg );
+			NetworkMessage answer = ( NetworkMessage ) objectInputStream.readObject();
+			NetworkMessage.Protocol protocol = answer.getProtocol();
+			if ( protocol == NetworkMessage.Protocol.ERROR ){
+				throw new ProtocolException("There was an error in the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+			}
+		} catch ( ClassNotFoundException e){
+			throw new ProtocolException("The network didn't answer with the correct object", ProtocolException.ErrorType.CONNECTION_ERROR);
+		} catch (IOException e) {
+			throw new ProtocolException("Server closed the connection", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
+		}
+
+		//everything went smoothly.
+	}
 
 }
