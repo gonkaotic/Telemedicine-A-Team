@@ -9,6 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import Database.SQLManager;
+import doctorGUI.DoctorMainPanelController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -22,8 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
-
+import javafx.scene.input.MouseEvent;
 import javafx.scene.control.DatePicker;
 
 import javafx.scene.layout.GridPane;
@@ -35,6 +35,7 @@ public class ClientsViewMeasurementsController implements Initializable {
 
 	private Pane mainPane;
 	private Patient patient;
+	private ClientMainPanelController mainPanel;
 
 	@FXML
 	private GridPane clientsViewMeasurements;
@@ -56,12 +57,24 @@ public class ClientsViewMeasurementsController implements Initializable {
 
 	@FXML
 	private TableColumn<Measurement, ArrayList<Measurement.Symptom> > symptomsColumn;
+	
+	@FXML
+	private TableColumn<Measurement, String> commentsColumn;
+
 
 	@FXML
 	private Label measurementsLabel;
 
 	@FXML
 	private DatePicker dateSearch;
+
+	 @FXML
+	    void showNewPatient(MouseEvent event){
+	        if ( event.getClickCount() <= 2 ){
+	            Measurement m = measurementsTable.getSelectionModel().getSelectedItem();
+	            if ( m != null ) mainPanel.showMeasurement( m );
+	        }
+	    }
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -71,7 +84,7 @@ public class ClientsViewMeasurementsController implements Initializable {
 		o2SaturationColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("O2 Saturation"));
 		temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("Temperature"));
 		symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
-		
+		commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,String>("Doctor Comments"));
 
 	}
 
@@ -82,7 +95,7 @@ public class ClientsViewMeasurementsController implements Initializable {
 	        o2SaturationColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Float>("spO2"));
 	        temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Float>("temperature"));
 	        symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
-
+	        commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,String>("Doctor Comments"));
 	            
 	    	measurementsTable.getItems().addAll(patient.getMeasurements());
 	}

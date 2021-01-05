@@ -3,6 +3,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -11,13 +12,18 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import network.ProtocolException;
 import network.PatientClient.BitalinoHandler;
 import network.PatientClient.PatientClient;
+import pojos.Measurement;
 import pojos.Patient;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import doctorGUI.MeasurementListViewerController;
+import doctorGUI.MeasuresChooserController;
 
 public class ClientMainPanelController implements Initializable {
     private BitalinoHandler bitalino;
@@ -123,4 +129,38 @@ public class ClientMainPanelController implements Initializable {
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
+    
+    
+    public void showMeasurement( Measurement newMeasure ){
+        try {
+            //patient = client.getPatient(newMeasure);
+            System.out.println("Showing Patient: " + patient.toString());
+            FXMLLoader measureChooserLoader = new FXMLLoader(getClass().getResource("/doctorGUI/MeasuresChooser.fxml"));
+            FXMLLoader measureListLoader = new FXMLLoader(getClass().getResource("/doctorGUI/MeasurementsListView.fxml"));
+            try {
+
+                BorderPane panel = measureChooserLoader.load();
+                MeasuresChooserController controller = measureChooserLoader.getController();
+                controller.setPatient(patient);
+
+                GridPane listviewPane = measureListLoader.load();
+                MeasurementListViewerController listController = measureListLoader.getController();
+                listController.init( patient.getMeasurements() );
+
+               // panel.setCenter( listviewPane );
+               // mainPane.setCenter( panel );
+                //bottomLeftBorderPane.setCenter( patientList );
+
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading the measure chooser");
+                alert.showAndWait();
+            }
+
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, e.getErrorMessage());
+            alert.showAndWait();
+        }
+    }
+
 }

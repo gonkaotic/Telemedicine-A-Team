@@ -39,6 +39,7 @@
             <TableColumn fx:id="o2SaturationColumn" editable="false" prefWidth="75.0" text="O2 Saturation" />
             <TableColumn fx:id="temperatureColumn" prefWidth="75.0" text="Temperature" />
             <TableColumn fx:id="symptomsColumn" editable="false" prefWidth="75.0" text="Symptoms" />
+            <TableColumn fx:id="commentsColumn" editable="false" prefWidth="75.0" text="Doctor Comments" />
          </columns>
          <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
