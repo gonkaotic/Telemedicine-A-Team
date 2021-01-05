@@ -20,6 +20,7 @@ public class Measurement implements Serializable{
 	private Float spO2;
 	private Integer bpm;
 	private Float temperature;
+	private String comment;
 	private List<Symptom> symptomChecklist;
 	
 	public enum Symptom {FEVER("Fever"), DRY_COUGH ("Dry cough"), TIREDNESS("Tiredness"), ANOSMIA ( "Anosmia" ),
@@ -104,6 +105,7 @@ public class Measurement implements Serializable{
 				", bpm=" + bpm +
 				", temperature=" + temperature +
 				", symptomChecklist=" + symptomChecklist +
+				", comment=" + comment +
 				'}';
 	}
 
@@ -169,5 +171,13 @@ public class Measurement implements Serializable{
 
 	public void setSymptomChecklist(List<Symptom> symptomChecklist) {
 		this.symptomChecklist = symptomChecklist;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 }
