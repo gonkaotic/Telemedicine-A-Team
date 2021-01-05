@@ -69,10 +69,12 @@ public class ClientsViewMeasurementsController implements Initializable {
 	private DatePicker dateSearch;
 
 	 @FXML
-	    void showNewPatient(MouseEvent event){
-	        if ( event.getClickCount() <= 2 ){
+	    void showNewMeasurement(MouseEvent event){
+		 System.out.println("estoy dentro ANTES");
+	        if ( event.getClickCount()<=2){
+	        	System.out.println("estoy dentro");
 	            Measurement m = measurementsTable.getSelectionModel().getSelectedItem();
-	            if ( m != null ) mainPanel.showMeasurement( m );
+	            mainPanel.showNewMeasurement( m );
 	        }
 	    }
 
@@ -85,6 +87,8 @@ public class ClientsViewMeasurementsController implements Initializable {
 		temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("Temperature"));
 		symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
 		commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,String>("Doctor Comments"));
+		
+		
 
 	}
 
