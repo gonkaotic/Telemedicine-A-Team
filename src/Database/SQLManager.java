@@ -80,7 +80,7 @@ public class SQLManager {
         Statement stmt1 = c.createStatement();
         String sql1 = "CREATE TABLE measures " + "(measure_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + " measure_date DATE NOT NULL," + " ecg BLOB," + " bpm INT NOT NULL,"
-                + " o2_saturation FLOAT," + " temperature FLOAT NOT NULL," + " symptoms TEXT,"
+                + " o2_saturation FLOAT," + " temperature FLOAT NOT NULL," + " symptoms TEXT," + "comment TEXT,"
                 + " patient_id INTEGER REFERENCES patient (patient_id) ON UPDATE CASCADE ON DELETE CASCADE );";
         stmt1.executeUpdate(sql1);
         stmt1.close();
@@ -459,6 +459,25 @@ public class SQLManager {
             return null;
         }
 
+    }
+
+    public static List<Doctor> getAllDoctors() throws SQLException {
+
+        Doctor tempDoctor;
+        String sql = "SELECT * FROM doctor ;";
+        PreparedStatement prep = c.prepareStatement(sql);
+        ResultSet rs1 = prep.executeQuery();
+        List<Doctor> doctorList = new ArrayList<>();
+        while (rs1.next()) {
+            tempDoctor = getDoctor(rs1);
+            tempDoctor.setPassword(null);
+            tempDoctor.setDni(null);
+
+            doctorList.add(tempDoctor);
+        }
+        rs1.close();
+        prep.close();
+        return doctorList;
     }
 
     public static Administrator getAdminByDniAndPassword(String dni, String password) throws SQLException {
