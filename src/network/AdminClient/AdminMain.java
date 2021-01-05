@@ -2,11 +2,15 @@ package network.AdminClient;
 
 import network.ProtocolException;
 import pojos.Administrator;
+import pojos.Doctor;
+import pojos.Patient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.LinkedList;
 
 
 /**
@@ -19,19 +23,24 @@ public class AdminMain {
 
     public static void main(String[] args) {
         console = new BufferedReader(new InputStreamReader(System.in));
+        /*
         boolean login=false;
         while (!connectToServer()) ;
         do {
             login = login();
         }while (!login);
 
+
+         */
         while(true){
             int option = displayMenu();
             switch (option){
                 case 1:
                     registerPatient();
                     break;
-                case 2: break;
+                case 2:
+                    registerDoctor();
+                    break;
                 case 3: break;
                 case 4: break;
                 case 5:
@@ -54,7 +63,7 @@ public class AdminMain {
      * @return the option's number or -1 if an invalid entry was specified
      */
     private static int displayMenu() {
-        System.out.println("---------------- MENU ----------------\n" +
+        System.out.println("\n---------------- MENU ----------------\n" +
                 "1. Register patient\n" +
                 "2. Register doctor\n" +
                 "3. Register admin\n" +
@@ -132,62 +141,215 @@ public class AdminMain {
         }
     }
 
+    /**
+     * Gets all data required to register a patient. And calls the AdminClient's registerPatient method
+     */
     private static void registerPatient() {
         try {
             System.out.print("\n ------ PATIENT INFO ------- " +
                     "\nYou can type x at any time to cancel the resgistry\n");
 
-            System.out.print("\nDNI: ");
+            System.out.print("\nName:");
+            String name = console.readLine();
+            if (exitOption(name)) return;
+
+            System.out.print("DNI: ");
             String dni = console.readLine();
-            if(exitOption(dni)) return;
+            if (exitOption(dni)) return;
             while (!verifyDNI(dni)) {
-                System.out.print("\nInvalid DNI (should be 8 digits and a letter)");
+                System.out.print("Invalid DNI (should be 8 digits and a letter)");
                 System.out.print("\nDNI: ");
                 dni = console.readLine();
-                if(exitOption(dni)) return;
+                if (exitOption(dni)) return;
             }
 
-            System.out.print("\nPassword: ");
+            System.out.print("Password: ");
             String password = console.readLine();
-            if(exitOption(password)) return;
+            if (exitOption(password)) return;
 
 
-            System.out.print("\nSex (m/f): ");
+            System.out.print("Sex (m/f): ");
             String sex = console.readLine();
-            while(!verifySex(sex)){
+            if (exitOption(sex)) return;
+            while (!verifySex(sex)) {
                 System.out.println("Invalid sex. Only m/f options are allowed");
                 System.out.print("Sex (m/f): ");
                 sex = console.readLine();
-                if(exitOption(sex)) return;
+                if (exitOption(sex)) return;
             }
+            Patient.Sex sex1 = getSex(sex);
 
-            System.out.print("\nDate of birth (YYYY-MM-DD):");
+            System.out.print("Date of birth (YYYY-MM-DD):");
             String date = console.readLine();
-            while(!verifyDate(date)){
-
+            if (exitOption(date)) return;
+            while (!verifyDate(date)) {
+                System.out.println("Invalid date. Please check format and that it is before today's date");
+                System.out.print("Date of birth (YYYY-MM-DD):");
+                date = console.readLine();
+                if (exitOption(date)) return;
             }
+            Date birthdate = Date.valueOf(date);
 
             System.out.println("Select one of the following doctors (enter his DNI):");
             //TODO: Print all doctors and get one
+            Integer doctorId=null;
 
             System.out.println("From the risk factors below select y/n");
+            LinkedList<Patient.RiskFactor> riskFactors = new LinkedList<>();
             System.out.print("Cancer (y/n): ");
-            System.out.print("\nChronic Kidney Disease (y/n): ");
-            System.out.print("\nChronic Obstructive Pulmonary Disease (y/n): ");
-            System.out.print("\nHeart Conditions (y/n): ");
-            System.out.print("\nInmunocompromised (y/n): ");
-            System.out.print("\nObesity (y/n): ");
-            System.out.print("\nSmoker (y/n): ");
-            System.out.print("\nPregnancy (y/n): ");
-            System.out.print("\nDiabetes Type 2 (y/n): ");
+            String confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Cancer (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.CANCER);
 
+            System.out.print("Chronic Kidney Disease (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Chronic Kidney Disease (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.CKD);
 
+            System.out.print("Chronic Obstructive Pulmonary Disease (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Chronic Obstructive Pulmonary Disease (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.COPD);
+
+            System.out.print("Heart Conditions (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Heart Conditions (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.HEART_CONDITIONS);
+
+            System.out.print("Inmunocompromised (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Inmunocompromised (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.IMMUNOCOMPROMISED);
+
+            System.out.print("Obesity (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Obesity (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.OBESITY);
+
+            System.out.print("Smoker (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Smoker (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.SMOKING);
+
+            System.out.print("Pregnancy (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Pregnancy (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.PREGNANCY);
+
+            System.out.print("Diabetes Type 2 (y/n): ");
+            confirmation = console.readLine();
+            if (exitOption(confirmation)) return;
+            while (!checkYesNo(confirmation)) {
+                System.out.println("Invalid input. Only y/n allowed");
+                System.out.print("Diabetes Type 2 (y/n): ");
+                confirmation = console.readLine();
+                if (exitOption(confirmation)) return;
+            }
+            if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.DIABETES2);
+
+            System.out.println("\nPatient data completed");
+          /*  Patient patient = new Patient(1,name,doctorId,birthdate, sex1,riskFactors,dni,password);
+            adminClient.registerPatient(patient);
+
+        } catch(ProtocolException ex){
+            System.out.println(ex.getErrorMessage());
+
+           */
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
     /**
+     * Gets all data required to register a doctor. And calls the AdminClient's registerDoctor method
+     */
+    private static void registerDoctor() {
+        try {
+            System.out.print("\n ------ DOCTOR INFO ------- " +
+                    "\nYou can type x at any time to cancel the resgistry\n");
+
+            System.out.print("\nName:");
+            String name = console.readLine();
+            if (exitOption(name)) return;
+
+            System.out.print("DNI: ");
+            String dni = console.readLine();
+            if (exitOption(dni)) return;
+            while (!verifyDNI(dni)) {
+                System.out.print("Invalid DNI (should be 8 digits and a letter)");
+                System.out.print("\nDNI: ");
+                dni = console.readLine();
+                if (exitOption(dni)) return;
+            }
+
+            System.out.print("Password: ");
+            String password = console.readLine();
+            if (exitOption(password)) return;
+
+            Doctor doctor = new Doctor(dni,password,name);
+
+            System.out.println("Doctor data completed");
+           /* adminClient.registerDoctor(doctor);
+
+        } catch (ProtocolException e) {
+            System.out.println(e.getErrorMessage());
+
+            */
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /**
      * Verifies that DNI is a combination of 8 numbers and a letter: does not evaluate that the letter is correct
      * @param dni
      * @return
@@ -202,6 +364,10 @@ public class AdminMain {
         return sex.equalsIgnoreCase("f")||sex.equalsIgnoreCase("m");
     }
 
+    private static Patient.Sex getSex(String sex){
+        if(sex.equalsIgnoreCase("f")) return Patient.Sex.FEMALE;
+        return Patient.Sex.MALE;
+    }
 
     private static boolean exitOption(String reading){
         return (reading.equalsIgnoreCase("x"));
@@ -210,10 +376,19 @@ public class AdminMain {
     private static boolean verifyDate(String date){
         try{
             Date.valueOf(date);
+            if (Date.valueOf(date).compareTo(new Date(Calendar.getInstance().getTime().getTime())) >= 0) return false; // introduced date is bigger than actual date
             return true;
         }catch(IllegalArgumentException ex){
             return false;
         }
+    }
+
+    private static boolean checkYesNo(String reading){
+        return reading.equalsIgnoreCase("y")||reading.equalsIgnoreCase("n");
+    }
+
+    private static boolean checkConfirmation(String confirmation){
+        return confirmation.equalsIgnoreCase("y");
     }
 
     private static void closeConsole(){
