@@ -19,7 +19,7 @@ public class NetworkMessage implements Serializable{
 		/*Protocols from Patient to Server*/
 		PATIENT_LOGIN, PUSH_MEASUREMENT,
 		/*Protocols from Doctor to Server*/
-		DOCTOR_LOGIN, GET_PATIENT_MEASURES,
+		DOCTOR_LOGIN, GET_PATIENT_MEASURES, PUSH_MEASUREMENT_COMMENT,
 		/*Protocols from Server to Doctor*/
 		PUSH_PATIENT_MEASURES,
 		/*Protocols from Admin to Server*/
