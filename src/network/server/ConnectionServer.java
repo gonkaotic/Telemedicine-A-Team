@@ -11,6 +11,7 @@ import Database.DatabaseLock;
 import Database.SQLManager;
 import network.Network;
 import network.NetworkMessage;
+import pojos.Administrator;
 import pojos.Measurement;
 import pojos.Patient;
 
@@ -20,6 +21,16 @@ public class ConnectionServer implements Network {
 		ServerSocket server = null;
 		try {
 			SQLManager.connect("jdbc:sqlite:././Database/covid watchlist.db");
+			try {
+				//make sure the database is operational and with admins )
+				SQLManager.getAllAdmins();
+
+			} catch (SQLException e){
+				//the database doesn't have the tables created. so we create them and add a first admin
+				SQLManager.generateDataBase();
+				SQLManager.insertAdmin(new Administrator( "11012021A", "Sangre"));
+			}
+
 			DatabaseLock lock = new DatabaseLock();
 
 			server = new ServerSocket(SERVERPORT);
@@ -35,7 +46,7 @@ public class ConnectionServer implements Network {
 			System.out.println("Server error");
 			e.printStackTrace();
 		} catch ( SQLException | ClassNotFoundException e ){
-			System.out.println("Database error");
+			System.out.println("Database non existant.");
 			e.printStackTrace();
 		} finally {
 			try {
