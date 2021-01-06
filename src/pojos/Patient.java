@@ -66,12 +66,15 @@ public class Patient implements Serializable {
         this.dni = String.valueOf((Math.random()*1000));
         this.password = "Craneos";
         this.doctorId = 1;
+        measurements = new ArrayList<>();
+
     }
 
     public Patient( String dni, String password) {
         super();
         this.dni = dni;
         this.password = password;
+        measurements = new ArrayList<>();
 
     }
 
@@ -85,6 +88,7 @@ public class Patient implements Serializable {
         this.birthDate = birthDate;
         this.sex = sex;
         this.riskFactor = riskFactor;
+        measurements = new ArrayList<>();
 
     }
 
@@ -97,6 +101,7 @@ public class Patient implements Serializable {
         this.riskFactor = riskFactor;
         this.dni = dni;
         this.password = password;
+        measurements = new ArrayList<>();
     }
 
     @Override
