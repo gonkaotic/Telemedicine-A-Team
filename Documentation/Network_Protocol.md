@@ -85,6 +85,14 @@ object with it.
         * _**LOGIN_DENY**_
         * _**ERROR**_
         
+* Protocol: _**GET_DOCTORS**_
+
+    * **Usage**: retrieve all doctors' ids and names so a new patient can be assigned to one of them
+    * **Requirements**: no requirements;
+    * **Possible answers**:
+        * _**PUSH_DOCTORS**_ 
+        * _**ERROR**_
+
 * Protocol: _**REGISTER_PATIENT**_
 
     * **Usage**: to add a new patient to the database by an admin
@@ -93,7 +101,6 @@ object with it.
     * **Possible answers**:
         * _**ACK**_ 
         * _**ERROR**_
-
 
 * Protocol: _**REGISTER_DOCTOR**_
 
@@ -143,7 +150,13 @@ object with it.
     * **Requirements**: none
     * **Answers to**: 
         * _**SERVER_SHUTDOWN**_
-  
+
+* Protocol: _**PUSH_DOCTORS**_
+
+    * **Usage**: To answer _GET_DOCTORS_ 
+    * **Returns**: A **LinkedList< Doctor >**. The list might be empty if no doctors have been registered. 
+    * **Answers to**: 
+        * _**GET_DOCTORS**_  
          
 ###### From Server to ANY Client
 
@@ -190,6 +203,7 @@ object with it.
         * _**DOCTOR_LOGIN**_
         * _**ADMIN_LOGIN**_
         * _**PUSH_MEASUREMENT**_
+        * _**GET_DOCTORS**_
 
     
 ###### Messages from either one

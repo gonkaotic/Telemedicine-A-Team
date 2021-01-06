@@ -2,6 +2,7 @@ package network;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import pojos.Administrator;
 import pojos.Doctor;
@@ -23,9 +24,9 @@ public class NetworkMessage implements Serializable{
 		/*Protocols from Server to Doctor*/
 		PUSH_PATIENT_MEASURES,
 		/*Protocols from Admin to Server*/
-		ADMIN_LOGIN, REGISTER_PATIENT, REGISTER_DOCTOR, SERVER_SHUTDOWN, SERVER_CANCEL_SHUTDOWN,
+		ADMIN_LOGIN, GET_DOCTORS, REGISTER_PATIENT, REGISTER_DOCTOR, SERVER_SHUTDOWN, SERVER_CANCEL_SHUTDOWN,
 		/*Protocols from Server to Admin*/
-		SERVER_SHUTDOWN_CONFIRM,
+		PUSH_DOCTORS, SERVER_SHUTDOWN_CONFIRM,
 		/*Protocols from Server to ANY client*/
 		LOGIN_ACCEPT, LOGIN_DENY, ERROR, ACK,
 		/*Protocols that can be used by all*/
@@ -39,6 +40,7 @@ public class NetworkMessage implements Serializable{
 	//This is a list even though it might end up only being used for 1 measurement, in case in future uses, doctors for example, require more than one measure form more than one patient 
 	private ArrayList<Measurement> measurements;
 	private Protocol protocol;
+	private LinkedList<Doctor> registeredDoctors;
 	
 	public NetworkMessage() {
 		//for disconnection
@@ -77,6 +79,11 @@ public class NetworkMessage implements Serializable{
 	public NetworkMessage(Protocol protocol, ArrayList<Measurement> measurements) {
 		this.setProtocol(protocol);
 		this.setMeasurements(measurements); 
+	}
+
+	public NetworkMessage(Protocol protocol, LinkedList<Doctor> doctors){
+		this.setProtocol(protocol);
+		this.setRegisteredDoctors(doctors);
 	}
 
 
@@ -120,6 +127,10 @@ public class NetworkMessage implements Serializable{
 	public void setAdmin(Administrator admin) {
 		this.admin = admin;
 	}
+
+	public void setRegisteredDoctors(LinkedList<Doctor> doctors){ this.registeredDoctors=doctors;}
+
+	public LinkedList<Doctor> getRegisteredDoctors(){return this.registeredDoctors;}
 
 	@Override
 	public String toString() {

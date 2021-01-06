@@ -9,6 +9,8 @@ import pojos.Patient;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 public class AdminClient extends Client {
@@ -80,6 +82,24 @@ public class AdminClient extends Client {
         else{
             throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
         }
+    }
+
+    public LinkedList<Doctor> getRegisteredDoctors() throws ProtocolException{
+        NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.GET_DOCTORS);
+        NetworkMessage answer = this.sendMessageToServer(msg);
+        if (answer!=null){
+            NetworkMessage.Protocol protocolMessage = answer.getProtocol();
+            if(protocolMessage == NetworkMessage.Protocol.ERROR){
+                throw new ProtocolException("Could not retrieve the doctors", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+            }
+            if(protocolMessage == NetworkMessage.Protocol.PUSH_DOCTORS){
+                return answer.getRegisteredDoctors();
+            }
+        }
+        else{
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
+        }
+        return null;
     }
 
     /**
