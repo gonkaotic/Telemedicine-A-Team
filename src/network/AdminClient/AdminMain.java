@@ -316,7 +316,7 @@ public class AdminMain {
                 System.out.println("\nPatient data completed");
                 Patient patient = new Patient(1,name,doctorId,birthdate, sex1,riskFactors,dni,password);
                 System.out.println(patient);
-               // adminClient.registerPatient(patient);
+                adminClient.registerPatient(patient);
             }
             else{
                 System.out.println("No doctors available. Please register a doctor before registering a patient");

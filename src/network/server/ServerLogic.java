@@ -328,6 +328,32 @@ public class ServerLogic implements Runnable{
                             outputStream.flush();
                         }
                     }
+                    if(protocol == NetworkMessage.Protocol.REGISTER_DOCTOR){
+                        Doctor doctor = msg.getDoctor();
+                        if(doctor!=null){
+                           try{
+                               lock.acquireWrite();
+                               SQLManager.insertDoctor(doctor);
+                               answer = new NetworkMessage(NetworkMessage.Protocol.ACK);
+                           } catch (InterruptedException e) {
+                               System.out.println("Problems when acquiring database lock");
+                               answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                           } catch (SQLException throwables) {
+                               System.out.println("Error when inserting in the database");
+                               answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                           }
+                           finally{
+                               lock.releaseWrite();
+                               outputStream.writeObject(answer);
+                               outputStream.flush();
+                           }
+                        }else{
+                            System.out.println("No doctor provided");
+                            answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                            outputStream.writeObject(answer);
+                            outputStream.flush();
+                        }
+                    }
 
 
                 } catch (IOException e) {
