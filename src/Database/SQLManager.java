@@ -295,12 +295,14 @@ public class SQLManager {
 
         ResultSet rs1 = prep.executeQuery();
 
+
+        List<Patient> patientList = new ArrayList<Patient>();
+
         if (!rs1.isBeforeFirst()) {
             prep.close();
-            return null;
+            return patientList;
         }
 
-        List<Patient> patientList = new ArrayList<>();
 
         while (rs1.next()) {
             tempPatient = getPatient(rs1);

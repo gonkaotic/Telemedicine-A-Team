@@ -28,6 +28,7 @@ public class Doctor implements Serializable {
         this.dni = dni;
         this.password = password;
         this.name = name;
+        patients = new ArrayList<Patient>();
     }
 
     @Override

@@ -56,7 +56,7 @@ public class DoctorMainPanelController {
         try {
             patientList = patientListLoader.load();
             patientsListController = patientListLoader.getController();
-            patientsListController.init( doctor.getPatients(), this);
+            if( doctor.getPatients() != null )patientsListController.init( doctor.getPatients(), this);
             setPatientChooser();
             System.out.println(doctor.getPatients().toString());
         } catch (IOException e) {
