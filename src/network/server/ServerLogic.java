@@ -110,7 +110,7 @@ public class ServerLogic implements Runnable{
                         lock.acquireRead();
                         adminLogged = SQLManager.getAdminByDniAndPassword(adminLogged.getDni(), adminLogged.getPassword());
                     } catch ( SQLException e){
-                        System.out.println( "Doctor not found.");
+                        System.out.println( "Admin not found.");
                         adminLogged = null;
                     } catch ( InterruptedException e) {
                         System.out.println("There was an error with the database lock");

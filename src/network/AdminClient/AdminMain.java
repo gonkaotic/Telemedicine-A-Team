@@ -125,7 +125,7 @@ public class AdminMain {
             if(connected) {
                 System.out.print("DNI: ");
                 String dni = console.readLine();
-                System.out.println("Password: ");
+                System.out.print("Password: ");
                 String password = console.readLine();
 
                 Administrator adminData = new Administrator(dni, password);
@@ -134,6 +134,7 @@ public class AdminMain {
             }
             else{
                 connected= adminClient.connect();
+                admin=null;
             }
             return (admin!=null);
 
