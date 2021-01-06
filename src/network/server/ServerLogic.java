@@ -272,6 +272,7 @@ public class ServerLogic implements Runnable{
                                 try {
                                     lock.acquireWrite();
                                     SQLManager.updateMeasurementComment(measurement.getId(), measurement.getComment());
+                                    answer = new NetworkMessage(NetworkMessage.Protocol.ACK);
                                 } catch (InterruptedException | SQLException e) {
                                     System.out.println("there was an error writing the measurement");
                                     answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
