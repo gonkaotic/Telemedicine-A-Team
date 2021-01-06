@@ -51,7 +51,8 @@ public class DoctorMain extends Application {
             DoctorLoginController controller = loader.getController();
             controller.initComponents(client, window);
             this.window.setScene(new Scene(root));
-            this.window.setResizable(true);
+            this.window.setResizable(false);
+            this.window.setTitle("Doctor Client");
             this.window.show();
             this.window.setOnCloseRequest(e -> closeConnection());
         } catch ( IOException e ) {

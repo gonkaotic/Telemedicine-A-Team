@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import pojos.Patient;
 
@@ -33,7 +34,7 @@ public class MeasuresChooserController {
         patientNameLabel.setText( patient.getName() );
         patientBirthDateLabel.setText( patient.getBirthDate().toString());
         patientSexLabel.setText( patient.getSex().toString());
-        patientRiskFactors.getItems().setAll( patient.getRiskFactor());
+        patientRiskFactors.getItems().addAll(patient.getRiskFactor());
 
     }
 

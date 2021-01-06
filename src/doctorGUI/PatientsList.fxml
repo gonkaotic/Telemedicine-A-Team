@@ -3,14 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="doctorGUI.PatientsListController">
+<Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT" prefHeight="501.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="doctorGUI.PatientsListController">
    <children>
-      <TableView fx:id="patientListView" onMouseClicked="#showNewPatient" prefHeight="400.0" prefWidth="606.0">
+      <TableView fx:id="patientListView" layoutX="50.0" layoutY="51.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#showNewPatient" prefHeight="400.0" prefWidth="800.0">
         <columns>
           <TableColumn fx:id="patientNameColumn" minWidth="-Infinity" prefWidth="100.0" text="Name" />
-          <TableColumn fx:id="patientSexColumn" minWidth="-Infinity" prefWidth="100.0" text="Sex" />
-            <TableColumn fx:id="patientBirthColumn" minWidth="-Infinity" prefWidth="100.0" text="Birth" />
-            <TableColumn fx:id="patientRiskFactorColumn" minWidth="-Infinity" prefWidth="500.0" text="RiskFactors" />
+          <TableColumn fx:id="patientSexColumn" minWidth="-1.0" prefWidth="124.0" text="Sex" />
+            <TableColumn fx:id="patientBirthColumn" minWidth="-1.0" prefWidth="109.0" text="Birth" />
+            <TableColumn fx:id="patientRiskFactorColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="466.0" sortable="false" text="RiskFactors" />
         </columns>
       </TableView>
    </children>

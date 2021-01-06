@@ -41,7 +41,7 @@ public class DoctorLoginController {
                     BorderPane panel = doctorLoader.load();
                     DoctorMainPanelController controller = doctorLoader.getController();
                     controller.initComponents(doctor, window, client);
-                    window.setScene(new Scene(panel, 800, 800));
+                    window.setScene(new Scene(panel));
 
                 } catch (IOException e) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading the Doctor view");

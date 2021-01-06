@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import network.DoctorClient.DoctorClient;
 import network.ProtocolException;
 import pojos.Doctor;
+import pojos.Measurement;
 import pojos.Patient;
 
 import java.io.IOException;
@@ -36,6 +37,8 @@ public class DoctorMainPanelController {
     @FXML
     private BorderPane bottomLeftBorderPane;
 
+    private BorderPane centerBorderPane;
+
     private Pane patientList = null;
     private PatientsListController patientsListController = null;
     private DoctorClient client;
@@ -55,7 +58,7 @@ public class DoctorMainPanelController {
             patientsListController = patientListLoader.getController();
             patientsListController.init( doctor.getPatients(), this);
             setPatientChooser();
-
+            System.out.println(doctor.getPatients().toString());
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading the patient list");
             alert.showAndWait();
@@ -69,10 +72,11 @@ public class DoctorMainPanelController {
         try {
             BorderPane panel = patientChooserLoader.load();
             PatientChooserController controller = patientChooserLoader.getController();
-            panel.setCenter( patientList);
+            Pane center = ( Pane ) panel.getCenter();
+            center.getChildren().setAll( patientList );
             mainPane.setCenter( panel );
 
-            window.sizeToScene();
+            //window.sizeToScene();
         } catch (IOException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading the patient chooser");
             alert.showAndWait();
@@ -94,17 +98,19 @@ public class DoctorMainPanelController {
             FXMLLoader measureChooserLoader = new FXMLLoader(getClass().getResource("/doctorGUI/MeasuresChooser.fxml"));
             FXMLLoader measureListLoader = new FXMLLoader(getClass().getResource("/doctorGUI/MeasurementsListView.fxml"));
             try {
+                window.setMinWidth(1800);
+                window.setX(0);
 
-                BorderPane panel = measureChooserLoader.load();
+                centerBorderPane = measureChooserLoader.load();
                 MeasuresChooserController controller = measureChooserLoader.getController();
                 controller.setPatient(patient);
 
                 GridPane listviewPane = measureListLoader.load();
                 MeasurementListViewerController listController = measureListLoader.getController();
-                listController.init( patient.getMeasurements() );
+                listController.init( patient.getMeasurements(), this );
 
-                panel.setCenter( listviewPane );
-                mainPane.setCenter( panel );
+                centerBorderPane.setCenter( listviewPane );
+                mainPane.setCenter( centerBorderPane );
                 bottomLeftBorderPane.setCenter( patientList );
 
             } catch (IOException e) {
@@ -121,7 +127,26 @@ public class DoctorMainPanelController {
 
     public void initComponents(Doctor doctor, Stage window, DoctorClient client) {
         this.window = window;
+        window.setResizable( true );
         setDoctor(doctor);
         this.client = client;
+    }
+
+    public void showECGAndComment(Measurement m){
+        FXMLLoader mECGandComment = new FXMLLoader(getClass().getResource("/doctorGUI/CommentAndECGController.fxml"));
+        try {
+
+            window.setMinHeight(900);
+            window.setY(50);
+            GridPane panel = mECGandComment.load();
+            CommentAndECGController controller = mECGandComment.getController();
+            controller.init( m, client);
+            centerBorderPane.setBottom( panel );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Error loading the ECG and comment");
+            alert.showAndWait();
+        }
     }
 }

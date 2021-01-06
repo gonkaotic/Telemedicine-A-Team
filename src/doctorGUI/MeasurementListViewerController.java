@@ -35,7 +35,7 @@ public class MeasurementListViewerController {
 
     private ArrayList<Measurement> measurements;
 
-    public void init( ArrayList<Measurement> measurements ){
+    public void init( ArrayList<Measurement> measurements, DoctorMainPanelController main ){
         this.measurements = measurements;
 
         dateColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Date>("date"));
@@ -45,5 +45,13 @@ public class MeasurementListViewerController {
         symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
 
         measurementsTable.getItems().addAll(  measurements );
+        this.main = main;
+    }
+
+    public void showECGAndComment(MouseEvent event){
+        if ( event.getClickCount() == 2 ){
+            Measurement m = measurementsTable.getSelectionModel().getSelectedItem();
+            if ( m != null ) main.showECGAndComment( m );
+        }
     }
 }
