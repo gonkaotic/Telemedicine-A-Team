@@ -46,6 +46,7 @@ public class Doctor implements Serializable {
     @Override
     public String toString() {
         return "Doctor{" +
+                "Id='"+ id + '\'' +
                 "dni='" + dni + '\'' +
                 ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
