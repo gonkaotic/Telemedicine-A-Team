@@ -193,13 +193,18 @@ public class NewMeasurementPanelController implements Initializable {
                                 }
 
                                 if(symptomsList.isEmpty()) {
-                                   boolean confirmation = showConfirmationMessage("Empty symprtoms", "No symptoms selected. " +
+                                   boolean confirmation = showConfirmationMessage("Empty symptoms", "No symptoms selected. " +
                                             "Do you want to continue?");
                                    if (confirmation){
                                        if(this.ecg!=null){
                                            Measurement measurement = new Measurement();
                                        }
                                        else{
+                                           confirmation = showConfirmationMessage("Empty symptoms", "No symptoms selected. " +
+                                                   "Do you want to continue?");
+                                           if(confirmation){
+                                               Measurement measurement = new Measurement();
+                                           }
 
                                        }
                                    }

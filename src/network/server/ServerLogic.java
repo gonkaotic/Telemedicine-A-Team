@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class ServerLogic implements Runnable{
 
@@ -104,7 +105,7 @@ public class ServerLogic implements Runnable{
                     }
                 } else if ( msg.getProtocol() == NetworkMessage.Protocol.ADMIN_LOGIN ) {
                     Administrator adminLogged = msg.getAdmin();
-                    System.out.println("Doctor received: "+ adminLogged.toString());
+                    System.out.println("Admin received: "+ adminLogged.toString());
                     try {
                         lock.acquireRead();
                         adminLogged = SQLManager.getAdminByDniAndPassword(adminLogged.getDni(), adminLogged.getPassword());
@@ -303,7 +304,40 @@ public class ServerLogic implements Runnable{
 
     private void adminLogic( Administrator admin){
         if ( admin != null ){
+            NetworkMessage msg = null;
+            NetworkMessage answer = null;
+            while(true){
+                try {
+                    msg = (NetworkMessage) inputStream.readObject();
+                    NetworkMessage.Protocol protocol = msg.getProtocol();
+                    if(protocol == NetworkMessage.Protocol.GET_DOCTORS){
+                        LinkedList<Doctor> doctors = new LinkedList<>();
+                        try {
+                            lock.acquireRead();
+                            doctors = (LinkedList<Doctor>) SQLManager.getAllDoctors();
+                            answer = new NetworkMessage(NetworkMessage.Protocol.PUSH_DOCTORS, doctors);
+                        } catch (InterruptedException e) {
+                            System.out.println("Error when acquiring the database lock");
+                            answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                        } catch (SQLException throwables) {
+                            System.out.println("Error when reading from the database");
+                            answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                        } finally{
+                            lock.releaseRead();
+                            outputStream.writeObject(answer);
+                            outputStream.flush();
+                        }
+                    }
 
+
+                } catch (IOException e) {
+                    System.out.println("There was a connection error");
+                    break;
+                } catch (ClassNotFoundException e) {
+                    System.out.println("Client using incorrect object");
+                }
+            }
+            releaseResources( socket, inputStream, outputStream);
         }
     }
 }

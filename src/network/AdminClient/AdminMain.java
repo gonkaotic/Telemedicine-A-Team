@@ -20,18 +20,18 @@ public class AdminMain {
     private static BufferedReader console = null;
     private static AdminClient adminClient;
     private static Administrator admin = null;
+    private static boolean connected = false;
 
     public static void main(String[] args) {
         console = new BufferedReader(new InputStreamReader(System.in));
-        /*
         boolean login=false;
-        while (!connectToServer()) ;
+        while (!connected) {
+            connectToServer();
+        }
         do {
             login = login();
         }while (!login);
 
-
-         */
         while(true){
             int option = displayMenu();
             switch (option){
@@ -91,7 +91,7 @@ public class AdminMain {
      *      true if everything went ok
      *      false if an error occurred during the process
      */
-    private static boolean connectToServer() {
+    private static void connectToServer() {
         try {
             System.out.print("Introduce the server's IP: ");
             String serverIp = console.readLine();
@@ -105,13 +105,12 @@ public class AdminMain {
             }
 
             adminClient = new AdminClient(serverIp);
-            boolean connected = adminClient.connect();
-            return connected;
+            connected = adminClient.connect();
 
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Problems with the console");
-            return false;
+            connected=false;
         }
     }
 
@@ -123,13 +122,19 @@ public class AdminMain {
      */
     private static boolean login() {
         try {
-            System.out.print("DNI: ");
-            String dni = console.readLine();
-            System.out.println("Password: ");
-            String password = console.readLine();
+            if(connected) {
+                System.out.print("DNI: ");
+                String dni = console.readLine();
+                System.out.println("Password: ");
+                String password = console.readLine();
 
-            Administrator adminData = new Administrator(dni,password);
-            admin = adminClient.login(adminData);
+                Administrator adminData = new Administrator(dni, password);
+                admin = adminClient.login(adminData);
+                if (admin == null) connected = false;
+            }
+            else{
+                connected= adminClient.connect();
+            }
             return (admin!=null);
 
         } catch (IOException e) {
@@ -309,7 +314,8 @@ public class AdminMain {
 
                 System.out.println("\nPatient data completed");
                 Patient patient = new Patient(1,name,doctorId,birthdate, sex1,riskFactors,dni,password);
-                adminClient.registerPatient(patient);
+                System.out.println(patient);
+               // adminClient.registerPatient(patient);
             }
             else{
                 System.out.println("No doctors available. Please register a doctor before registering a patient");
@@ -351,12 +357,11 @@ public class AdminMain {
             Doctor doctor = new Doctor(dni,password,name);
 
             System.out.println("Doctor data completed");
-           /* adminClient.registerDoctor(doctor);
+            adminClient.registerDoctor(doctor);
 
         } catch (ProtocolException e) {
             System.out.println(e.getErrorMessage());
 
-            */
         } catch (IOException e) {
             e.printStackTrace();
         }

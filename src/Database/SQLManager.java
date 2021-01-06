@@ -8,6 +8,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SQLManager {
@@ -466,7 +467,7 @@ public class SQLManager {
         String sql = "SELECT * FROM doctor ;";
         PreparedStatement prep = c.prepareStatement(sql);
         ResultSet rs1 = prep.executeQuery();
-        List<Doctor> doctorList = new ArrayList<>();
+        List<Doctor> doctorList = new LinkedList<>();
         while (rs1.next()) {
             tempDoctor = getDoctor(rs1);
             tempDoctor.setPassword(null);
