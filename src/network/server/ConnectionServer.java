@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import Database.DatabaseLock;
 import Database.SQLManager;
@@ -32,6 +33,7 @@ public class ConnectionServer implements Network {
 			}
 
 			DatabaseLock lock = new DatabaseLock();
+			AtomicInteger threads = new AtomicInteger(0);
 
 			server = new ServerSocket(SERVERPORT);
 
@@ -39,7 +41,7 @@ public class ConnectionServer implements Network {
 
 			while ( true ) {
 				System.out.println("Waiting for new client.");
-				acceptConnection(server.accept(), lock);
+				acceptConnection(server.accept(), lock, threads);
 			}
 			
 		} catch (IOException e) {
@@ -136,8 +138,8 @@ public class ConnectionServer implements Network {
 	*/
 
 	//Uses threads
-	private static void acceptConnection(Socket s, DatabaseLock lock) {
-		new Thread ( new ServerLogic( s, lock )).start();
+	private static void acceptConnection(Socket s, DatabaseLock lock, AtomicInteger threads) {
+		new Thread ( new ServerLogic( s, lock, threads )).start();
 	}
 
 	private static void releaseResources(ServerSocket server) {

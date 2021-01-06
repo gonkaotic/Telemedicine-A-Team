@@ -12,22 +12,24 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerLogic implements Runnable{
 
     private Socket socket = null;
     private DatabaseLock lock = null;
 
+    private AtomicInteger threads;
+
     private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
 
-    public ServerLogic () {
-        super();
-    }
 
-    public ServerLogic (Socket socket, DatabaseLock lock) {
+    public ServerLogic (Socket socket, DatabaseLock lock, AtomicInteger threads) {
         this.socket = socket;
         this.lock = lock;
+        this.threads = threads;
+        this.threads.incrementAndGet();
     }
 
 
@@ -137,6 +139,7 @@ public class ServerLogic implements Runnable{
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
+                threads.decrementAndGet();
                 releaseResources ( socket, inputStream, outputStream );
             }
         }
