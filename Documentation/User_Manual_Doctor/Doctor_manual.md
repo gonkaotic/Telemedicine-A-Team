@@ -1,5 +1,55 @@
 # Doctor Manual
 
-## Introduction 
+## Index
++ Introduction
++ IP chooser
++ login
++ Patient chooser
++ Measurement chooser
++ Measurement view
 
-This application has been programmed in the Java language. Therefore, in order to run it, you must make sure you have a Java compiler installed.
+[Custom foo description](#introduction)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Introduction 
+
+This application has been programmed in the Java language. Therefore, in order to run it, you must make sure you have Java installed.
