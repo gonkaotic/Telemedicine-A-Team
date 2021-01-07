@@ -6,7 +6,7 @@
 + [Network Messages Protocols](#networkmessages-protocol-enumeration)
     + Clients to server
         + [Patient to Server](#from-patient-to-server)
-            + [Patient login](#protocol-_**patient_login**_)
+            + [Patient login](#protocol-_patient_login_)
             + [Push measurement](#protocol-_push_measurement_)
         + [Doctor to Server](#from-doctor-to-server)
             + [Doctor login](#protocol-_doctor_login_)
@@ -56,7 +56,7 @@ object with it.
 
 ### **From Patient to Server**
 
-### Protocol: _**PATIENT_LOGIN**_
+### Protocol _**PATIENT_LOGIN**_
 
 * **Usage**: After a successful TCP connection, this should be the first message sent to the
     server by any patient client. Its intention is to check if the user is registered in the
