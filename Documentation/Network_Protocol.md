@@ -7,33 +7,33 @@
     + Clients to server
         + [Patient to Server](#from-patient-to-server)
             + [Patient login](#protocol-patient_login)
-            + [Push measurement](#protocol-_push_measurement_)
+            + [Push measurement](#protocol-push_measurement)
         + [Doctor to Server](#from-doctor-to-server)
-            + [Doctor login](#protocol-_doctor_login_)
-            + [Get patient measures](#protocol-_get_patient_measures_)
-            + [Push measurement comment](#protocol-_push_measurement_comment_)
+            + [Doctor login](#protocol-doctor_login)
+            + [Get patient measures](#protocol-get_patient_measures)
+            + [Push measurement comment](#protocol-push_measurement_comment)
         + [Administrator to server](#from-administrator-to-server)
-            + [Admin login](#protocol-_admin_login_)
-            + [Get Doctors](#protocol-_get_doctors_)
-            + [Register Patient](#protocol-_register_patient_)
-            + [Register Doctor](#protocol-_register_doctor_)
-            + [Register Administrator](#protocol-_register_admin_)
-            + [Server shutdown](#protocol-_server_shutdown_)
-            + [Server cancel shutdown](#protocol-_server_cancel_shutdown_)
+            + [Admin login](#protocol-admin_login)
+            + [Get Doctors](#protocol-get_doctors)
+            + [Register Patient](#protocol-register_patient)
+            + [Register Doctor](#protocol-register_doctor)
+            + [Register Administrator](#protocol-register_admin)
+            + [Server shutdown](#protocol-server_shutdown)
+            + [Server cancel shutdown](#protocol-server_cancel_shutdown)
     + Server to clients
         + [Server to Patient](#from-server-to-patient)
         + [Server to Doctor](#from-server-to-doctor)
-            + [Push patient measures](#protocol-_push_patient_measures_)
+            + [Push patient measures](#protocol-push_patient_measures)
         + [Server to Admin](#from-server-to-administrator)
-            + [Push doctors](#protocol-_push_doctors_)
-            + [Server shutdown confirm](#protocol-_server_shutdown_confirm_)
+            + [Push doctors](#protocol-push_doctors)
         + [Server to any](#from-server-to-any-client)
-            + [Login accept](#protocol-_login_accept_)
-            + [Login deny](#protocol-_login_deny_)
-            + [ACK](#protocol-_ack_)
-            + [Error](#protocol-_error_)
+            + [Login accept](#protocol-login_accept)
+            + [Login deny](#protocol-login_deny)
+            + [ACK](#protocol-ack)
+            + [Error](#protocol-error)
     + [From either one](#messages-from-either-one)
-        + [Disconnect](#protocol-_disconnect_)
+        + [Disconnect](#protocol-disconnect)
+           + [Server shutdown confirm](#protocol-server_shutdown_confirm)
     
 ---
 
@@ -176,15 +176,6 @@ Currently there are no specific messages from the server to the patient client.
     * [_**SERVER_SHUTDOWN_CONFIRM**_](#protocol-server_shutdown_confirm): Used in case there are other clients connected.
     * [_**ERROR**_](#protocol-error)
 
-
-#### Protocol: SERVER_SHUTDOWN_CONFIRM
-
-* **Usage**: To answer _SERVER_SHUTDOWN_CONFIRM sent by the server. Shut downs the server even though other clients are connected. 
-* **Requirements**: none
-* **Answers to**: 
-    * [_**SERVER_SHUTDOWN_CONFIRM**_](#protocol-server_shutdown_confirm)
-
-
 #### Protocol: SERVER_CANCEL_SHUTDOWN
 
 * **Usage**: When there are other clients connected to the server and the administrator decides not
@@ -196,12 +187,6 @@ Currently there are no specific messages from the server to the patient client.
  
         
 ### **From Server to Administrator**
-#### Protocol: SERVER_SHUTDOWN_CONFIRM
-
-* **Usage**: To answer _SERVER_SHUTDOWN_ if there are any other clients connected. 
-* **Requirements**: none
-* **Answers to**: 
-    * [_**SERVER_SHUTDOWN**_](#protocol-server_shutdown)
 
 #### Protocol: PUSH_DOCTORS
 
@@ -260,9 +245,18 @@ Currently there are no specific messages from the server to the patient client.
     + _**Any message from a client to the server**_
 
     
-### **Messages from either one**
+### **Messages from either end**
 
 #### Protocol: DISCONNECT
 
 * **Usage**: Whenever one side wants to close the connection for some reason.
 * **Returns**: just the protocol.
+
+#### Protocol: SERVER_SHUTDOWN_CONFIRM
+
+* **Usage**: with administrator clients. Shut downs the server even though other clients are connected if answering to 
+SERVER_SHUTDOWN_CONFIRM and works as an acknowledgement if answering to SERVER_SHUTDOWN
+* **Requirements**: none
+* **Answers to**: 
+    * [_**SERVER_SHUTDOWN_CONFIRM**_](#protocol-server_shutdown_confirm)
+    * [_**SERVER_SHUTDOWN**_](#protocol-server_shutdown)
