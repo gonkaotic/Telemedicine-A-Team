@@ -56,11 +56,10 @@ public class ClientsViewMeasurementsController implements Initializable {
 	private TableColumn<Measurement, Float> temperatureColumn;
 
 	@FXML
-	private TableColumn<Measurement, ArrayList<Measurement.Symptom> > symptomsColumn;
-	
+	private TableColumn<Measurement, ArrayList<Measurement.Symptom>> symptomsColumn;
+
 	@FXML
 	private TableColumn<Measurement, String> commentsColumn;
-
 
 	@FXML
 	private Label measurementsLabel;
@@ -68,18 +67,17 @@ public class ClientsViewMeasurementsController implements Initializable {
 	@FXML
 	private DatePicker dateSearch;
 
-	  @FXML
-	    void showNewMeasurement(MouseEvent event) {
+	@FXML
+	void showNewMeasurement(MouseEvent event) {
 
-	
-	        if ( event.getClickCount()<=2){
-	        	
-	            Measurement m = measurementsTable.getSelectionModel().getSelectedItem();
-	           if (m!=null) {
-	        	   showNewMeasurement(m);
-	           }
-	        }
-	    }
+		if (event.getClickCount() <= 2) {
+
+			Measurement m = measurementsTable.getSelectionModel().getSelectedItem();
+			if (m != null) {
+				showNewMeasurement(m);
+			}
+		}
+	}
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -88,41 +86,42 @@ public class ClientsViewMeasurementsController implements Initializable {
 		bpmColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Integer>("BPM"));
 		o2SaturationColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("O2 Saturation"));
 		temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("Temperature"));
-		symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
-		commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,String>("Doctor Comments"));
-		
-		
+		symptomsColumn.setCellValueFactory(
+				new PropertyValueFactory<Measurement, ArrayList<Measurement.Symptom>>("symptomChecklist"));
+		commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement, String>("Doctor Comments"));
 
 	}
 
-	
 	public void initComponents(Pane centralPane, Patient patient) {
-		 dateColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Date>("date"));
-	        bpmColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Integer>("BPM"));
-	        o2SaturationColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Float>("spO2"));
-	        temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Float>("temperature"));
-	        symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
-	        commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,String>("Doctor Comments"));
-	    	measurementsTable.getItems().addAll(patient.getMeasurements());
+		dateColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Date>("date"));
+		bpmColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Integer>("BPM"));
+		o2SaturationColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("spO2"));
+		temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("temperature"));
+		symptomsColumn.setCellValueFactory(
+				new PropertyValueFactory<Measurement, ArrayList<Measurement.Symptom>>("symptomChecklist"));
+		commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement, String>("Doctor Comments"));
+		measurementsTable.getItems().addAll(patient.getMeasurements());
+		
+		this.patient = patient;
+		this.mainPane=centralPane;
 	}
-	
-	public void showNewMeasurement( Measurement newMeasure ){
-    	try {
-    		System.out.println("Showing Patient: " + newMeasure.toString());
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("MeasuresChooser.fxml"));
-            GridPane measuresPane = (GridPane) loader.load();
-            mainPane.getChildren().clear();
-            mainPane.getChildren().add(measuresPane);
-            measuresPane.prefHeightProperty().bind(mainPane.heightProperty());
-            measuresPane.prefWidthProperty().bind(mainPane.widthProperty());
 
-            MeasuresChooserController controller = loader.<MeasuresChooserController>getController();
-           controller.init(newMeasure, patient);
+	public void showNewMeasurement(Measurement newMeasure) {
+		try {
+			System.out.println("Showing Patient: " + newMeasure.toString());
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("MeasuresChooser.fxml"));
+			GridPane measuresPane = (GridPane) loader.load();
+			mainPane.getChildren().clear();
+			mainPane.getChildren().add(measuresPane);
+			measuresPane.prefHeightProperty().bind(mainPane.heightProperty());
+			measuresPane.prefWidthProperty().bind(mainPane.widthProperty());
 
-        }catch(IOException ex){
-            ex.printStackTrace();
-        }
-    }
-	
+			MeasuresChooserController controller = loader.<MeasuresChooserController>getController();
+			controller.init(newMeasure, patient);
+
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+	}
 
 }
