@@ -1,5 +1,36 @@
 # Patient Manual
 
-## Introduction 
+## Index
++ [Introduction](#introduction)
++ [IP chooser](#ip-chooser)
++ [login](#login)
++ [Bitalino Configuration](#bitalino-configuration)
++ [Record a new measurement](#record-a-new-measurement)
++ [List all measurements](#list-all-measurements)
+
+### Introduction 
 
 This application has been programmed in the Java language. Therefore, in order to run it, you must make sure you have a Java compiler installed.
+
+
+If you are a client and a patient you have to run the class Main.java in the gui package. 
+
+### IP Chooser
+First of all the application will ask you about the direction IP of the server you want to connect. You have to introduce a valid ipv4 address or "localhost" is also allow.  If it is unable to do so, either because of an incorrect ip address was introduced or the server is unavailable, a pop-up will appear indicating so. 
+
+### Login 
+Then another window will open where you must enter your ID (eight numbers and the letter in capital letter) and password.
+
+### Bitalino Configuration
+
+Once clicked on bitalino button in the top left  you can configure the MAC address, and the different channels for starting recording your  biological signals.
+
+### Record a new measurement
+
+You can start recording a new measurement to send it to the hospital by clicking on the "new measurement" button. To do this, you will have had to correctly configure the bitalino. You can indicate the temperature, press the record button to start recording your heart rate, oxygen saturation and ecg, it also has a check list to mark your symptoms.
+
+
+### List all measurements
+
+
+Clicking on the records button will appear all your measurements. The last column is a field where the doctor can write a comment associated to that measurement. The patient cannot modify it. 
