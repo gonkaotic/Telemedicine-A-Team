@@ -6,7 +6,7 @@
 + [Network Messages Protocols](#networkmessages-protocol-enumeration)
     + Clients to server
         + [Patient to Server](#from-patient-to-server)
-            + [Patient login](#protocol-_patient_login_)
+            + [Patient login](#protocol-_**patient_login**_)
             + [Push measurement](#protocol-_push_measurement_)
         + [Doctor to Server](#from-doctor-to-server)
             + [Doctor login](#protocol-_doctor_login_)
