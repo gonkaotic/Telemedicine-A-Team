@@ -14,7 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import javafx.fxml.FXML;
-
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Alert;
@@ -76,7 +76,7 @@ public class ClientsViewMeasurementsController implements Initializable {
 	        	
 	            Measurement m = measurementsTable.getSelectionModel().getSelectedItem();
 	           if (m!=null) {
-	        	   mainPanel.showNewMeasurement( m );
+	        	   showNewMeasurement(m);
 	           }
 	        }
 	    }
@@ -105,6 +105,24 @@ public class ClientsViewMeasurementsController implements Initializable {
 	        commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,String>("Doctor Comments"));
 	    	measurementsTable.getItems().addAll(patient.getMeasurements());
 	}
+	
+	public void showNewMeasurement( Measurement newMeasure ){
+    	try {
+    		System.out.println("Showing Patient: " + newMeasure.toString());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("MeasuresChooser.fxml"));
+            GridPane measuresPane = (GridPane) loader.load();
+            mainPane.getChildren().clear();
+            mainPane.getChildren().add(measuresPane);
+            measuresPane.prefHeightProperty().bind(mainPane.heightProperty());
+            measuresPane.prefWidthProperty().bind(mainPane.widthProperty());
+
+            MeasuresChooserController controller = loader.<MeasuresChooserController>getController();
+           controller.init(newMeasure, patient);
+
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+    }
 	
 
 }

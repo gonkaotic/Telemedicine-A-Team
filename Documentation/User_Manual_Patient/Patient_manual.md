@@ -33,4 +33,8 @@ You can start recording a new measurement to send it to the hospital by clicking
 ### List all measurements
 
 
-Clicking on the records button will appear all your measurements. The last column is a field where the doctor can write a comment associated to that measurement. The patient cannot modify it. 
+Clicking on the records button will appear all your measurements. Rows indicates a measurement and columns  show the date the measurement was taken, 
+the heart rate, the oxygen saturation level, the temperature and the symptoms of the patient; to see the rest of the 
+data of the measurement the doctor will have to double click on any of the items of the table and then the [extra 
+information}](#measurement-view) will appear below. If the doctor then double clicks on another item of the table, the 
+information below will update to that of the new measurement. The last column is a field where the doctor can write a comment associated to that measurement. The patient cannot modify it. 

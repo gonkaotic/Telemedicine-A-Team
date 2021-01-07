@@ -141,7 +141,7 @@ public class ClientMainPanelController implements Initializable {
             measuresPane.prefWidthProperty().bind(centralPane.widthProperty());
 
             MeasuresChooserController controller = loader.<MeasuresChooserController>getController();
-           // controller.init(patient, measuresPane);
+          // controller.init(patient);
 
         }catch(IOException ex){
             ex.printStackTrace();
