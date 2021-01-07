@@ -44,7 +44,7 @@ public class MeasurementListViewerController {
         temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement,Float>("temperature"));
         symptomsColumn.setCellValueFactory(new PropertyValueFactory<Measurement,ArrayList<Measurement.Symptom>>("symptomChecklist"));
 
-        measurementsTable.getItems().addAll(  measurements );
+        if (measurements != null )measurementsTable.getItems().addAll(  measurements );
         this.main = main;
     }
 

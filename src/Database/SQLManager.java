@@ -374,12 +374,14 @@ public class SQLManager {
 
         ResultSet rs1 = prep.executeQuery();
 
+        List<Measurement> measuresList = new ArrayList<>();
+
         if (!rs1.isBeforeFirst()) {
             prep.close();
-            return null;
+            return measuresList;
         }
 
-        List<Measurement> measuresList = new ArrayList<>();
+
 
         while (rs1.next()) {
             measuresList.add(getMeasurement(rs1));
