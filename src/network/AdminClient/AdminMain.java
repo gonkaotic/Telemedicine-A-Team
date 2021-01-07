@@ -368,6 +368,39 @@ public class AdminMain {
         }
     }
 
+
+    /**
+     * Gets all data required to register an admin + calls the AdminClient's registerAdmin method
+     */
+    private static void registerAdmin() {
+        try {
+            System.out.print("\n ------ ADMIN INFO ------- " +
+                    "\nYou can type x at any time to cancel the resgistry\n");
+
+            System.out.print("DNI: ");
+            String dni = console.readLine();
+            if (exitOption(dni)) return;
+            while (!verifyDNI(dni)) {
+                System.out.print("Invalid DNI (should be 8 digits and a letter)");
+                System.out.print("\nDNI: ");
+                dni = console.readLine();
+                if (exitOption(dni)) return;
+            }
+
+            System.out.print("Password: ");
+            String password = console.readLine();
+            if (exitOption(password)) return;
+
+            Administrator admin = new Administrator(dni,password);
+            adminClient.registerAdmin(admin);
+
+        }catch (ProtocolException e) {
+            System.out.println(e.getErrorMessage());
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
         /**
      * Verifies that DNI is a combination of 8 numbers and a letter: does not evaluate that the letter is correct
      * @param dni

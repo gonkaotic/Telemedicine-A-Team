@@ -84,6 +84,20 @@ public class AdminClient extends Client {
         }
     }
 
+    public void registerAdmin (Administrator admin) throws ProtocolException{
+        NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.REGISTER_ADMIN, admin);
+        NetworkMessage answer = this.sendMessageToServer(msg);
+        if (answer!= null) {
+            NetworkMessage.Protocol protocolMessage = answer.getProtocol();
+            if (protocolMessage == NetworkMessage.Protocol.ERROR){
+                throw new ProtocolException("Unable to register the admin in the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+            }
+        }
+        else{
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
+        }
+    }
+
     public LinkedList<Doctor> getRegisteredDoctors() throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.GET_DOCTORS);
         NetworkMessage answer = this.sendMessageToServer(msg);

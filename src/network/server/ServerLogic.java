@@ -9,6 +9,7 @@ import pojos.Measurement;
 import pojos.Patient;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -39,22 +40,22 @@ public class ServerLogic implements Runnable{
             System.out.println("New client: " + socket.getInetAddress());
             try {
 
-                inputStream = new ObjectInputStream( socket.getInputStream() );
-                outputStream = new ObjectOutputStream( socket.getOutputStream() );
+                inputStream = new ObjectInputStream(socket.getInputStream());
+                outputStream = new ObjectOutputStream(socket.getOutputStream());
 
                 NetworkMessage msg = (NetworkMessage) inputStream.readObject();
                 System.out.println(msg.toString());
 
-                if ( msg.getProtocol() == NetworkMessage.Protocol.PATIENT_LOGIN) {
+                if (msg.getProtocol() == NetworkMessage.Protocol.PATIENT_LOGIN) {
                     Patient patientLogged = msg.getPatient();
-                    System.out.println("Patient received: "+ patientLogged.toString());
+                    System.out.println("Patient received: " + patientLogged.toString());
                     try {
                         lock.acquireRead();
                         patientLogged = SQLManager.getPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
-                    } catch ( SQLException e){
-                        System.out.println( "Patient not found.");
+                    } catch (SQLException e) {
+                        System.out.println("Patient not found.");
                         patientLogged = null;
-                    } catch ( InterruptedException e) {
+                    } catch (InterruptedException e) {
                         System.out.println("There was an error with the database lock");
                         patientLogged = null;
                     } finally {
@@ -62,29 +63,29 @@ public class ServerLogic implements Runnable{
                     }
                     NetworkMessage answer;
 
-                    if(patientLogged != null) {
+                    if (patientLogged != null) {
                         //continue connection, do as necessary
                         answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, patientLogged);
-                        outputStream.writeObject( answer );
+                        outputStream.writeObject(answer);
 
-                        patientLogic( patientLogged );
+                        patientLogic(patientLogged);
 
                     } else {
                         //Deny the log in, close connection.
                         System.out.println("Wrong DNI or password");
                         answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
-                        outputStream.writeObject( answer );
+                        outputStream.writeObject(answer);
                     }
-                } else if ( msg.getProtocol() == NetworkMessage.Protocol.DOCTOR_LOGIN ) {
+                } else if (msg.getProtocol() == NetworkMessage.Protocol.DOCTOR_LOGIN) {
                     Doctor doctorLogged = msg.getDoctor();
-                    System.out.println("Doctor received: "+ doctorLogged.toString());
+                    System.out.println("Doctor received: " + doctorLogged.toString());
                     try {
                         lock.acquireRead();
                         doctorLogged = SQLManager.getDoctorByDniAndPassword(doctorLogged.getDni(), doctorLogged.getPassword());
-                    } catch ( SQLException e){
-                        System.out.println( "Doctor not found.");
+                    } catch (SQLException e) {
+                        System.out.println("Doctor not found.");
                         doctorLogged = null;
-                    } catch ( InterruptedException e) {
+                    } catch (InterruptedException e) {
                         System.out.println("There was an error with the database lock");
                         doctorLogged = null;
                     } finally {
@@ -92,29 +93,29 @@ public class ServerLogic implements Runnable{
                     }
                     NetworkMessage answer;
 
-                    if(doctorLogged != null) {
+                    if (doctorLogged != null) {
                         //continue connection, do as necessary
                         answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, doctorLogged);
-                        outputStream.writeObject( answer );
+                        outputStream.writeObject(answer);
 
-                        doctorLogic( doctorLogged );
+                        doctorLogic(doctorLogged);
 
                     } else {
                         //Deny the log in, close connection.
                         System.out.println("Wrong DNI or password");
                         answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
-                        outputStream.writeObject( answer );
+                        outputStream.writeObject(answer);
                     }
-                } else if ( msg.getProtocol() == NetworkMessage.Protocol.ADMIN_LOGIN ) {
+                } else if (msg.getProtocol() == NetworkMessage.Protocol.ADMIN_LOGIN) {
                     Administrator adminLogged = msg.getAdmin();
-                    System.out.println("Admin received: "+ adminLogged.toString());
+                    System.out.println("Admin received: " + adminLogged.toString());
                     try {
                         lock.acquireRead();
                         adminLogged = SQLManager.getAdminByDniAndPassword(adminLogged.getDni(), adminLogged.getPassword());
-                    } catch ( SQLException e){
-                        System.out.println( "Admin not found.");
+                    } catch (SQLException e) {
+                        System.out.println("Admin not found.");
                         adminLogged = null;
-                    } catch ( InterruptedException e) {
+                    } catch (InterruptedException e) {
                         System.out.println("There was an error with the database lock");
                         adminLogged = null;
                     } finally {
@@ -122,20 +123,22 @@ public class ServerLogic implements Runnable{
                     }
                     NetworkMessage answer;
 
-                    if(adminLogged != null) {
+                    if (adminLogged != null) {
                         //continue connection, do as necessary
                         answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, adminLogged);
-                        outputStream.writeObject( answer );
+                        outputStream.writeObject(answer);
 
-                        adminLogic( adminLogged );
+                        adminLogic(adminLogged);
 
                     } else {
                         //Deny the log in, close connection.
                         System.out.println("Wrong DNI or password");
                         answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
-                        outputStream.writeObject( answer );
+                        outputStream.writeObject(answer);
                     }
                 }
+            }catch(SocketException ex){
+                System.out.println("Client closed socket");
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             } finally {
@@ -228,7 +231,7 @@ public class ServerLogic implements Runnable{
                     System.out.println("Client using incorrect object");
                 }
             }
-
+            threads.decrementAndGet();
             releaseResources(socket, inputStream, outputStream);
         }
     }
@@ -300,7 +303,7 @@ public class ServerLogic implements Runnable{
                     System.out.println("Client using incorrect object");
                 }
             }
-
+            threads.decrementAndGet();
             releaseResources( socket, inputStream, outputStream);
         }
     }
@@ -385,6 +388,35 @@ public class ServerLogic implements Runnable{
                         }
                     }
 
+                    if(protocol == NetworkMessage.Protocol.REGISTER_ADMIN){
+                        Administrator administrator = msg.getAdmin();
+                        if(admin!=null){
+                            try{
+                                lock.acquireWrite();
+                                SQLManager.insertAdmin(administrator);
+                                answer = new NetworkMessage(NetworkMessage.Protocol.ACK);
+                            } catch (InterruptedException e) {
+                                System.out.println("Problems when acquiring database lock");
+                                answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                            } catch (SQLException throwables) {
+                                System.out.println("Error when inserting in the database");
+                                answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                            }
+                            finally{
+                                lock.releaseWrite();
+                                outputStream.writeObject(answer);
+                                outputStream.flush();
+                            }
+                        }else{
+                            System.out.println("Noo admin provided");
+                            answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                            outputStream.writeObject(answer);
+                            outputStream.flush();
+                        }
+                    }
+
+
+
 
                 } catch (IOException e) {
                     System.out.println("There was a connection error");
@@ -393,6 +425,7 @@ public class ServerLogic implements Runnable{
                     System.out.println("Client using incorrect object");
                 }
             }
+            threads.decrementAndGet();
             releaseResources( socket, inputStream, outputStream);
         }
     }

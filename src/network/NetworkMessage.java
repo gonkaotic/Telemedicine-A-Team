@@ -24,7 +24,7 @@ public class NetworkMessage implements Serializable{
 		/*Protocols from Server to Doctor*/
 		PUSH_PATIENT_MEASURES,
 		/*Protocols from Admin to Server*/
-		ADMIN_LOGIN, GET_DOCTORS, REGISTER_PATIENT, REGISTER_DOCTOR, SERVER_SHUTDOWN, SERVER_CANCEL_SHUTDOWN,
+		ADMIN_LOGIN, GET_DOCTORS, REGISTER_PATIENT, REGISTER_DOCTOR, REGISTER_ADMIN, SERVER_SHUTDOWN, SERVER_CANCEL_SHUTDOWN,
 		/*Protocols from Server to Admin*/
 		PUSH_DOCTORS, SERVER_SHUTDOWN_CONFIRM,
 		/*Protocols from Server to ANY client*/
