@@ -6,7 +6,7 @@
 + [Network Messages Protocols](#networkmessages-protocol-enumeration)
     + Clients to server
         + [Patient to Server](#from-patient-to-server)
-            + [Patient login](#protocol-_patient_login_)
+            + [Patient login](#protocol-patient_login)
             + [Push measurement](#protocol-_push_measurement_)
         + [Doctor to Server](#from-doctor-to-server)
             + [Doctor login](#protocol-_doctor_login_)
@@ -56,7 +56,7 @@ object with it.
 
 ### **From Patient to Server**
 
-### Protocol _**PATIENT_LOGIN**_
+### Protocol PATIENT_LOGIN
 
 * **Usage**: After a successful TCP connection, this should be the first message sent to the
     server by any patient client. Its intention is to check if the user is registered in the
@@ -213,7 +213,7 @@ Currently there are no specific messages from the server to the patient client.
         measures taken in previous sessions if this was called _PATIENT_LOGIN_
     * A _Doctor_ object and a list of patients under their care if this was called from _DOCTOR_LOGIN_
 * **Answers to**: 
-    * [_**PATIENT_LOGIN**_](#protocol-_patient_login_)
+    * [_**PATIENT_LOGIN**_](#protocol-patient_login)
     * [_**DOCTOR_LOGIN**_](#protocol-_doctor_login_)
     * [_**ADMIN_LOGIN**_](#protocol-_admin_login_)
         
@@ -225,7 +225,7 @@ Currently there are no specific messages from the server to the patient client.
      connect again. 
 * **Returns**: just the protocol.
 * **Answers to**: 
-    * [_**PATIENT_LOGIN**_](#protocol-_patient_login_)
+    * [_**PATIENT_LOGIN**_](#protocol-patient_login)
     * [_**DOCTOR_LOGIN**_](#protocol-_doctor_login_)
     * [_**ADMIN_LOGIN**_](#protocol-_admin_login_)
         
