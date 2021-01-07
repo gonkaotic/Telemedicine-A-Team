@@ -390,7 +390,7 @@ public class ServerLogic implements Runnable{
 
                     if(protocol == NetworkMessage.Protocol.REGISTER_ADMIN){
                         Administrator administrator = msg.getAdmin();
-                        if(admin!=null){
+                        if(administrator!=null){
                             try{
                                 lock.acquireWrite();
                                 SQLManager.insertAdmin(administrator);
@@ -408,11 +408,54 @@ public class ServerLogic implements Runnable{
                                 outputStream.flush();
                             }
                         }else{
-                            System.out.println("Noo admin provided");
+                            System.out.println("No admin provided");
                             answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
                             outputStream.writeObject(answer);
                             outputStream.flush();
                         }
+                    }
+
+                    if (protocol == NetworkMessage.Protocol.SERVER_SHUTDOWN) {
+                        Administrator administrator = msg.getAdmin();
+                        if(administrator != null && administrator.equals(admin)){
+                            if(threads.get() > 1){
+                                answer = new NetworkMessage(NetworkMessage.Protocol.SERVER_SHUTDOWN_CONFIRM);
+                                outputStream.writeObject(answer);
+                                outputStream.flush();
+                                msg = (NetworkMessage) inputStream.readObject();
+                                if(msg.getProtocol() == NetworkMessage.Protocol.SERVER_SHUTDOWN_CONFIRM){
+                                    System.out.println("Shutting down the server");
+                                    answer = new NetworkMessage(NetworkMessage.Protocol.ACK);
+                                    outputStream.writeObject(answer);
+                                    outputStream.flush();
+                                    releaseResources(socket, inputStream, outputStream);
+                                    System.exit(0);
+                                }
+                                if (msg.getProtocol() == NetworkMessage.Protocol.SERVER_CANCEL_SHUTDOWN){
+                                    System.out.println("Admin canceled the shutdown");
+                                    answer = new NetworkMessage(NetworkMessage.Protocol.ACK);
+                                    outputStream.writeObject(answer);
+                                    outputStream.flush();
+                                }
+                            }
+                            else{
+                                System.out.println("Shutting down the server");
+                                answer = new NetworkMessage(NetworkMessage.Protocol.ACK);
+                                outputStream.writeObject(answer);
+                                outputStream.flush();
+                                releaseResources(socket, inputStream, outputStream);
+                                System.exit(0);
+                            }
+                        }
+                        else{
+                            System.out.println("Invalid admin. It is not the admin that logged in");
+                            System.out.println("RegisteredAdmin: "+ admin);
+                            System.out.println("ReceivedAdmin: "+administrator);
+                            answer = new NetworkMessage(NetworkMessage.Protocol.ERROR);
+                            outputStream.writeObject(answer);
+                            outputStream.flush();
+                        }
+
                     }
 
 
