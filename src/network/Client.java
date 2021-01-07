@@ -4,6 +4,7 @@ import network.DoctorClient.DoctorClient;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +52,9 @@ public class Client implements Network {
         // Release input and output stream
         try {
             NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.DISCONNECT);
-            objectOutputStream.writeObject( msg );
+            objectOutputStream.writeObject(msg);
+        }catch(SocketException ex){
+            System.out.println("Socket closed");
         } catch ( IOException e){
             System.out.println("Disconnection error");
             e.printStackTrace();
@@ -71,7 +74,8 @@ public class Client implements Network {
             try {
                 input.close();
             } catch (IOException ex) {
-                Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Input already closed by the other end");
             } finally {
                 input = null;
             }
@@ -81,7 +85,8 @@ public class Client implements Network {
             try {
                 output.close();
             } catch (IOException ex) {
-                Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Output already closed by the other end");
             }finally {
                 output = null;
             }
@@ -91,7 +96,8 @@ public class Client implements Network {
             try {
                 socket.close();
             } catch (IOException ex) {
-                Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Socket already closed by the other end");
+                //Logger.getLogger(DoctorClient.class.getName()).log(Level.SEVERE, null, ex);
             }finally {
                 socket = null;
             }

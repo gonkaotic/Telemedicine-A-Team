@@ -177,6 +177,14 @@ Currently there are no specific messages from the server to the patient client.
     * [_**ERROR**_](#protocol-error)
 
 
+#### Protocol: SERVER_SHUTDOWN_CONFIRM
+
+* **Usage**: To answer _SERVER_SHUTDOWN_CONFIRM sent by the server. Shut downs the server even though other clients are connected. 
+* **Requirements**: none
+* **Answers to**: 
+    * [_**SERVER_SHUTDOWN_CONFIRM**_](#protocol-server_shutdown_confirm)
+
+
 #### Protocol: SERVER_CANCEL_SHUTDOWN
 
 * **Usage**: When there are other clients connected to the server and the administrator decides not

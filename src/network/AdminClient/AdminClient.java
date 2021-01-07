@@ -1,5 +1,6 @@
 package network.AdminClient;
 
+import com.sun.xml.internal.ws.api.config.management.policy.ManagedServiceAssertion;
 import network.Client;
 import network.NetworkMessage;
 import network.ProtocolException;
@@ -14,6 +15,7 @@ import java.util.LinkedList;
 
 
 public class AdminClient extends Client {
+    private Administrator admin = null;
 
     public AdminClient(String serverIP) {
         this.serverIP = serverIP;
@@ -32,6 +34,7 @@ public class AdminClient extends Client {
         NetworkMessage.Protocol protocolMessage = answer.getProtocol();
 
         if (protocolMessage == NetworkMessage.Protocol.LOGIN_ACCEPT) {
+            this.admin = answer.getAdmin();
             return answer.getAdmin();
         }
         if (protocolMessage == NetworkMessage.Protocol.LOGIN_DENY) {
@@ -84,6 +87,32 @@ public class AdminClient extends Client {
         }
     }
 
+    /**
+     * Sends an admin to the server to register it in the database
+     *
+     * @param admin the admin to be registered
+     * @throws ProtocolException
+     */
+    public void registerAdmin (Administrator admin) throws ProtocolException{
+        NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.REGISTER_ADMIN, admin);
+        NetworkMessage answer = this.sendMessageToServer(msg);
+        if (answer!= null) {
+            NetworkMessage.Protocol protocolMessage = answer.getProtocol();
+            if (protocolMessage == NetworkMessage.Protocol.ERROR){
+                throw new ProtocolException("Unable to register the admin in the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+            }
+        }
+        else{
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
+        }
+    }
+
+    /**
+     * Asks the server for all the doctors registered
+     *
+     * @return the list of all registered doctors (might be empty)
+     * @throws ProtocolException
+     */
     public LinkedList<Doctor> getRegisteredDoctors() throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.GET_DOCTORS);
         NetworkMessage answer = this.sendMessageToServer(msg);
@@ -100,6 +129,65 @@ public class AdminClient extends Client {
             throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
         }
         return null;
+    }
+
+    /**
+     * Sends command to shutdown the server
+     *
+     * @return the server's answer. This is necessary in case confirmation is needed.
+     * @throws ProtocolException
+     */
+    public NetworkMessage shutdownServer() throws ProtocolException{
+        NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.SERVER_SHUTDOWN, admin);
+        NetworkMessage answer = this.sendMessageToServer(msg);
+        if(answer!=null){
+            NetworkMessage.Protocol protocolMessage = answer.getProtocol();
+            if(protocolMessage == NetworkMessage.Protocol.ERROR){
+                throw new ProtocolException("Could not shutdown the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+            }
+            return answer;
+        }
+        else{
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
+        }
+    }
+
+    /**
+     * Confirms server shutdown
+     *
+     * @throws ProtocolException
+     */
+    public void confirmShutdown() throws ProtocolException{
+        NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.SERVER_SHUTDOWN_CONFIRM, admin);
+        NetworkMessage answer = this.sendMessageToServer(msg);
+        if(answer!=null){
+            NetworkMessage.Protocol protocolMessage = answer.getProtocol();
+            if(protocolMessage == NetworkMessage.Protocol.ERROR){
+                throw new ProtocolException("Could not shutdown the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+            }
+        }
+        else{
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
+        }
+    }
+
+    /**
+     * Cancels server shutdown
+     *
+     * @throws ProtocolException
+     */
+    public void cancelShutdown() throws ProtocolException{
+        NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.SERVER_CANCEL_SHUTDOWN, admin);
+        NetworkMessage answer = this.sendMessageToServer(msg);
+        if(answer!=null){
+            NetworkMessage.Protocol protocolMessage = answer.getProtocol();
+            if(protocolMessage == NetworkMessage.Protocol.ERROR){
+                throw new ProtocolException("Could not shutdown the server", ProtocolException.ErrorType.SERVERSIDE_ERROR);
+            }
+        }
+        else{
+            throw new ProtocolException("OutputStream is closed", ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR);
+        }
     }
 
     /**

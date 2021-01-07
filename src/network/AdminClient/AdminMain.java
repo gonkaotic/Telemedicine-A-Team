@@ -1,5 +1,6 @@
 package network.AdminClient;
 
+import network.NetworkMessage;
 import network.ProtocolException;
 import pojos.Administrator;
 import pojos.Doctor;
@@ -24,25 +25,30 @@ public class AdminMain {
 
     public static void main(String[] args) {
         console = new BufferedReader(new InputStreamReader(System.in));
-        boolean login=false;
+        boolean login = false;
         while (!connected) {
             connectToServer();
         }
         do {
             login = login();
-        }while (!login);
+        } while (!login);
 
-        while(true){
+        while (true) {
             int option = displayMenu();
-            switch (option){
+            switch (option) {
                 case 1:
                     registerPatient();
                     break;
                 case 2:
                     registerDoctor();
                     break;
-                case 3: break;
-                case 4: break;
+                case 3:
+                    registerAdmin();
+                    break;
+                case 4:
+                    serverShutdown();
+                    if(!adminClient.isConnected()) System.exit(0);
+                    break;
                 case 5:
                     System.out.println("Exiting ...");
                     adminClient.disconnect();
@@ -87,9 +93,8 @@ public class AdminMain {
     /**
      * Starts connection with the server by opening a socket against the server
      *
-     * @return
-     *      true if everything went ok
-     *      false if an error occurred during the process
+     * @return true if everything went ok
+     * false if an error occurred during the process
      */
     private static void connectToServer() {
         try {
@@ -110,19 +115,19 @@ public class AdminMain {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Problems with the console");
-            connected=false;
+            connected = false;
         }
     }
 
     /**
      * Gets the info from the admin needed to login in the server
-     * @return
-     *      true if login was successful
-     *      false otherwise
+     *
+     * @return true if login was successful
+     * false otherwise
      */
     private static boolean login() {
         try {
-            if(connected) {
+            if (connected) {
                 System.out.print("DNI: ");
                 String dni = console.readLine();
                 System.out.print("Password: ");
@@ -131,18 +136,22 @@ public class AdminMain {
                 Administrator adminData = new Administrator(dni, password);
                 admin = adminClient.login(adminData);
                 if (admin == null) connected = false;
+            } else {
+                connected = adminClient.connect();
+                admin = null;
             }
-            else{
-                connected= adminClient.connect();
-                admin=null;
-            }
-            return (admin!=null);
+            return (admin != null);
 
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         } catch (ProtocolException e) {
-            e.printStackTrace();
+            System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
             return false;
         }
     }
@@ -152,8 +161,8 @@ public class AdminMain {
      */
     private static void registerPatient() {
         try {
-            LinkedList<Doctor> doctors =adminClient.getRegisteredDoctors();
-            if(doctors != null && !doctors.isEmpty()) {
+            LinkedList<Doctor> doctors = adminClient.getRegisteredDoctors();
+            if (doctors != null && !doctors.isEmpty()) {
 
                 System.out.print("\n ------ PATIENT INFO ------- " +
                         "\nYou can type x at any time to cancel the resgistry\n");
@@ -200,12 +209,12 @@ public class AdminMain {
                 Date birthdate = Date.valueOf(date);
 
                 System.out.println("Select one of the following doctors (enter his ID):");
-                for(Doctor doc:doctors){
-                    System.out.println("ID: "+doc.getId()+"\tName: "+doc.getName());
+                for (Doctor doc : doctors) {
+                    System.out.println("ID: " + doc.getId() + "\tName: " + doc.getName());
                 }
                 System.out.print("Enter the doctor's id: ");
                 String id = console.readLine();
-                while(!verifyId(id,doctors)){
+                while (!verifyId(id, doctors)) {
                     System.out.println("Invalid id");
                     System.out.print("Enter the doctor's id: ");
                     id = console.readLine();
@@ -314,17 +323,20 @@ public class AdminMain {
                 if (checkConfirmation(confirmation)) riskFactors.add(Patient.RiskFactor.DIABETES2);
 
                 System.out.println("\nPatient data completed");
-                Patient patient = new Patient(1,name,doctorId,birthdate, sex1,riskFactors,dni,password);
-                System.out.println(patient);
+                Patient patient = new Patient(1, name, doctorId, birthdate, sex1, riskFactors, dni, password);
                 adminClient.registerPatient(patient);
-            }
-            else{
+            } else {
                 System.out.println("No doctors available. Please register a doctor before registering a patient");
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ProtocolException e) {
-            e.printStackTrace();
+            System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
         }
     }
 
@@ -355,76 +367,161 @@ public class AdminMain {
             String password = console.readLine();
             if (exitOption(password)) return;
 
-            Doctor doctor = new Doctor(dni,password,name);
+            Doctor doctor = new Doctor(dni, password, name);
 
             System.out.println("Doctor data completed");
             adminClient.registerDoctor(doctor);
 
         } catch (ProtocolException e) {
             System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-        /**
-     * Verifies that DNI is a combination of 8 numbers and a letter: does not evaluate that the letter is correct
-     * @param dni
-     * @return
-     *      true if verification succeeded
-     *      false otherwise
+
+    /**
+     * Gets all data required to register an admin + calls the AdminClient's registerAdmin method
      */
-    private static boolean verifyDNI(String dni){
+    private static void registerAdmin() {
+        try {
+            System.out.print("\n ------ ADMIN INFO ------- " +
+                    "\nYou can type x at any time to cancel the resgistry\n");
+
+            System.out.print("DNI: ");
+            String dni = console.readLine();
+            if (exitOption(dni)) return;
+            while (!verifyDNI(dni)) {
+                System.out.print("Invalid DNI (should be 8 digits and a letter)");
+                System.out.print("\nDNI: ");
+                dni = console.readLine();
+                if (exitOption(dni)) return;
+            }
+
+            System.out.print("Password: ");
+            String password = console.readLine();
+            if (exitOption(password)) return;
+
+            Administrator admin = new Administrator(dni, password);
+            adminClient.registerAdmin(admin);
+
+        } catch (ProtocolException e) {
+            System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void serverShutdown() {
+        try {
+            NetworkMessage answer = adminClient.shutdownServer();
+            NetworkMessage.Protocol protocol = answer.getProtocol();
+            if (protocol == NetworkMessage.Protocol.SERVER_SHUTDOWN_CONFIRM) {
+                System.out.println("There are other clients connected to the server");
+                System.out.print("Want to shut down the server anyway? (y/n): ");
+                String confirmation = console.readLine();
+                while (!checkYesNo(confirmation)) {
+                    System.out.println("Invalid input only y/n allowed");
+                    System.out.print("Want to shut down the server anyway? (y/n): ");
+                    confirmation = console.readLine();
+                }
+                if (checkConfirmation(confirmation)) {
+                    adminClient.confirmShutdown();
+                    System.out.println("Server shutting down");
+                    System.out.println("Exiting the app");
+                    adminClient.disconnect();
+                } else {
+                    adminClient.cancelShutdown();
+                }
+            } else {
+                if (protocol == NetworkMessage.Protocol.ACK) {
+                    System.out.println("Server shutting down");
+                    System.out.println("Exiting the app");
+                    adminClient.disconnect();
+                    System.exit(0);
+                }
+            }
+        } catch (ProtocolException e) {
+            System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Verifies that DNI is a combination of 8 numbers and a letter: does not evaluate that the letter is correct
+     *
+     * @param dni
+     * @return true if verification succeeded
+     * false otherwise
+     */
+    private static boolean verifyDNI(String dni) {
         return dni.matches("[0-9]{8}[a-zA-Z]");
     }
 
-    private static boolean verifySex(String sex){
-        return sex.equalsIgnoreCase("f")||sex.equalsIgnoreCase("m");
+    private static boolean verifySex(String sex) {
+        return sex.equalsIgnoreCase("f") || sex.equalsIgnoreCase("m");
     }
 
-    private static Patient.Sex getSex(String sex){
-        if(sex.equalsIgnoreCase("f")) return Patient.Sex.FEMALE;
+    private static Patient.Sex getSex(String sex) {
+        if (sex.equalsIgnoreCase("f")) return Patient.Sex.FEMALE;
         return Patient.Sex.MALE;
     }
 
-    private static boolean exitOption(String reading){
+    private static boolean exitOption(String reading) {
         return (reading.equalsIgnoreCase("x"));
     }
 
-    private static boolean verifyDate(String date){
-        try{
+    private static boolean verifyDate(String date) {
+        try {
             Date.valueOf(date);
-            if (Date.valueOf(date).compareTo(new Date(Calendar.getInstance().getTime().getTime())) >= 0) return false; // introduced date is bigger than actual date
+            if (Date.valueOf(date).compareTo(new Date(Calendar.getInstance().getTime().getTime())) >= 0)
+                return false; // introduced date is bigger than actual date
             return true;
-        }catch(IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             return false;
         }
     }
 
-    private static boolean verifyId(String id, LinkedList<Doctor> doctors){
-        try{
+    private static boolean verifyId(String id, LinkedList<Doctor> doctors) {
+        try {
             int doctorId = Integer.parseInt(id);
-            for (int i = 0; i<doctors.size();i++){
+            for (int i = 0; i < doctors.size(); i++) {
                 if (doctorId == doctors.get(i).getId()) return true;
             }
             return false;
-        }catch(NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             return false;
         }
     }
 
-    private static boolean checkYesNo(String reading){
-        return reading.equalsIgnoreCase("y")||reading.equalsIgnoreCase("n");
+    private static boolean checkYesNo(String reading) {
+        return reading.equalsIgnoreCase("y") || reading.equalsIgnoreCase("n");
     }
 
-    private static boolean checkConfirmation(String confirmation){
+    private static boolean checkConfirmation(String confirmation) {
         return confirmation.equalsIgnoreCase("y");
     }
 
-    private static void closeConsole(){
-        if(console != null){
-            try{
+    private static void closeConsole() {
+        if (console != null) {
+            try {
                 console.close();
             } catch (IOException e) {
                 e.printStackTrace();
