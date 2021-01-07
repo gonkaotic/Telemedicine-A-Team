@@ -146,7 +146,12 @@ public class AdminMain {
             e.printStackTrace();
             return false;
         } catch (ProtocolException e) {
-            e.printStackTrace();
+            System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
             return false;
         }
     }
@@ -327,6 +332,11 @@ public class AdminMain {
             e.printStackTrace();
         } catch (ProtocolException e) {
             System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
         }
     }
 
@@ -364,6 +374,11 @@ public class AdminMain {
 
         } catch (ProtocolException e) {
             System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -398,6 +413,11 @@ public class AdminMain {
 
         } catch (ProtocolException e) {
             System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -434,6 +454,11 @@ public class AdminMain {
             }
         } catch (ProtocolException e) {
             System.out.println(e.getErrorMessage());
+            if(e.getError() == ProtocolException.ErrorType.CLOSED_CONNECTION_ERROR) {
+                System.out.println("Exiting the app");
+                adminClient.disconnect();
+                System.exit(0);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
