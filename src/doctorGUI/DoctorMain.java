@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import network.DoctorClient.DoctorClient;
 import pojos.Doctor;
@@ -26,6 +27,24 @@ public class DoctorMain extends Application {
     public void start(Stage primaryStage) {
         window = primaryStage;
         client = new DoctorClient( "localhost" );
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/doctorGUI/ipLogin.fxml"));
+            AnchorPane root = loader.load();
+            IPLoginController controller = loader.getController();
+            controller.init(client, this);
+            this.window.setScene(new Scene(root));
+            this.window.setResizable(false);
+            this.window.setTitle("Doctor Client");
+            this.window.show();
+            this.window.setOnCloseRequest(e -> closeConnection());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to load ip login");
+            alert.showAndWait();
+            System.exit(0);
+        }
+        /*
         if ( client.connect() ) {
             //TODO: show loading circle while connecting.
             loadLogin();
@@ -34,13 +53,13 @@ public class DoctorMain extends Application {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Unable to connect to server");
             alert.showAndWait();
             System.exit(0);
-        }
+        }*/
 
     }
 
 
     private void closeConnection() {
-        if ( client != null ) client.disconnect();
+        if ( client != null && client.isConnected()) client.disconnect();
     }
 
     public void loadLogin() {
@@ -51,10 +70,6 @@ public class DoctorMain extends Application {
             DoctorLoginController controller = loader.getController();
             controller.initComponents(client, window);
             this.window.setScene(new Scene(root));
-            this.window.setResizable(false);
-            this.window.setTitle("Doctor Client");
-            this.window.show();
-            this.window.setOnCloseRequest(e -> closeConnection());
         } catch ( IOException e ) {
             e.printStackTrace();
         }

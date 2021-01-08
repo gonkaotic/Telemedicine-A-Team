@@ -37,7 +37,7 @@ public class ConnectionServer implements Network {
 
 			server = new ServerSocket(SERVERPORT);
 
-			System.out.println("Server started.");
+			System.out.println("Server started. Adrress: "+ server.getInetAddress());
 
 			while ( true ) {
 				System.out.println("Waiting for new client.");

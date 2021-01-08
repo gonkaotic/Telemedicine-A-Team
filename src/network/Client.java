@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 public class Client implements Network {
 
     private boolean connected;
-
     protected String serverIP;
     protected Socket socket = null;
     protected ObjectOutputStream objectOutputStream = null;
@@ -25,6 +24,7 @@ public class Client implements Network {
      */
     public boolean connect() {
         try {
+            connected = false;
             this.socket = new Socket(serverIP, SERVERPORT);
 
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -108,5 +108,11 @@ public class Client implements Network {
     public boolean isConnected(){
         return connected;
     }
+
+
+    public void setServerIP(String serverIP) {
+        this.serverIP = serverIP;
+    }
+
 
 }
