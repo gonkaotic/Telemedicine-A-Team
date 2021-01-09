@@ -137,7 +137,7 @@ public class AdminClient extends Client {
      * @return the server's answer. This is necessary in case confirmation is needed.
      * @throws ProtocolException
      */
-    public NetworkMessage shutdownServer() throws ProtocolException{
+    public NetworkMessage shutdownServer(Administrator admin) throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.SERVER_SHUTDOWN, admin);
         NetworkMessage answer = this.sendMessageToServer(msg);
         if(answer!=null){

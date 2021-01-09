@@ -425,7 +425,21 @@ public class AdminMain {
 
     private static void serverShutdown() {
         try {
-            NetworkMessage answer = adminClient.shutdownServer();
+            System.out.println("Please introduce your DNI and password. To cancel type x.");
+            System.out.print("DNI: ");
+            String dni = console.readLine();
+            if (exitOption(dni)) return;
+            while (!verifyDNI(dni)) {
+                System.out.print("Invalid DNI (should be 8 digits and a letter)");
+                System.out.print("\nDNI: ");
+                dni = console.readLine();
+                if (exitOption(dni)) return;
+            }
+            System.out.print("Password: ");
+            String password = console.readLine();
+            if (exitOption(password)) return;
+            Administrator administrator = new Administrator(dni,password);
+            NetworkMessage answer = adminClient.shutdownServer(administrator);
             NetworkMessage.Protocol protocol = answer.getProtocol();
             if (protocol == NetworkMessage.Protocol.SERVER_SHUTDOWN_CONFIRM) {
                 System.out.println("There are other clients connected to the server");
