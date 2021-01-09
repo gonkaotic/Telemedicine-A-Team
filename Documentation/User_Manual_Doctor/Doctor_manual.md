@@ -24,7 +24,9 @@ If this happens please try again later, and if it happens repeatedly, contact th
 ### Login
 
 A login menu will appear once the program is able to connect to the server, in which the user is required to log in with
-their Identification Number and a password given to them by the administrator. 
+their Identification Number (eight numbers  and the letter which is case sensitive so you have to be careful and put it in capital letter) and a password given to them by the administrator. 
+* DNI: **11111111Y**
+* Password: **Craneos**
 
 ### Patient Chooser
 
