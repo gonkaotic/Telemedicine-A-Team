@@ -1,6 +1,7 @@
 package network;
 
 import java.io.Serializable;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -30,11 +31,11 @@ public class NetworkMessage implements Serializable{
 		/*Protocols from Server to ANY client*/
 		LOGIN_ACCEPT, LOGIN_DENY, ERROR, ACK,
 		/*Protocols that can be used by all*/
-		DISCONNECT
+		DISCONNECT, PUSH_KEY
 	}
 	
 	private Patient patient;
-
+	private Key key;
 	private Doctor doctor;
 	private Administrator admin;
 	//This is a list even though it might end up only being used for 1 measurement, in case in future uses, doctors for example, require more than one measure form more than one patient 
@@ -84,6 +85,11 @@ public class NetworkMessage implements Serializable{
 	public NetworkMessage(Protocol protocol, LinkedList<Doctor> doctors){
 		this.setProtocol(protocol);
 		this.setRegisteredDoctors(doctors);
+	}
+
+	public NetworkMessage(  Protocol protocol, Key key){
+		setProtocol(protocol);
+		setKey(key);
 	}
 
 
@@ -137,5 +143,13 @@ public class NetworkMessage implements Serializable{
 		return "NetworkMessage{\n" +
 				" protocol=" + protocol.toString() +
 				"\n}";
+	}
+
+	public Key getKey() {
+		return key;
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
 	}
 }

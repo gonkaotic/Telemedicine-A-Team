@@ -3,6 +3,9 @@ package network.server;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +23,9 @@ public class ConnectionServer implements Network {
 	
 	public static void main( String[] args ) {
 		ServerSocket server = null;
+		KeyPair keyPair = null;
 		try {
+
 			SQLManager.connect("jdbc:sqlite:././Database/covid watchlist.db");
 			try {
 				//make sure the database is operational and with admins )
@@ -35,13 +40,24 @@ public class ConnectionServer implements Network {
 			DatabaseLock lock = new DatabaseLock();
 			AtomicInteger threads = new AtomicInteger(0);
 
+			KeyPairGenerator keysGenerator = null;
+
+			try {
+				keysGenerator = KeyPairGenerator.getInstance("RSA");
+			} catch (NoSuchAlgorithmException e) {
+				System.out.println("Couldn't find that algorithm");
+			}
+
+			keysGenerator.initialize(KEY_SIZE);
+			keyPair = keysGenerator.genKeyPair();
+
 			server = new ServerSocket(SERVERPORT);
 
 			System.out.println("Server started. Adrress: "+ server.getInetAddress());
 
 			while ( true ) {
 				System.out.println("Waiting for new client.");
-				acceptConnection(server.accept(), lock, threads);
+				acceptConnection(server.accept(), lock, threads, keyPair);
 			}
 			
 		} catch (IOException e) {
@@ -138,8 +154,8 @@ public class ConnectionServer implements Network {
 	*/
 
 	//Uses threads
-	private static void acceptConnection(Socket s, DatabaseLock lock, AtomicInteger threads) {
-		new Thread ( new ServerLogic( s, lock, threads )).start();
+	private static void acceptConnection(Socket s, DatabaseLock lock, AtomicInteger threads, KeyPair keyPair) {
+		new Thread ( new ServerLogic( s, lock, threads, keyPair )).start();
 	}
 
 	private static void releaseResources(ServerSocket server) {

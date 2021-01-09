@@ -2,20 +2,30 @@ package network;
 
 import network.DoctorClient.DoctorClient;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.SecureRandom;
 
 public class Client implements Network {
 
+    private KeyPair keyPair;
     private boolean connected;
     protected String serverIP;
     protected Socket socket = null;
     protected ObjectOutputStream objectOutputStream = null;
     protected ObjectInputStream objectInputStream = null;
+
+    private Key serverKey;
 
     /**
      * Connection to the server
@@ -25,17 +35,60 @@ public class Client implements Network {
     public boolean connect() {
         try {
             connected = false;
+
+            //generate the keys for RSA algorithm
+            KeyPairGenerator keysGenerator = KeyPairGenerator.getInstance("RSA");
+            keysGenerator.initialize(KEY_SIZE);
+            keyPair = keysGenerator.genKeyPair();
+
             this.socket = new Socket(serverIP, SERVERPORT);
 
+            //first connection isn't encrypted, to share public keys.
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
+
+            objectOutputStream.writeObject( new NetworkMessage( NetworkMessage.Protocol.PUSH_KEY, keyPair.getPublic() ));
+
+            NetworkMessage answer = ( NetworkMessage ) objectInputStream.readObject();
+            if ( answer.getProtocol() == NetworkMessage.Protocol.PUSH_KEY ) {
+                serverKey = answer.getKey();
+            } else if (answer.getProtocol() == NetworkMessage.Protocol.ERROR) {
+                //connected is always false here, it means the server had an error establishing the encryption
+                return connected;
+            }
+
+            //objectOutputStream.close();
+            //objectInputStream.close();
+
+            System.out.println("Creating the cypher");
+            //now that we have the public key of the server we encrypt our communications.
+            //AES stands for Advance Encryption Standard
+            Cipher cipherOut = Cipher.getInstance(encryptionAlgorithm) ;
+            cipherOut.init( Cipher.ENCRYPT_MODE, serverKey);
+
+            System.out.println("Initializing the cypher");
+            Cipher cipherIn = Cipher.getInstance(encryptionAlgorithm) ;
+            cipherIn.init( Cipher.DECRYPT_MODE, keyPair.getPrivate());
+
+
+            System.out.println("new cyphered streams.");
+            CipherInputStream cis = new CipherInputStream(socket.getInputStream(), cipherIn);
+            CipherOutputStream cos = new CipherOutputStream(socket.getOutputStream(), cipherOut);
+
+            System.out.println("setting them up");
+            objectInputStream = new ObjectInputStream(cis);
+            System.out.println("setting them up2");
+            objectOutputStream = new ObjectOutputStream(cos);
+
+            System.out.println("ready!");
             connected = true;
+
         } catch (UnknownHostException e) {
             System.out.println("Unknown server");
             e.printStackTrace();
             releaseResources(objectInputStream, objectOutputStream, socket );
         } catch (IOException e) {
-            System.out.println("It was not possible to connect to the server.");
+            System.out.println("There was an error trying to connect to the server.");
             e.printStackTrace();
             releaseResources(objectInputStream, objectOutputStream, socket );
         } finally {
@@ -113,6 +166,5 @@ public class Client implements Network {
     public void setServerIP(String serverIP) {
         this.serverIP = serverIP;
     }
-
 
 }

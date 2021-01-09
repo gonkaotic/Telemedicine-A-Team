@@ -2,35 +2,50 @@ package network.server;
 
 import Database.DatabaseLock;
 import Database.SQLManager;
+import network.Network;
 import network.NetworkMessage;
 import pojos.Administrator;
 import pojos.Doctor;
 import pojos.Measurement;
 import pojos.Patient;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ServerLogic implements Runnable{
+public class ServerLogic implements Runnable, Network {
 
     private Socket socket = null;
     private DatabaseLock lock = null;
 
     private AtomicInteger threads;
 
+    private KeyPair keyPair;
+    private Key clientKey;
+
     private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
 
 
-    public ServerLogic (Socket socket, DatabaseLock lock, AtomicInteger threads) {
+    public ServerLogic (Socket socket, DatabaseLock lock, AtomicInteger threads, KeyPair keyPair) {
         this.socket = socket;
         this.lock = lock;
         this.threads = threads;
         this.threads.incrementAndGet();
+        this.keyPair = keyPair;
+
     }
 
 
@@ -45,96 +60,129 @@ public class ServerLogic implements Runnable{
 
                 NetworkMessage msg = (NetworkMessage) inputStream.readObject();
                 System.out.println(msg.toString());
+                if (msg.getProtocol() == NetworkMessage.Protocol.PUSH_KEY) {
 
-                if (msg.getProtocol() == NetworkMessage.Protocol.PATIENT_LOGIN) {
-                    Patient patientLogged = msg.getPatient();
-                    System.out.println("Patient received: " + patientLogged.toString());
+                    //now that we have the public key of the server we encrypt our communications.
+                    //AES stands for Advance Encryption Standard
                     try {
-                        lock.acquireRead();
-                        patientLogged = SQLManager.getPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
-                    } catch (SQLException e) {
-                        System.out.println("Patient not found.");
-                        patientLogged = null;
-                    } catch (InterruptedException e) {
-                        System.out.println("There was an error with the database lock");
-                        patientLogged = null;
-                    } finally {
-                        lock.releaseRead();
-                    }
-                    NetworkMessage answer;
+                        clientKey = msg.getKey();
+                        Cipher cipherOut = Cipher.getInstance(encryptionAlgorithm);
+                        cipherOut.init(Cipher.ENCRYPT_MODE, clientKey);
 
-                    if (patientLogged != null) {
-                        //continue connection, do as necessary
-                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, patientLogged);
-                        outputStream.writeObject(answer);
+                        Cipher cipherIn = Cipher.getInstance(encryptionAlgorithm);
+                        cipherIn.init( Cipher.DECRYPT_MODE, keyPair.getPrivate() );
 
-                        patientLogic(patientLogged);
+                        outputStream.writeObject( new NetworkMessage(NetworkMessage.Protocol.PUSH_KEY, keyPair.getPublic()));
 
-                    } else {
-                        //Deny the log in, close connection.
-                        System.out.println("Wrong DNI or password");
-                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
-                        outputStream.writeObject(answer);
-                    }
-                } else if (msg.getProtocol() == NetworkMessage.Protocol.DOCTOR_LOGIN) {
-                    Doctor doctorLogged = msg.getDoctor();
-                    System.out.println("Doctor received: " + doctorLogged.toString());
-                    try {
-                        lock.acquireRead();
-                        doctorLogged = SQLManager.getDoctorByDniAndPassword(doctorLogged.getDni(), doctorLogged.getPassword());
-                    } catch (SQLException e) {
-                        System.out.println("Doctor not found.");
-                        doctorLogged = null;
-                    } catch (InterruptedException e) {
-                        System.out.println("There was an error with the database lock");
-                        doctorLogged = null;
-                    } finally {
-                        lock.releaseRead();
-                    }
-                    NetworkMessage answer;
 
-                    if (doctorLogged != null) {
-                        //continue connection, do as necessary
-                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, doctorLogged);
-                        outputStream.writeObject(answer);
+                        CipherOutputStream cos = new CipherOutputStream(socket.getOutputStream(), cipherOut);
+                        CipherInputStream cis = new CipherInputStream(socket.getInputStream(), cipherIn);
 
-                        doctorLogic(doctorLogged);
+                        System.out.println("this works?");
+                        outputStream = new ObjectOutputStream(cos);
+                        outputStream.writeObject(new NetworkMessage());
+                        System.out.println("this too?");
+                        inputStream = new ObjectInputStream(cis);
 
-                    } else {
-                        //Deny the log in, close connection.
-                        System.out.println("Wrong DNI or password");
-                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
-                        outputStream.writeObject(answer);
-                    }
-                } else if (msg.getProtocol() == NetworkMessage.Protocol.ADMIN_LOGIN) {
-                    Administrator adminLogged = msg.getAdmin();
-                    System.out.println("Admin received: " + adminLogged.toString());
-                    try {
-                        lock.acquireRead();
-                        adminLogged = SQLManager.getAdminByDniAndPassword(adminLogged.getDni(), adminLogged.getPassword());
-                    } catch (SQLException e) {
-                        System.out.println("Admin not found.");
-                        adminLogged = null;
-                    } catch (InterruptedException e) {
-                        System.out.println("There was an error with the database lock");
-                        adminLogged = null;
-                    } finally {
-                        lock.releaseRead();
-                    }
-                    NetworkMessage answer;
+                        System.out.println("Cyphering ready");
+                        msg = (NetworkMessage) inputStream.readObject();
+                        System.out.println(msg.toString());
+                        if (msg.getProtocol() == NetworkMessage.Protocol.PATIENT_LOGIN) {
+                            Patient patientLogged = msg.getPatient();
+                            System.out.println("Patient received: " + patientLogged.toString());
+                            try {
+                                lock.acquireRead();
+                                patientLogged = SQLManager.getPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
+                            } catch (SQLException e) {
+                                System.out.println("Patient not found.");
+                                patientLogged = null;
+                            } catch (InterruptedException e) {
+                                System.out.println("There was an error with the database lock");
+                                patientLogged = null;
+                            } finally {
+                                lock.releaseRead();
+                            }
+                            NetworkMessage answer;
 
-                    if (adminLogged != null) {
-                        //continue connection, do as necessary
-                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, adminLogged);
-                        outputStream.writeObject(answer);
+                            if (patientLogged != null) {
+                                //continue connection, do as necessary
+                                answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, patientLogged);
+                                outputStream.writeObject(answer);
 
-                        adminLogic(adminLogged);
+                                patientLogic(patientLogged);
 
-                    } else {
-                        //Deny the log in, close connection.
-                        System.out.println("Wrong DNI or password");
-                        answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
-                        outputStream.writeObject(answer);
+                            } else {
+                                //Deny the log in, close connection.
+                                System.out.println("Wrong DNI or password");
+                                answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
+                                outputStream.writeObject(answer);
+                            }
+                        } else if (msg.getProtocol() == NetworkMessage.Protocol.DOCTOR_LOGIN) {
+                            Doctor doctorLogged = msg.getDoctor();
+                            System.out.println("Doctor received: " + doctorLogged.toString());
+                            try {
+                                lock.acquireRead();
+                                doctorLogged = SQLManager.getDoctorByDniAndPassword(doctorLogged.getDni(), doctorLogged.getPassword());
+                            } catch (SQLException e) {
+                                System.out.println("Doctor not found.");
+                                doctorLogged = null;
+                            } catch (InterruptedException e) {
+                                System.out.println("There was an error with the database lock");
+                                doctorLogged = null;
+                            } finally {
+                                lock.releaseRead();
+                            }
+                            NetworkMessage answer;
+
+                            if (doctorLogged != null) {
+                                //continue connection, do as necessary
+                                answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, doctorLogged);
+                                outputStream.writeObject(answer);
+
+                                doctorLogic(doctorLogged);
+
+                            } else {
+                                //Deny the log in, close connection.
+                                System.out.println("Wrong DNI or password");
+                                answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
+                                outputStream.writeObject(answer);
+                            }
+                        } else if (msg.getProtocol() == NetworkMessage.Protocol.ADMIN_LOGIN) {
+                            Administrator adminLogged = msg.getAdmin();
+                            System.out.println("Admin received: " + adminLogged.toString());
+                            try {
+                                lock.acquireRead();
+                                adminLogged = SQLManager.getAdminByDniAndPassword(adminLogged.getDni(), adminLogged.getPassword());
+                            } catch (SQLException e) {
+                                System.out.println("Admin not found.");
+                                adminLogged = null;
+                            } catch (InterruptedException e) {
+                                System.out.println("There was an error with the database lock");
+                                adminLogged = null;
+                            } finally {
+                                lock.releaseRead();
+                            }
+                            NetworkMessage answer;
+
+                            if (adminLogged != null) {
+                                //continue connection, do as necessary
+                                answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_ACCEPT, adminLogged);
+                                outputStream.writeObject(answer);
+
+                                adminLogic(adminLogged);
+
+                            } else {
+                                //Deny the log in, close connection.
+                                System.out.println("Wrong DNI or password");
+                                answer = new NetworkMessage(NetworkMessage.Protocol.LOGIN_DENY);
+                                outputStream.writeObject(answer);
+                            }
+                        }
+
+                    } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException e){
+                        e.printStackTrace();
+                        System.out.println("there was an error setting up encryption");
+                        outputStream.writeObject( new NetworkMessage(NetworkMessage.Protocol.ERROR));
                     }
                 }
             }catch(SocketException ex){

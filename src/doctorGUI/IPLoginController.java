@@ -74,6 +74,7 @@ public class IPLoginController {
                                      textField4.getText();
                     client.setServerIP(address);
                     if (client.connect()){
+                        System.out.println("time to load the login");
                         main.loadLogin();
                     } else {
                         Alert alert = new Alert(Alert.AlertType.ERROR, "Unknown server or internet connection error");
