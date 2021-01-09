@@ -33,9 +33,20 @@ Once clicked on bitalino button in the top left  you can configure the MAC addre
 ### Record a new measurement
 
 You can start recording a new measurement to send it to the hospital by clicking on the "new measurement" button. To do this, you will have had to correctly configure the bitalino.
+
 You can indicate the temperature, press the record button to start recording your heart rate, oxygen saturation and ecg, it also has a check list to mark your symptoms.
+* *Temperature*: it must be a real number
+* *Record heart rate and oxygen saturation*: once clicked on the record button, the bitalino
+will start recording for a minute and 10s for accuracy purposes. After recording the mean rate and
+%O2 will be displayed. While recording the interface will not respond to other events.
+* *Symptoms checklist*: the patient should check all the symptoms that he/she is experiencing. 
+If none, then keep them all unchecked.
+* *ECG*: once the record button is pressed the bitalino will start recording the ECG for 5s. The graph
+with the resulting signal will be displayed afterwards. It is not mandatory to record the ECG
 
-
+**Recording ECG**
+To record the ECG here are some recommendations for the electrode placement.
+![Configuration 1] (/images/ecg1.png)
 ### List all measurements
 
 
