@@ -29,11 +29,11 @@ By default, if no database is created an admin with the following credentials wi
 
 The program will ask you for these 2 fields as long as the login is not correct
 
-### Display Menu
+## Display Menu
 For all functions that involve registration of a new user, the process can be stopped
 by introducing an x. The administrator will be shown the main menu again.
 
-###Register patient
+### Register patient
 This option will send a new patient to the server to register it in the server's database.
 
 You will be asked for the following fields: 
@@ -50,7 +50,7 @@ for a list of risk factors that the patient might have
 **Note**: it is important to know that if no doctors are registered in the server, no patient 
 will be able to be registered. If this is the case, first [register a doctor](#register-doctor)
 
-###Register doctor
+### Register doctor
 This option will send a new doctor to the server to register it in the server's database
 
 The administrator will be asked to provide the following fields: 
@@ -58,14 +58,14 @@ The administrator will be asked to provide the following fields:
 * *DNI*: it has to be 8 digits and a letter
 * *Password*: no special requirements for the password field
 
-###Register admin
+### Register admin
 This option will send a new administrator to the server to register it in the server's database
 
 The administrator will be asked to provide the following fields: 
 * *DNI*: it has to be 8 digits and a letter
 * *Password*: no special requirements for the password field
 
-###Shutdown server
+### Shutdown server
 This option allows the administrator to shutdown the server.
 
 If other clients are connected to the server, then the administrator will be asked
