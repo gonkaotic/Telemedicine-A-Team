@@ -3,6 +3,7 @@ package doctorGUI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -18,6 +19,12 @@ import java.util.ResourceBundle;
 public class CommentAndECGController implements Initializable {
     @FXML
     private LineChart<Number, Number> chartECG;
+    @FXML
+    private NumberAxis timeAxis;
+
+    @FXML
+    private NumberAxis voltsAxis;
+
     @FXML
     private TextArea comment;
     @FXML
@@ -35,13 +42,15 @@ public class CommentAndECGController implements Initializable {
             this.comment.setText( m.getComment() );
         }
 
-        if ( m.getECG() != null ){
+        if ( m.getECG() != null ) {
             dataSeries.getData().clear();
-            for (int i=0; i<m.getECG().getEcg().size(); i++){
-                dataSeries.getData().add(new XYChart.Data<>(m.getECG().getTimes().get(i), m.getECG().getEcg().get(i)));
+            if (m.getECG().getTimes() != null && m.getECG().getEcg() != null) {
+                for (int i = 0; i < m.getECG().getEcg().size(); i++) {
+                    dataSeries.getData().add(new XYChart.Data<>(m.getECG().getTimes().get(i), m.getECG().getEcg().get(i)));
+                }
+                chartECG.getData().clear();
+                chartECG.getData().add(dataSeries);
             }
-            chartECG.getData().clear();
-            chartECG.getData().add(dataSeries);
         }
 
         this.client = client;
@@ -65,6 +74,10 @@ public class CommentAndECGController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        dataSeries = new XYChart.Series();
         chartECG.setAnimated(false);
+        chartECG.setCreateSymbols(false);
+        voltsAxis.setLabel("mV");
+        timeAxis.setLabel("ms");
     }
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -10,7 +9,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane prefHeight="300.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="doctorGUI.CommentAndECGController">
+<GridPane prefHeight="300.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="doctorGUI.CommentAndECGController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="626.0" minWidth="10.0" prefWidth="500.0" />
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="500.0" minWidth="10.0" prefWidth="500.0" />
@@ -27,10 +26,10 @@
    <children>
       <LineChart fx:id="chartECG" prefHeight="153.0" prefWidth="1000.0" title="ECG" GridPane.columnSpan="2" GridPane.rowSpan="2">
         <xAxis>
-          <CategoryAxis side="BOTTOM" />
+          <NumberAxis fx:id="timeAxis" side="BOTTOM" />
         </xAxis>
         <yAxis>
-          <NumberAxis side="LEFT" />
+          <NumberAxis fx:id="voltsAxis" side="LEFT" />
         </yAxis>
       </LineChart>
       <TextArea fx:id="comment" prefHeight="175.0" prefWidth="1001.0" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.rowSpan="2" />

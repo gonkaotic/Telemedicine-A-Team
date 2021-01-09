@@ -1,11 +1,14 @@
 package gui;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -19,7 +22,7 @@ import javafx.scene.layout.Pane;
 import pojos.Measurement;
 import pojos.Patient;
 
-public class MeasuresChooserController {
+public class MeasuresChooserController implements Initializable {
 
 	private Patient patient;
 	private ArrayList<Measurement> measurements;
@@ -108,4 +111,10 @@ public class MeasuresChooserController {
 
 	}
 
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		ecgGraph.setAnimated(false);
+		ecgGraph.setCreateSymbols(false);
+		dataSeries = new XYChart.Series();
+	}
 }

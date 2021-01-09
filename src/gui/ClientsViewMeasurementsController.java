@@ -99,7 +99,7 @@ public class ClientsViewMeasurementsController implements Initializable {
 		temperatureColumn.setCellValueFactory(new PropertyValueFactory<Measurement, Float>("temperature"));
 		symptomsColumn.setCellValueFactory(
 				new PropertyValueFactory<Measurement, ArrayList<Measurement.Symptom>>("symptomChecklist"));
-		commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement, String>("Doctor Comments"));
+		commentsColumn.setCellValueFactory(new PropertyValueFactory<Measurement, String>("comment"));
 		measurementsTable.getItems().addAll(patient.getMeasurements());
 		
 		this.patient = patient;
