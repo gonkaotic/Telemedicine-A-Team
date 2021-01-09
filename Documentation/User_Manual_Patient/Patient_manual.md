@@ -7,6 +7,7 @@
 + [Bitalino Configuration](#bitalino-configuration)
 + [Record a new measurement](#record-a-new-measurement)
 + [List all measurements](#list-all-measurements)
++ [Measurement View](#measurement-view)
 
 ### Introduction 
 
@@ -21,7 +22,9 @@ You have to introduce a valid ipv4 address or "localhost" is also allow.  If it 
 introduced or the server is unavailable, a pop-up will appear indicating so. 
 
 ### Login 
-Then another window will open where you must enter your ID (eight numbers and the letter in capital letter) and password.
+Then another window will open where you must enter your ID (eight numbers and the letter which is case sensitive so you have to be careful and put it in capital letter) and password.
+* DNI: **33333333Y**
+* Password: **Craneos**
 
 ### Bitalino Configuration
 
@@ -42,3 +45,7 @@ data of the measurement the doctor will have to double click on any of the items
 information}](#measurement-view) will appear below. If the doctor then double clicks on another item of the table, the 
 information below will update to that of the new measurement. The last column is a field where the doctor can write a comment associated to that measurement.
 The patient cannot modify it. 
+
+### Measurement View
+
+You can see in detail all your measurements.
