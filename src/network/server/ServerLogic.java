@@ -52,6 +52,7 @@ public class ServerLogic implements Runnable{
                     try {
                         lock.acquireRead();
                         patientLogged = SQLManager.getPatientByDniAndPassword(patientLogged.getDni(), patientLogged.getPassword());
+                        System.out.println(patientLogged);
                     } catch (SQLException e) {
                         System.out.println("Patient not found.");
                         patientLogged = null;
@@ -182,7 +183,7 @@ public class ServerLogic implements Runnable{
 
     private boolean securityCheck (ArrayList<Measurement> measures, Patient patient){
         for (Measurement m : measures ) {
-            if ( m.getPatientId() != patient.getId() ){
+            if ( !m.getPatientId().equals(patient.getId())){
                 return false;
             }
         }

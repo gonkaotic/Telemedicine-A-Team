@@ -50,7 +50,6 @@ public class MainWindow {
 			try {
 				Parent clientPanel = (Parent) loaderPatient.load();
 				ClientMainPanelController controller = loaderPatient.<ClientMainPanelController>getController();
-				//TODO: give the patient to the new panel.
 				controller.initComponents(extractedPatient, client);
 				Stage stage = (Stage) (loginPane.getScene().getWindow());
 				Scene scene = new Scene(clientPanel, 700,550);
