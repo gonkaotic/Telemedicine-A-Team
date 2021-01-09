@@ -91,13 +91,14 @@ public class MeasuresChooserController implements Initializable {
 		try {
 			if (m.getECG() != null) {
 				dataSeries.getData().clear();
-
-				for (int i = 0; i < m.getECG().getEcg().size(); i++) {
-					dataSeries.getData()
-							.add(new XYChart.Data<>(m.getECG().getTimes().get(i), m.getECG().getEcg().get(i)));
+				if(m.getECG().getEcg() != null && m.getECG().getTimes()!=null) {
+					for (int i = 0; i < m.getECG().getEcg().size(); i++) {
+						dataSeries.getData()
+								.add(new XYChart.Data<>(m.getECG().getTimes().get(i), m.getECG().getEcg().get(i)));
+					}
+					ecgGraph.getData().clear();
+					ecgGraph.getData().add(dataSeries);
 				}
-				ecgGraph.getData().clear();
-				ecgGraph.getData().add(dataSeries);
 			}
 		} catch (NullPointerException e) {
 			e.printStackTrace();
