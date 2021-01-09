@@ -19,7 +19,6 @@ import pojos.Patient;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -153,6 +152,7 @@ public class NewMeasurementPanelController implements Initializable {
     }
 
     @FXML
+    //TODO send new measurement to server
     void submitClicked(ActionEvent event) {
         String temperature = this.temperatureTextField.getText();
         if (temperature==""){
@@ -228,7 +228,7 @@ public class NewMeasurementPanelController implements Initializable {
                                 }
                                 else{
                                     if(this.ecg!=null){
-                                        Measurement measurement = new Measurement(1, patient.getId(),  new java.sql.Date(Calendar.getInstance().getTime().getTime()), ecg, oxygen, heartRate, temp,symptomsList);
+                                        Measurement measurement = new Measurement(1, patient.getId(), java.sql.Date.valueOf("2021-01-01"), ecg, oxygen, heartRate, temp,symptomsList);
                                         ArrayList <Measurement> measurements = new ArrayList<>();
                                         measurements.add(measurement);
                                         client.sendToServer(measurements);
@@ -302,7 +302,6 @@ public class NewMeasurementPanelController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         dataSeries = new XYChart.Series();
         ecgGraph.setCreateSymbols(false);
-        ecgGraph.setAnimated(false);
         voltsAxis.setLabel("mV");
         timeAxis.setLabel("ms");
         ecg = null;

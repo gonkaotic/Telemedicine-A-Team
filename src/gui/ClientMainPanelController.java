@@ -113,7 +113,7 @@ public class ClientMainPanelController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        bitalino = new BitalinoHandler("98:d3:91:fd:3e:be");
+        bitalino = new BitalinoHandler("20:17:09:18:49:21");
     }
 
     public void initComponents(Patient patient, PatientClient client){
