@@ -85,7 +85,7 @@ public class ClientMainPanelController implements Initializable {
             measurementsPane.prefWidthProperty().bind(centralPane.widthProperty());
 
             NewMeasurementPanelController controller = loader.<NewMeasurementPanelController>getController();
-            controller.initComponents(centralPane,bitalino,patient);
+            controller.initComponents(centralPane,bitalino,patient,client);
 
         }catch(IOException ex){
             ex.printStackTrace();

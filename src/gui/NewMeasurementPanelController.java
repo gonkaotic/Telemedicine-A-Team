@@ -12,11 +12,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import network.PatientClient.BitalinoHandler;
 import network.PatientClient.PatientClient;
+import network.ProtocolException;
 import pojos.ECG;
 import pojos.Measurement;
 import pojos.Patient;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
 
@@ -123,7 +125,7 @@ public class NewMeasurementPanelController implements Initializable {
         //Maybe we should block the rest of the fields: ¿progress bar?
         try {
             float[] pulseoximeter = bitalino.recordPulseOximeter();
-            this.heartRateTextField.setText(""+pulseoximeter[0]);
+            this.heartRateTextField.setText(""+(int)(pulseoximeter[0]));
             this.oxygenTextField.setText(""+pulseoximeter[1]);
         } catch (Throwable throwable) {
             //This should be a pop up or somthing similar
@@ -165,7 +167,7 @@ public class NewMeasurementPanelController implements Initializable {
                 }
                 else {
                     try {
-                        Integer heartRate = Integer.parseInt(text);//This will work because it is set internally
+                        int heartRate = Integer.parseInt(text);//This will work because it is set internally
                         text= oxygenTextField.getText();
                         if (text==""){
                             showErrorMessage("Pulse oxymeter error", "No data was recorded from the pulse oxymeter");
@@ -197,21 +199,66 @@ public class NewMeasurementPanelController implements Initializable {
                                             "Do you want to continue?");
                                    if (confirmation){
                                        if(this.ecg!=null){
-                                           Measurement measurement = new Measurement();
+                                           Measurement measurement = new Measurement(1, patient.getId(), java.sql.Date.valueOf("2021-01-01"), ecg, oxygen, heartRate, temp,symptomsList);
+                                           ArrayList <Measurement> measurements = new ArrayList<>();
+                                           measurements.add(measurement);
+                                           client.sendToServer(measurements);
+                                           measurements = patient.getMeasurements();
+                                           measurements.add(measurement);
+                                           patient.setMeasurements(measurements);
+                                           centralPane = new Pane();
+
                                        }
                                        else{
-                                           confirmation = showConfirmationMessage("Empty symptoms", "No symptoms selected. " +
+                                           confirmation = showConfirmationMessage("Empty ecg", "No ecg. " +
                                                    "Do you want to continue?");
                                            if(confirmation){
-                                               Measurement measurement = new Measurement();
+                                               Measurement measurement = new Measurement(1, patient.getId(), java.sql.Date.valueOf("2021-01-01"), ecg, oxygen, heartRate, temp,symptomsList);
+                                               ArrayList <Measurement> measurements = new ArrayList<>();
+                                               measurements.add(measurement);
+                                               client.sendToServer(measurements);
+                                               measurements = patient.getMeasurements();
+                                               measurements.add(measurement);
+                                               patient.setMeasurements(measurements);
+                                               centralPane = new Pane();
                                            }
 
                                        }
                                    }
                                 }
+                                else{
+                                    if(this.ecg!=null){
+                                        Measurement measurement = new Measurement(1, patient.getId(), java.sql.Date.valueOf("2021-01-01"), ecg, oxygen, heartRate, temp,symptomsList);
+                                        ArrayList <Measurement> measurements = new ArrayList<>();
+                                        measurements.add(measurement);
+                                        client.sendToServer(measurements);
+                                        measurements = patient.getMeasurements();
+                                        measurements.add(measurement);
+                                        patient.setMeasurements(measurements);
+                                        centralPane = new Pane();
+
+                                    }
+                                    else{
+                                        boolean confirmation = showConfirmationMessage("Empty ecg", "No ecg. " +
+                                                "Do you want to continue?");
+                                        if(confirmation){
+                                            Measurement measurement = new Measurement(1, patient.getId(), java.sql.Date.valueOf("2021-01-01"), ecg, oxygen, heartRate, temp,symptomsList);
+                                            ArrayList <Measurement> measurements = new ArrayList<>();
+                                            measurements.add(measurement);
+                                            client.sendToServer(measurements);
+                                            measurements = patient.getMeasurements();
+                                            measurements.add(measurement);
+                                            patient.setMeasurements(measurements);
+                                            centralPane = new Pane();
+                                        }
+
+                                    }
+                                }
 
                             }catch(NumberFormatException ex){
                                 showErrorMessage("Oxymeter error", "Oxygen saturation should be a number");
+                            } catch (ProtocolException e) {
+                                System.out.println(e.getErrorMessage());
                             }
                         }
                     }catch(NumberFormatException ex){
@@ -244,20 +291,20 @@ public class NewMeasurementPanelController implements Initializable {
     }
 
 
-    public void initComponents(Pane centralPane, BitalinoHandler bitalino, Patient patient){
+    public void initComponents(Pane centralPane, BitalinoHandler bitalino, Patient patient, PatientClient client){
         this.centralPane=centralPane;
         this.bitalino=bitalino;
         this.patient = patient;
-        //this.client= client;
+        this.client= client;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        //bitalino = new BitalinoHandler("20:17:09:18:49:21");
         dataSeries = new XYChart.Series();
         ecgGraph.setCreateSymbols(false);
         voltsAxis.setLabel("mV");
         timeAxis.setLabel("ms");
+        ecg = null;
     }
 
 }
