@@ -1,6 +1,7 @@
 package doctorGUI;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
@@ -11,7 +12,10 @@ import network.DoctorClient.DoctorClient;
 import network.ProtocolException;
 import pojos.Measurement;
 
-public class CommentAndECGController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class CommentAndECGController implements Initializable {
     @FXML
     private LineChart<Number, Number> chartECG;
     @FXML
@@ -59,4 +63,8 @@ public class CommentAndECGController {
         }
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        chartECG.setAnimated(false);
+    }
 }
