@@ -16,7 +16,9 @@ This application has been programmed in the Java language. Therefore, in order t
 If you are a client and a patient you have to run the class Main.java in the gui package. 
 
 ### IP Chooser
-First of all the application will ask you about the direction IP of the server you want to connect. You have to introduce a valid ipv4 address or "localhost" is also allow.  If it is unable to do so, either because of an incorrect ip address was introduced or the server is unavailable, a pop-up will appear indicating so. 
+First of all the application will ask you about the direction IP of the server you want to connect.
+You have to introduce a valid ipv4 address or "localhost" is also allow.  If it is unable to do so, either because of an incorrect ip address was
+introduced or the server is unavailable, a pop-up will appear indicating so. 
 
 ### Login 
 Then another window will open where you must enter your ID (eight numbers and the letter in capital letter) and password.
@@ -27,7 +29,8 @@ Once clicked on bitalino button in the top left  you can configure the MAC addre
 
 ### Record a new measurement
 
-You can start recording a new measurement to send it to the hospital by clicking on the "new measurement" button. To do this, you will have had to correctly configure the bitalino. You can indicate the temperature, press the record button to start recording your heart rate, oxygen saturation and ecg, it also has a check list to mark your symptoms.
+You can start recording a new measurement to send it to the hospital by clicking on the "new measurement" button. To do this, you will have had to correctly configure the bitalino.
+You can indicate the temperature, press the record button to start recording your heart rate, oxygen saturation and ecg, it also has a check list to mark your symptoms.
 
 
 ### List all measurements
@@ -37,4 +40,5 @@ Clicking on the records button will appear all your measurements. Rows indicates
 the heart rate, the oxygen saturation level, the temperature and the symptoms of the patient; to see the rest of the 
 data of the measurement the doctor will have to double click on any of the items of the table and then the [extra 
 information}](#measurement-view) will appear below. If the doctor then double clicks on another item of the table, the 
-information below will update to that of the new measurement. The last column is a field where the doctor can write a comment associated to that measurement. The patient cannot modify it. 
+information below will update to that of the new measurement. The last column is a field where the doctor can write a comment associated to that measurement.
+The patient cannot modify it. 

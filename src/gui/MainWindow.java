@@ -67,8 +67,8 @@ public class MainWindow {
 		} else {
 			Alert alert = new Alert(AlertType.ERROR, "Wrong username or password");
 			alert.showAndWait();
-			//client.disconnect(); //????
-			//System.exit(0);
+			 if ( !client.isConnected() ) client.connect();
+			
 		}
 
 	}
@@ -99,7 +99,7 @@ public class MainWindow {
 
 	private boolean login() {
 		try {
-			extractedPatient = client.login(new Patient(dni, password));
+			extractedPatient = client.login(new Patient( userField.getText(), passField.getText()));
 		} catch ( ProtocolException e){
 			extractedPatient = null;
 			e.printStackTrace();
@@ -107,7 +107,11 @@ public class MainWindow {
 			alert.showAndWait();
 		}
 
-		return extractedPatient != null;
+		 if (extractedPatient == null) {
+	            return false;
+	        } else {
+	            return true;
+	        }
 
 	}
 
