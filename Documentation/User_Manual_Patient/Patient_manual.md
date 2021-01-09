@@ -46,7 +46,8 @@ with the resulting signal will be displayed afterwards. It is not mandatory to r
 
 **Recording ECG**
 To record the ECG here are some recommendations for the electrode placement.
-![Configuration 1] (/images/ecg1.png)
+
+![Configuration 1] (../../images/ecg1.png)
 ### List all measurements
 
 
