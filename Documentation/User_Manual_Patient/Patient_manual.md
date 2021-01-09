@@ -48,16 +48,26 @@ with the resulting signal will be displayed afterwards. It is not mandatory to r
 To record the ECG here are some recommendations for the electrode placement.
 
 ![Configuration 1](../../images/ecg1.png)
+
+For ECG we suggest a triangular electrode placement such as the image above illustrates
+ where the ground should be the electrode in the middle (I). 
+ The order of the other two electrodes is irrelevant (J and K).
+ 
+ ![Configuration 2](../../images/ecg2.png)
+ 
+ The other option is the Einthoven configuration. Here the ground electrode corresponds to the letter M, 
+ the cathode to the letter N and the anode to the letter L.
+
 ### List all measurements
 
 
-Clicking on the records button will appear all your measurements. Rows indicates a measurement and columns  show the date the measurement was taken, 
-the heart rate, the oxygen saturation level, the temperature and the symptoms of the patient; to see the rest of the 
-data of the measurement the doctor will have to double click on any of the items of the table and then the [extra 
-information}](#measurement-view) will appear below. If the doctor then double clicks on another item of the table, the 
-information below will update to that of the new measurement. The last column is a field where the doctor can write a comment associated to that measurement.
+Clicking on the records button will appear all your measurements. Rows indicate a measurement and columns  show the date the measurement was taken, 
+the heart rate, the oxygen saturation level, the temperature and the symptoms of the patient, and comments provided by a doctor.
+
+To see the rest of the data of the measurement the patient will have to double click on any of the items of the table and then the [extra 
+information}](#measurement-view) will appear below. The last column is a field where the doctor can write a comment associated to that measurement.
 The patient cannot modify it. 
 
 ### Measurement View
 
-You can see in detail all your measurements.
+You can see in detail the selected measurement.
