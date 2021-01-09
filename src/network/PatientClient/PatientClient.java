@@ -48,6 +48,8 @@ public class PatientClient extends Client {
 				if ( protocol == NetworkMessage.Protocol.LOGIN_ACCEPT){
 					return answer.getPatient();
 				} else if ( protocol == NetworkMessage.Protocol.LOGIN_DENY){
+					// The server closes the connection so we release the resources to connect again.
+					releaseResources(objectInputStream, objectOutputStream, socket);
 					return null;
 				} else if (protocol == NetworkMessage.Protocol.ERROR) {
 					throw new ProtocolException("There was an error on the server side.", ProtocolException.ErrorType.SERVERSIDE_ERROR);
