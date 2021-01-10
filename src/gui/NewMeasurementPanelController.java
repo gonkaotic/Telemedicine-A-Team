@@ -153,7 +153,6 @@ public class NewMeasurementPanelController implements Initializable {
     }
 
     @FXML
-    //TODO send new measurement to server
     void submitClicked(ActionEvent event) {
         String temperature = this.temperatureTextField.getText();
         if (temperature==""){

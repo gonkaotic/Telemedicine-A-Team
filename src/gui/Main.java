@@ -27,15 +27,9 @@ public class Main extends Application {
 			this.window.setScene(new Scene(root));
 			this.window.setResizable(true);
 			this.window.show();
-			/*
-			patientClient = new PatientClient( "localhost" );
-			if ( patientClient.connect() ) {
-				//TODO: show loading circle while connecting.
-				loadLogin();
-			}
-			//TODO: show alert if connection was not possible
 
-			 */
+
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -54,7 +54,6 @@ public class ClientMainPanelController implements Initializable {
     private Pane centralPane;
 
     @FXML
-    //TODO openBitalinoPanel
     void configureBitalinoClicked(ActionEvent event) {
         try{
             bitalino.disconnect();

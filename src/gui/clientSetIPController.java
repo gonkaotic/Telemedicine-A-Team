@@ -62,23 +62,7 @@ public class clientSetIPController implements Initializable {
 			stage.setScene(scene);
 			stage.setResizable(true);
 			stage.centerOnScreen();
-			//controller.setMain(this);
-			/*
-			this.window.setScene(new Scene(root));
-			this.window.setResizable(true);
-			this.window.show();
-
-			 */
-			/*
-			patientClient = new PatientClient("localhost");
-			if (patientClient.connect()) {
-				// TODO: show loading circle while connecting.
-				loadLogin();
-			}
-
-			 */
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
