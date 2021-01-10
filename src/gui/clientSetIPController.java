@@ -42,8 +42,11 @@ public class clientSetIPController implements Initializable {
 			showErrorMessage("Unvalid IpAddres: check it!");
 		} else {
 			patientClient = new PatientClient(ipAddress);
-			patientClient.connect();
-			changeWindow();
+			if (patientClient.connect()) {
+				changeWindow();
+			} else {
+				showErrorMessage("Couldn't connect to the server: check the ip!");
+			}
 		}
 
 	}
