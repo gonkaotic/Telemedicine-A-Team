@@ -1,6 +1,5 @@
 package network;
 
-import network.DoctorClient.DoctorClient;
 
 import java.io.*;
 import java.net.Socket;
