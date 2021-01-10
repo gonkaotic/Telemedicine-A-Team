@@ -29,6 +29,12 @@ public class AdminMain {
         while (!connected) {
             connectToServer();
         }
+        try {
+            NetworkMessage message = adminClient.getMessageFromServer();
+            System.out.println(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         do {
             login = login();
         } while (!login);

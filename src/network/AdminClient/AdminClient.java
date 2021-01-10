@@ -1,6 +1,5 @@
 package network.AdminClient;
 
-import com.sun.xml.internal.ws.api.config.management.policy.ManagedServiceAssertion;
 import network.Client;
 import network.NetworkMessage;
 import network.ProtocolException;
@@ -9,8 +8,9 @@ import pojos.Doctor;
 import pojos.Patient;
 
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 
@@ -21,6 +21,7 @@ public class AdminClient extends Client {
         this.serverIP = serverIP;
     }
 
+
     /**
      * Sends the administrator's information to the server to login. Should be the initial step when launching the admin app
      *
@@ -30,7 +31,7 @@ public class AdminClient extends Client {
      */
     public Administrator login(Administrator admin) throws ProtocolException {
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.ADMIN_LOGIN, admin);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         NetworkMessage.Protocol protocolMessage = answer.getProtocol();
 
         if (protocolMessage == NetworkMessage.Protocol.LOGIN_ACCEPT) {
@@ -55,7 +56,7 @@ public class AdminClient extends Client {
      */
     public void registerPatient(Patient patient) throws ProtocolException {
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.REGISTER_PATIENT, patient);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         if (answer!= null) {
             NetworkMessage.Protocol protocolMessage = answer.getProtocol();
             if (protocolMessage == NetworkMessage.Protocol.ERROR){
@@ -75,7 +76,7 @@ public class AdminClient extends Client {
      */
     public void registerDoctor (Doctor doctor) throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.REGISTER_DOCTOR, doctor);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         if (answer!= null) {
             NetworkMessage.Protocol protocolMessage = answer.getProtocol();
             if (protocolMessage == NetworkMessage.Protocol.ERROR){
@@ -95,7 +96,7 @@ public class AdminClient extends Client {
      */
     public void registerAdmin (Administrator admin) throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.REGISTER_ADMIN, admin);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         if (answer!= null) {
             NetworkMessage.Protocol protocolMessage = answer.getProtocol();
             if (protocolMessage == NetworkMessage.Protocol.ERROR){
@@ -115,7 +116,7 @@ public class AdminClient extends Client {
      */
     public LinkedList<Doctor> getRegisteredDoctors() throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.GET_DOCTORS);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         if (answer!=null){
             NetworkMessage.Protocol protocolMessage = answer.getProtocol();
             if(protocolMessage == NetworkMessage.Protocol.ERROR){
@@ -139,7 +140,7 @@ public class AdminClient extends Client {
      */
     public NetworkMessage shutdownServer() throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.SERVER_SHUTDOWN, admin);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         if(answer!=null){
             NetworkMessage.Protocol protocolMessage = answer.getProtocol();
             if(protocolMessage == NetworkMessage.Protocol.ERROR){
@@ -159,7 +160,7 @@ public class AdminClient extends Client {
      */
     public void confirmShutdown() throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.SERVER_SHUTDOWN_CONFIRM, admin);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         if(answer!=null){
             NetworkMessage.Protocol protocolMessage = answer.getProtocol();
             if(protocolMessage == NetworkMessage.Protocol.ERROR){
@@ -178,7 +179,7 @@ public class AdminClient extends Client {
      */
     public void cancelShutdown() throws ProtocolException{
         NetworkMessage msg = new NetworkMessage(NetworkMessage.Protocol.SERVER_CANCEL_SHUTDOWN, admin);
-        NetworkMessage answer = this.sendMessageToServer(msg);
+        NetworkMessage answer = this.comunicateWithServer(msg);
         if(answer!=null){
             NetworkMessage.Protocol protocolMessage = answer.getProtocol();
             if(protocolMessage == NetworkMessage.Protocol.ERROR){
@@ -197,7 +198,7 @@ public class AdminClient extends Client {
      * @return the answer from the server
      * @throws ProtocolException
      */
-    private NetworkMessage sendMessageToServer(NetworkMessage msg) throws ProtocolException {
+    private NetworkMessage comunicateWithServer(NetworkMessage msg) throws ProtocolException {
         if (objectOutputStream != null) {
             try {
                 objectOutputStream.writeObject(msg);

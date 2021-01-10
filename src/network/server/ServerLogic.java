@@ -9,10 +9,7 @@ import pojos.Doctor;
 import pojos.Measurement;
 import pojos.Patient;
 
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.*;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -22,6 +19,7 @@ import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,10 +32,13 @@ public class ServerLogic implements Runnable, Network {
 
     private KeyPair keyPair;
     private Key clientKey;
+    private Cipher cipherOut;
+    private Cipher cipherIn;
 
     private ObjectInputStream inputStream = null;
     private ObjectOutputStream outputStream = null;
-
+    private DataOutputStream dataOutputStream = null;
+    private DataInputStream dataInputStream = null;
 
     public ServerLogic (Socket socket, DatabaseLock lock, AtomicInteger threads, KeyPair keyPair) {
         this.socket = socket;
@@ -66,26 +67,42 @@ public class ServerLogic implements Runnable, Network {
                     //AES stands for Advance Encryption Standard
                     try {
                         clientKey = msg.getKey();
-                        Cipher cipherOut = Cipher.getInstance(encryptionAlgorithm);
+                        cipherOut = Cipher.getInstance(encryptionAlgorithm);
                         cipherOut.init(Cipher.ENCRYPT_MODE, clientKey);
 
-                        Cipher cipherIn = Cipher.getInstance(encryptionAlgorithm);
+                        cipherIn = Cipher.getInstance(encryptionAlgorithm);
                         cipherIn.init( Cipher.DECRYPT_MODE, keyPair.getPrivate() );
 
                         outputStream.writeObject( new NetworkMessage(NetworkMessage.Protocol.PUSH_KEY, keyPair.getPublic()));
 
-
+                        /*
                         CipherOutputStream cos = new CipherOutputStream(socket.getOutputStream(), cipherOut);
                         CipherInputStream cis = new CipherInputStream(socket.getInputStream(), cipherIn);
 
+
+                         */
                         System.out.println("this works?");
-                        outputStream = new ObjectOutputStream(cos);
-                        outputStream.writeObject(new NetworkMessage());
+                       // outputStream = new ObjectOutputStream(cos);
+                        //SealedObject message = null;
+                        // try {
+                      /*       message = new SealedObject(new NetworkMessage(NetworkMessage.Protocol.ACK),cipherOut);
+                        } catch (IllegalBlockSizeException e) {
+                            e.printStackTrace();
+                        }
+                        outputStream.writeObject(message);
+                        //outputStream.writeObject(new NetworkMessage());
                         System.out.println("this too?");
                         inputStream = new ObjectInputStream(cis);
 
+
+                       */
+                        dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                        dataInputStream = new DataInputStream(socket.getInputStream());
+                        sendMessageToClient(new NetworkMessage(NetworkMessage.Protocol.ACK));
+
+
                         System.out.println("Cyphering ready");
-                        msg = (NetworkMessage) inputStream.readObject();
+                       // msg = (NetworkMessage) inputStream.readObject();
                         System.out.println(msg.toString());
                         if (msg.getProtocol() == NetworkMessage.Protocol.PATIENT_LOGIN) {
                             Patient patientLogged = msg.getPatient();
@@ -518,6 +535,102 @@ public class ServerLogic implements Runnable, Network {
             }
             threads.decrementAndGet();
             releaseResources( socket, inputStream, outputStream);
+        }
+    }
+
+    private byte[] serialize(NetworkMessage message){
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            ObjectOutputStream out = new ObjectOutputStream(bos);
+            out.writeObject(message);
+            return bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private NetworkMessage deserialize(byte[] byteArray){
+        try {
+            ByteArrayInputStream bis = new ByteArrayInputStream(byteArray);
+            ObjectInputStream in = new ObjectInputStream(bis);
+            return (NetworkMessage) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Sends an encrypted NetworkMessage to the client. First it sends the size in bytes of the message to be sent
+     * @param message
+     */
+    private void sendMessageToClient(NetworkMessage message) throws IOException {
+        try {
+            if (dataOutputStream != null) {
+                byte[] data = serialize(message);
+                int size = (int) ((data.length/MAX_ENCRYPTION_SIZE)+1)*ENCRYPTED_SIZE;
+                System.out.println("Data length: "+data.length);
+                System.out.println("Size: "+size);
+                byte[] bytesToSend = new byte[size];
+                dataOutputStream.writeInt(size);
+                for(int i=0,round=0;i<data.length; i=i+MAX_ENCRYPTION_SIZE,round=round+ENCRYPTED_SIZE){
+                    System.out.println("i: "+i);
+                    System.out.println("Round: "+round);
+                    System.out.println();
+                    if (i + MAX_ENCRYPTION_SIZE < data.length) {
+                        System.arraycopy(cipherOut.doFinal(Arrays.copyOfRange(data, i, i+MAX_ENCRYPTION_SIZE)),0,bytesToSend,round,ENCRYPTED_SIZE);
+                    }
+                    else{
+                        System.arraycopy(cipherOut.doFinal(Arrays.copyOfRange(data, i, data.length)),0,bytesToSend,round,ENCRYPTED_SIZE);
+                    }
+                }
+                dataOutputStream.write(bytesToSend);
+            }
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+            System.out.println("Error with the encryption");
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+            System.out.println("Error with the encryption");
+        }
+    }
+
+    /**
+     * Receives a message from server
+     * @return the message received from the client
+     *          null if there was any problem with the encryption process or if dataInputStream is null
+     * @throws IOException
+     */
+    private NetworkMessage getMessageFromClient() throws IOException {
+        try {
+            if(dataInputStream!=null) {
+                int size = dataInputStream.readInt();
+                byte[] byteArray = new byte[size];
+                dataInputStream.read(byteArray);
+                int numberOfBlocks = size/ENCRYPTED_SIZE;
+                byte[] decryptedArray = new byte[numberOfBlocks*MAX_ENCRYPTION_SIZE];
+
+                for (int i = 0,coveredSize=0; i < numberOfBlocks-1; i++) {
+                    byte[] decrypted = cipherIn.doFinal(Arrays.copyOfRange(byteArray, i * ENCRYPTED_SIZE, i * ENCRYPTED_SIZE+ENCRYPTED_SIZE));
+
+                    System.arraycopy(decrypted,0,decryptedArray,coveredSize,decrypted.length);
+                    coveredSize = coveredSize + decrypted.length;
+                }
+                NetworkMessage message = deserialize(decryptedArray);
+                return message;
+            }
+            return null;
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+            System.out.println("Problems in the encryption");
+            return null;
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+            System.out.println("Problems in the encryption");
+            return null;
         }
     }
 }
