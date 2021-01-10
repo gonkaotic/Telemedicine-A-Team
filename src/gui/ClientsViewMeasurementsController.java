@@ -8,8 +8,6 @@ import java.net.URL;
 
 import java.util.ResourceBundle;
 
-import Database.SQLManager;
-import doctorGUI.DoctorMainPanelController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

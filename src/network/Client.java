@@ -1,7 +1,5 @@
 package network;
 
-import network.DoctorClient.DoctorClient;
-
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
