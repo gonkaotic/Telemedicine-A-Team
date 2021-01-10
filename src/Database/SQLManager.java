@@ -19,6 +19,8 @@ public class SQLManager {
         try {
             connect("jdbc:sqlite:././Database/covid watchlist.db");
 
+            Administrator administrator = getAdminByDniAndPassword("22222222Y","Craneos");
+
 
 
             disconnect();
@@ -623,16 +625,16 @@ public class SQLManager {
 
     private static String symptomsToBinaryString(List<Measurement.Symptom> symptomChecklist){
 
-        Integer i, size = symptomChecklist.size(), binaryChain = 0;
+        Integer i, size = symptomChecklist.size(), binaryChain = 1000_0000;
         String binaryFlag;
 
         for(i = 0; i < size; i++){
             if(symptomChecklist.get(i).equals(Measurement.Symptom.FEVER)){
-                binaryChain = binaryChain + 1000000;
+                binaryChain = binaryChain + 100_0000;
             }else if (symptomChecklist.get(i).equals(Measurement.Symptom.DRY_COUGH)) {
-                binaryChain = binaryChain + 100000;
+                binaryChain = binaryChain + 10_0000;
             }else if(symptomChecklist.get(i).equals(Measurement.Symptom.TIREDNESS)){
-                binaryChain = binaryChain + 10000;
+                binaryChain = binaryChain + 1_0000;
             }else if (symptomChecklist.get(i).equals(Measurement.Symptom.ANOSMIA)) {
                 binaryChain = binaryChain + 1000;
             }else if(symptomChecklist.get(i).equals(Measurement.Symptom.AUGEUSIA)){
@@ -658,19 +660,19 @@ public class SQLManager {
 
             binarySymptom = Character.getNumericValue(binaryString.charAt(i));
 
-            if(binarySymptom == 1 && i == 0){
+            if(binarySymptom == 1 && i == 1){
                 symptomsList.add(Measurement.Symptom.FEVER);
-            }else if (binarySymptom == 1 && i == 1) {
+            }else if (binarySymptom == 1 && i == 2) {
                 symptomsList.add(Measurement.Symptom.DRY_COUGH);
-            }else if(binarySymptom == 1 && i == 2){
+            }else if(binarySymptom == 1 && i == 3){
                 symptomsList.add(Measurement.Symptom.TIREDNESS);
-            }else if (binarySymptom == 1 && i == 3) {
+            }else if (binarySymptom == 1 && i == 4) {
                 symptomsList.add(Measurement.Symptom.ANOSMIA);
-            }else if(binarySymptom == 1 && i == 4){
+            }else if(binarySymptom == 1 && i == 5){
                 symptomsList.add(Measurement.Symptom.AUGEUSIA);
-            }else if (binarySymptom == 1 && i == 5) {
+            }else if (binarySymptom == 1 && i == 6) {
                 symptomsList.add(Measurement.Symptom.DIFF_BREATH);
-            }else if(binarySymptom == 1 && i == 6){
+            }else if(binarySymptom == 1 && i == 7){
                 symptomsList.add(Measurement.Symptom.CHEST_PAIN);
             }
         }
@@ -682,20 +684,20 @@ public class SQLManager {
 
     private static String rFactorToBinaryString(List<Patient.RiskFactor> riskFactorList){
 
-        Integer i, size = riskFactorList.size(), binaryChain = 0;
+        Integer i, size = riskFactorList.size(), binaryChain = 10_0000_0000;
         String binaryFlag;
 
         for(i = 0; i < size; i++){
             if(riskFactorList.get(i).equals(Patient.RiskFactor.CANCER)){
-                binaryChain = binaryChain + 100000000;
+                binaryChain = binaryChain + 1_0000_0000;
             }else if (riskFactorList.get(i).equals(Patient.RiskFactor.CKD)) {
-                binaryChain = binaryChain + 10000000;
+                binaryChain = binaryChain + 1000_0000;
             }else if(riskFactorList.get(i).equals(Patient.RiskFactor.COPD)){
-                binaryChain = binaryChain + 1000000;
+                binaryChain = binaryChain + 100_0000;
             }else if (riskFactorList.get(i).equals(Patient.RiskFactor.HEART_CONDITIONS)) {
-                binaryChain = binaryChain + 100000;
+                binaryChain = binaryChain + 10_0000;
             }else if(riskFactorList.get(i).equals(Patient.RiskFactor.IMMUNOCOMPROMISED)){
-                binaryChain = binaryChain + 10000;
+                binaryChain = binaryChain + 1_0000;
             }else if (riskFactorList.get(i).equals(Patient.RiskFactor.OBESITY)) {
                 binaryChain = binaryChain + 1000;
             }else if(riskFactorList.get(i).equals(Patient.RiskFactor.SMOKING)){
@@ -722,23 +724,23 @@ public class SQLManager {
 
             binaryRiskFactor = Character.getNumericValue(binaryString.charAt(i));
 
-            if(binaryRiskFactor == 1 && i == 0){
+            if(binaryRiskFactor == 1 && i == 1){
                 riskFactorList.add(Patient.RiskFactor.CANCER);
-            }else if (binaryRiskFactor == 1 && i == 1) {
+            }else if (binaryRiskFactor == 1 && i == 2) {
                 riskFactorList.add(Patient.RiskFactor.CKD);
-            }else if(binaryRiskFactor == 1 && i == 2){
+            }else if(binaryRiskFactor == 1 && i == 3){
                 riskFactorList.add(Patient.RiskFactor.COPD);
-            }else if (binaryRiskFactor == 1 && i == 3) {
+            }else if (binaryRiskFactor == 1 && i == 4) {
                 riskFactorList.add(Patient.RiskFactor.HEART_CONDITIONS);
-            }else if(binaryRiskFactor == 1 && i == 4){
+            }else if(binaryRiskFactor == 1 && i == 5){
                 riskFactorList.add(Patient.RiskFactor.IMMUNOCOMPROMISED);
-            }else if (binaryRiskFactor == 1 && i == 5) {
+            }else if (binaryRiskFactor == 1 && i == 6) {
                 riskFactorList.add(Patient.RiskFactor.OBESITY);
-            }else if(binaryRiskFactor == 1 && i == 6){
+            }else if(binaryRiskFactor == 1 && i == 7){
                 riskFactorList.add(Patient.RiskFactor.SMOKING);
-            }else if (binaryRiskFactor == 1 && i == 7) {
+            }else if (binaryRiskFactor == 1 && i == 8) {
                 riskFactorList.add(Patient.RiskFactor.PREGNANCY);
-            }else if(binaryRiskFactor == 1 && i == 8){
+            }else if(binaryRiskFactor == 1 && i == 9){
                 riskFactorList.add(Patient.RiskFactor.DIABETES2);
             }
         }
