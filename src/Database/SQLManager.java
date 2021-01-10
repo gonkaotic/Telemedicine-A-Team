@@ -15,12 +15,10 @@ public class SQLManager {
 
     private static Connection c;
 
+    /*
     public static void main(String[] args) {
         try {
             connect("jdbc:sqlite:././Database/covid watchlist.db");
-
-
-
             disconnect();
         } catch (Exception e) {
             System.out.println("Error in connecting/generating/disconnecting from the database: " + e);
@@ -28,7 +26,7 @@ public class SQLManager {
         }
 
     }
-
+    */
     public static void generateDataBase() throws SQLException, IOException {
         createTablePatients();
         createTableMeasures();
